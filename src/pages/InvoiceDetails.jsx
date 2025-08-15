@@ -138,6 +138,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Trash2, CheckCircle, Edit } from "lucide-react";
 
+
+
 const InvoiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -151,11 +153,42 @@ const InvoiceDetails = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
 
+
+
+// Fetch account details
+  const AccountDetails = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:4000/api/users/account-details', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log(res);
+      
+      setBankName(res.data.accountDetails.bankName || '');
+      setAccountNumber(res.data.accountDetails.accountNumber || '');
+      setAccountName(res.data.accountDetails.accountName || '');
+    } catch (err) {
+      console.error('Error fetching account details:', err);
+    }
+  };
+
+  useEffect(() => {
+    AccountDetails(); // Call it on component mount
+  }, []);
+
+
+
   const token = localStorage.getItem("token");
+
+
+  
 
   useEffect(() => {
     fetchInvoice();
   }, []);
+
+  
 
   const fetchInvoice = async () => {
     try {
@@ -170,10 +203,13 @@ const InvoiceDetails = () => {
       const userRes = await axios.get(`http://localhost:4000/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       setBusinessName(userRes.data.businessName || "");
-      setBankName(userRes.data.bankName || "");
-      setAccountNumber(userRes.data.accountNumber || "");
-      setAccountName(userRes.data.accountName || "");
+      setBankName(userRes.data.accountDetails.bankName || "");
+      setAccountNumber(userRes.data.accountDetails.accountNumber || "");
+      setAccountName(userRes.data.accountDetails.accountName || "");
+
+      
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -206,6 +242,8 @@ const InvoiceDetails = () => {
   }
 };
 
+
+
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...form.items];
     updatedItems[index][field] = field === "quantity" || field === "unitPrice" ? Number(value) : value;
@@ -229,7 +267,7 @@ const InvoiceDetails = () => {
   const deleteInvoice = async () => {
     if (!window.confirm("Are you sure you want to delete this invoice?")) return;
     try {
-      await axios.delete(`/api/invoices/${id}`, {
+      await axios.delete(`http://localhost:4000/api/invoices/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       navigate("/invoices");
@@ -240,7 +278,7 @@ const InvoiceDetails = () => {
 
   const saveInvoice = async () => {
     try {
-      const res = await axios.put(`/api/invoices/${id}`, form, {
+      const res = await axios.put(`http://localhost:4000/api/invoices/${id}`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoice(res.data);

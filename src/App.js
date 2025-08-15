@@ -10,6 +10,8 @@ import InvoiceList from "./pages/InvoiceList";
 import InvoiceDetails from "./pages/InvoiceDetails";
 import NewInvoice from "./pages/NewInvoice";
 import Settings from "./pages/Settings";
+import Client from "./pages/Client";
+import Support from "./pages/Support";
 
 export default function App() {
   return (
@@ -31,6 +33,8 @@ export default function App() {
           <Route path="/invoices/:id" element={<ProtectedRoute> <InvoiceDetails /> </ProtectedRoute>}/>
           <Route path="/invoices/new" element={<ProtectedRoute> <NewInvoice /> </ProtectedRoute>}/>
           <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
+          <Route path="/clients" element={<ProtectedRoute> <Client /> </ProtectedRoute>}/>
+          <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
         </Routes>
       </Router>
     </AuthProvider>
