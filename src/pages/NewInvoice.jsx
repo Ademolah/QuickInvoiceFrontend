@@ -102,15 +102,26 @@ const NewInvoice = () => {
                   className="border p-2 rounded w-full"
                   required
                 />
-                <input
+
+                {/* <input
                   type="number"
                   placeholder="Quantity"
-                  value={item.quantity}
+                  value={item.quantity }
                   min={1}
                   onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
                   className="border p-2 rounded w-full"
                   required
-                />
+                /> */}
+                <input
+  type="number"
+  placeholder="Quantity"
+  value={item.quantity ?? ""}
+  min={1}
+  onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+  className="border p-2 rounded w-full"
+  required
+/>
+
                 <input
                   type="number"
                   placeholder="Unit Price"

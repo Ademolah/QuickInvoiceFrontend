@@ -13,7 +13,7 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl px-6 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          Power Your Invoicing with{" "}
+          Power Your Business with{" "}
           <span className="text-[#00B86B]">QuickInvoice NG</span>
         </h1>
         <p className="text-lg md:text-xl mb-8 text-gray-200">

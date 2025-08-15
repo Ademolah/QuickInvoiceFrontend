@@ -33,6 +33,7 @@ export default function Register() {
         businessName: formData.businessName,
         password: formData.password,
       });
+      localStorage.setItem("token", res.data.token);
       console.log(res.data);
       navigate("/dashboard");
     } catch (err) {

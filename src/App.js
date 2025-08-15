@@ -12,6 +12,8 @@ import NewInvoice from "./pages/NewInvoice";
 import Settings from "./pages/Settings";
 import Client from "./pages/Client";
 import Support from "./pages/Support";
+import Receipts from "./pages/Receipts";
+import ReceiptDetails from "./pages/ReceiptDetails";
 
 export default function App() {
   return (
@@ -35,6 +37,8 @@ export default function App() {
           <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
           <Route path="/clients" element={<ProtectedRoute> <Client /> </ProtectedRoute>}/>
           <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
+          <Route path="/receipts" element={ <ProtectedRoute> <Receipts /> </ProtectedRoute>} />
+          <Route path="/receipts/:invoiceId" element={ <ProtectedRoute> <ReceiptDetails /> </ProtectedRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
