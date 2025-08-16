@@ -10,7 +10,8 @@ import {
   HelpCircle,
   LayoutDashboard,
   LogOut,
-  ReceiptIcon
+  ReceiptIcon,
+  DollarSignIcon
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -24,6 +25,7 @@ const Sidebar = () => {
     { name: "Receipts", icon: <ReceiptIcon size={20} />, path: "/receipts" },
     { name: "Clients", icon: <Users size={20} />, path: "/clients" },
     { name: "Reports", icon: <BarChart2 size={20} />, path: "/reports" },
+    { name: "Billing", icon: <DollarSignIcon size={20} />, path: "/billing" },
     { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
     { name: "Support", icon: <HelpCircle size={20} />, path: "/support" },
   ];
