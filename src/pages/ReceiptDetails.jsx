@@ -36,6 +36,28 @@ export default function ReceiptDetails() {
 
   const downloadPDF = async () => {
     if (!captureRef.current) return;
+
+    console.log("I am in receipt endpoint");
+    
+
+
+    const logRes = await fetch("http://localhost:4000/api/invoices/log", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
+    },
+    body: JSON.stringify({ type: "receipt" }),
+    });
+
+    const logData = await logRes.json(); // ✅ now guaranteed JSON
+    console.log("Usage log response:", logData);
+
+    if (!logRes.ok) {
+        alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+        return; // 🚨 Stop download here
+        }
+
     const node = captureRef.current;
     const canvas = await html2canvas(node, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL("image/png");
@@ -171,7 +193,7 @@ export default function ReceiptDetails() {
             </div>
             <div className="border-t mt-2 pt-2 flex justify-between">
               <span className="font-semibold text-[#0046A5]">Grand Total</span>
-              <span className="font-bold text-[#0046A5]">₦{Number(total/10).toLocaleString()}</span>
+              <span className="font-bold text-[#0046A5]">₦{Number(total).toLocaleString()}</span>
             </div>
           </div>
         </div>

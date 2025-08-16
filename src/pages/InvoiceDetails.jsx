@@ -386,7 +386,6 @@ export default function InvoiceDetails() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log(res);
       
       setBankName(res.data.accountDetails.bankName || '');
       setAccountNumber(res.data.accountDetails.accountNumber || '');
@@ -432,10 +431,52 @@ export default function InvoiceDetails() {
     load();
   }, [id, token]);
 
+  
+
   const downloadPDF = async () => {
+
     if (!invoiceRef.current) return;
     setActionLoading(true);
     try {
+
+
+        // 🔑 Step 1: Check logs/limits before generating
+        // const token = localStorage.getItem("token");
+        // const logRes = await fetch("http://localhost:4000/api/invoices/log", {
+        // method: "POST",
+        // headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${token}`,
+        // },
+        // body: JSON.stringify({ type: "invoice" }), // or "receipt"
+        // });
+
+        // const logData = await logRes.json();
+
+        // if (!logData.success) {
+        // alert(logData.message); // e.g., "Upgrade to Pro..."
+        // setActionLoading(false);
+        // return; // 🚫 Stop here if limit reached
+        // }
+        const logRes = await fetch("http://localhost:4000/api/invoices/log", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
+        },
+        body: JSON.stringify({ type: "invoice" }),
+        });
+
+        const logData = await logRes.json(); // ✅ now guaranteed JSON
+        console.log("Usage log response:", logData);
+
+        if (!logRes.ok) {
+        alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+        return; // 🚨 Stop download here
+        }
+
+
+
       // Increase scale to keep crispness
       const canvas = await html2canvas(invoiceRef.current, {
         scale: 2,
@@ -475,6 +516,8 @@ export default function InvoiceDetails() {
       setActionLoading(false);
     }
   };
+
+  
 
   const handleMarkPaid = async () => {
     if (!window.confirm("Mark invoice as paid?")) return;
@@ -552,7 +595,7 @@ export default function InvoiceDetails() {
   } = invoice;
 
   const accountDetails = user?.accountDetails || {};
-  console.log(user);
+  
   
 
   const statusClass =
