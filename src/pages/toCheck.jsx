@@ -6,28 +6,45 @@ import { Plus, Trash } from 'lucide-react';
 const NewInvoice = () => {
   const navigate = useNavigate();
 
+  // INIT AS EMPTY STRINGS SO PLACEHOLDERS SHOW
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
-  const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
-  const [tax, setTax] = useState(0);
-  const [discount, setDiscount] = useState(0);
+  const [items, setItems] = useState([{ description: '', quantity: '', unitPrice: '' }]);
+  const [tax, setTax] = useState('');        // <- ''
+  const [discount, setDiscount] = useState(''); // <- ''
   const [notes, setNotes] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleItemChange = (index, field, value) => {
+  const handleItemChange = (index, field, raw) => {
     const updated = [...items];
-    updated[index][field] = field === 'description' ? value : Number(value);
+    // keep '' if user clears field; otherwise store Number for math
+    const value = field === 'description'
+      ? raw
+      : raw === '' ? '' : Number(raw);
+    updated[index][field] = value;
     setItems(updated);
   };
 
-  const addItem = () => setItems([...items, { description: '', quantity: 1, unitPrice: 0 }]);
-  const removeItem = (index) => setItems(items.filter((_, i) => i !== index));
+  const addItem = () =>
+    setItems([...items, { description: '', quantity: '', unitPrice: '' }]);
 
-  const subtotal = items.reduce((sum, it) => sum + it.quantity * it.unitPrice, 0);
-  const total = Math.max(0, subtotal + Number(tax) - Number(discount));
+  const removeItem = (index) =>
+    setItems(items.filter((_, i) => i !== index));
+
+  // Safely coerce to numbers for calculations
+  const numericItems = items.map(it => ({
+    ...it,
+    quantity: Number(it.quantity || 0),
+    unitPrice: Number(it.unitPrice || 0),
+  }));
+
+  const subtotal = numericItems.reduce((sum, it) => sum + it.quantity * it.unitPrice, 0);
+  const numericTax = Number(tax || 0);
+  const numericDiscount = Number(discount || 0);
+  const total = Math.max(0, subtotal + numericTax - numericDiscount);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,17 +53,30 @@ const NewInvoice = () => {
       return;
     }
 
-    setLoading(true);
-    setError('');
+    // Build payload with numbers; include dueDate only if present
+    const payload = {
+      clientName,
+      clientEmail,
+      clientPhone,
+      items: numericItems.map(({ description, quantity, unitPrice }) => ({
+        description: description.trim(),
+        quantity,
+        unitPrice,
+      })),
+      tax: numericTax,
+      discount: numericDiscount,
+      notes,
+    };
+    if (dueDate) payload.dueDate = dueDate; // ISO string is fine for mongoose Date
 
     try {
+      setLoading(true);
+      setError('');
       const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `http://localhost:4000/api/invoices`,
-        { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      navigate(`/invoices/${response.data._id}`);
+      const res = await axios.post('http://localhost:4000/api/invoices', payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      navigate(`/invoices/${res.data._id}`);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Server error');
@@ -54,8 +84,6 @@ const NewInvoice = () => {
       setLoading(false);
     }
   };
-
-  
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
@@ -90,7 +118,7 @@ const NewInvoice = () => {
           />
         </div>
 
-        {/* Invoice Items */}
+        {/* Items */}
         <div>
           <h2 className="font-semibold text-lg mb-2">Items</h2>
           <div className="space-y-2">
@@ -104,16 +132,6 @@ const NewInvoice = () => {
                   className="border p-2 rounded w-full"
                   required
                 />
-
-                {/* <input
-                  type="number"
-                  placeholder="Quantity"
-                  value={item.quantity }
-                  min={1}
-                  onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                  className="border p-2 rounded w-full"
-                  required
-                /> */}
                 <input
                   type="number"
                   inputMode="numeric"
@@ -124,11 +142,11 @@ const NewInvoice = () => {
                   className="border p-2 rounded w-full"
                   required
                 />
-
                 <input
                   type="number"
+                  inputMode="decimal"
                   placeholder="Unit Price"
-                  value={item.unitPrice}
+                  value={item.unitPrice === '' ? '' : item.unitPrice}
                   min={0}
                   onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
                   className="border p-2 rounded w-full"
@@ -136,7 +154,7 @@ const NewInvoice = () => {
                 />
                 <div className="flex gap-2 items-center">
                   <span className="text-gray-700 font-semibold">
-                    {item.quantity * item.unitPrice}
+                    {(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toLocaleString()}
                   </span>
                   {items.length > 1 && (
                     <button type="button" onClick={() => removeItem(index)} className="text-red-500">
@@ -160,23 +178,24 @@ const NewInvoice = () => {
         <div className="grid md:grid-cols-4 gap-4">
           <input
             type="number"
+            inputMode="decimal"
             placeholder="Tax"
-            value={tax}
+            value={tax === '' ? '' : tax}
             min={0}
             onChange={(e) => setTax(e.target.value)}
             className="border p-2 rounded w-full"
           />
           <input
             type="number"
+            inputMode="decimal"
             placeholder="Discount"
-            value={discount}
+            value={discount === '' ? '' : discount}
             min={0}
             onChange={(e) => setDiscount(e.target.value)}
             className="border p-2 rounded w-full"
           />
           <input
             type="date"
-            placeholder="Due Date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
             className="border p-2 rounded w-full"
@@ -190,9 +209,9 @@ const NewInvoice = () => {
           />
         </div>
 
-        {/* Total */}
+        {/* Totals */}
         <div className="text-right font-bold text-xl">
-          Total: <span className="text-[#0046A5]">{total.toLocaleString()}</span>
+          Total: <span className="text-[#0046A5]">₦{total.toLocaleString()}</span>
         </div>
 
         {/* Submit */}
