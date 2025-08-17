@@ -688,14 +688,14 @@ export default function InvoiceDetails() {
             {/* From / To */}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <h3 className="text-sm text-gray-500">From</h3>
-                <p className="font-semibold text-gray-800">{user?.businessName || "-"}</p>
-                {user?.email && <p className="text-sm text-gray-600">{user.email}</p>}
+                <h3 className="text-sm font-semibold text-[#0046A5]">From</h3>
+                <p className="font-bold text-gray-800">{user?.businessName || "-"}</p>
+                {user?.email && <p className="text-sm text-gray-600">{user.name}</p>}
                 {user?.phone && <p className="text-sm text-gray-600">+{user.phone}</p>}
               </div>
 
               <div>
-                <h3 className="text-sm text-gray-500">Billed To</h3>
+                <h3 className="text-sm font-semibold text-[#0046A5]">Billed To</h3>
                 <p className="font-semibold text-gray-800">{clientName || "-"}</p>
                 {clientEmail && <p className="text-sm text-gray-600">{clientEmail}</p>}
                 {clientPhone && <p className="text-sm text-gray-600">{clientPhone}</p>}

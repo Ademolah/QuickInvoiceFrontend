@@ -199,7 +199,7 @@ export default function ReceiptDetails() {
         </div>
 
         {/* Bank Details */}
-        {(bankName || accountNumber || accountName) && (
+        {/* {(bankName || accountNumber || accountName) && (
           <div className="px-8 pb-8">
             <div className="bg-white rounded-xl border p-4">
               <h3 className="font-semibold text-[#0046A5] mb-2">Account Details</h3>
@@ -208,7 +208,7 @@ export default function ReceiptDetails() {
               {accountName && <p className="text-sm text-gray-700">Account Name: {accountName}</p>}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Footer */}
         <div className="px-8 pb-8">

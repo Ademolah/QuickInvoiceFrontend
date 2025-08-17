@@ -108,7 +108,7 @@ const InvoiceList = () => {
                       <CheckCircle size={18} />
                     </button>
                     <Link
-                      to={`/invoices/view/${inv._id}`}
+                      to={`/invoices/${inv._id}`}
                       className="bg-blue-100 text-blue-700 p-2 rounded-lg hover:bg-blue-200 transition"
                       title="View"
                     >
