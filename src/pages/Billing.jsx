@@ -185,12 +185,12 @@ export default function Billing() {
                     <div
                       className="h-3 bg-[#0046A5]"
                       style={{
-                        width: `${Math.min(100, ((user?.usage?.invoicesThisMonth || 0) / 20) * 100)}%`,
+                        width: `${Math.min(100, ((user?.usage?.invoicesThisMonth || 0) / 10) * 100)}%`,
                       }}
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-600">
-                    {user?.usage?.invoicesThisMonth || 0} / 20 (free limit)
+                    {user?.usage?.invoicesThisMonth || 0} / 10 (free limit)
                   </p>
                 </div>
 
@@ -200,12 +200,12 @@ export default function Billing() {
                     <div
                       className="h-3 bg-[#00B86B]"
                       style={{
-                        width: `${Math.min(100, ((user?.usage?.receiptsThisMonth || 0) / 20) * 100)}%`,
+                        width: `${Math.min(100, ((user?.usage?.receiptsThisMonth || 0) / 10) * 100)}%`,
                       }}
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-600">
-                    {user?.usage?.receiptsThisMonth || 0} / 20 (free limit)
+                    {user?.usage?.receiptsThisMonth || 0} / 10 (free limit)
                   </p>
                 </div>
               </div>

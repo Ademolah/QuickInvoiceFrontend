@@ -32,7 +32,7 @@ export default function ExtraSections() {
             <div className="bg-white text-gray-800 rounded-xl p-8 shadow-lg w-72">
               <CreditCard className="w-10 h-10 text-[#0046A5] mb-4" />
               <h3 className="text-xl font-semibold mb-2">Free</h3>
-              <p className="mb-4 text-sm">20 invoices & receipts /month. Perfect for freelancers.</p>
+              <p className="mb-4 text-sm">10 invoices & receipts /month. Perfect for freelancers.</p>
               <p className="text-2xl font-bold">₦0</p>
             </div>
             <div className="bg-white text-gray-800 rounded-xl p-8 shadow-lg w-72">

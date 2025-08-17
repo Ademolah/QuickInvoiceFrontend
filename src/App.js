@@ -15,6 +15,7 @@ import Support from "./pages/Support";
 import Receipts from "./pages/Receipts";
 import ReceiptDetails from "./pages/ReceiptDetails";
 import Billing from "./pages/Billing";
+import Reports from "./pages/Reports";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
     <AuthProvider>
 
       <Toaster position="top-right" reverseOrder={false} />
-      
+
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
           <Route path="/billing" element={<ProtectedRoute> <Billing /> </ProtectedRoute>}/>
           <Route path="/clients" element={<ProtectedRoute> <Client /> </ProtectedRoute>}/>
+          <Route path="/reports" element={<ProtectedRoute> <Reports /> </ProtectedRoute>}/>
           <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
           <Route path="/receipts" element={ <ProtectedRoute> <Receipts /> </ProtectedRoute>} />
           <Route path="/receipts/:invoiceId" element={ <ProtectedRoute> <ReceiptDetails /> </ProtectedRoute>} />

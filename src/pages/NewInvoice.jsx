@@ -9,9 +9,11 @@ const NewInvoice = () => {
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
-  const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
-  const [tax, setTax] = useState(0);
-  const [discount, setDiscount] = useState(0);
+  const [items, setItems] = useState([{ description: '', quantity: '', unitPrice: '' }]);
+//   const [tax, setTax] = useState(0);
+  const [tax, setTax] = useState('');
+//   const [discount, setDiscount] = useState(0);
+const [discount, setDiscount] = useState('');
   const [notes, setNotes] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [loading, setLoading] = useState(false);
@@ -204,6 +206,16 @@ const NewInvoice = () => {
           {loading ? 'Creating...' : 'Create Invoice'}
         </button>
       </form>
+
+      {/* Back to Dashboard button */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+        >
+          ⬅ Back to Dashboard
+        </button>
+      </div>
     </div>
   );
 };
