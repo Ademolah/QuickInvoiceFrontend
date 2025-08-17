@@ -5,11 +5,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Sidebar from "../components/Sidebar"; // Adjust path if needed
+import {Menu, X} from 'lucide-react'
 
-const Dashboard = () => {
+const Dashboard = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState('');
   const [invoices, setInvoices] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [stats, setStats] = useState({
     totalInvoicesThisMonth: 0,
     totalRevenue: 0,
@@ -92,14 +94,38 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       {/* Fixed Sidebar */}
-      <div className="fixed h-screen w-[250px] bg-white shadow-lg">
+      <div className="sm:hidden md:block fixed h-screen w-[250px]  ">
         <Sidebar />
-      </div>
+      </div>    
+
+
+      {/* Mobile Sidebar (Drawer) */}
+      <div
+        className={`fixed inset-0 z-50 bg-black/40 transition-opacity ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={() => setIsOpen(false)}
+      />
+      <div
+        className={`fixed top-0 left-0 z-50 h-full w-[250px] bg-white shadow-lg transform transition-transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center p-4 border-b">
+          <h2 className="text-lg font-semibold">Menu</h2>
+          <button onClick={() => setIsOpen(false)}>
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+        <Sidebar />
+      </div> 
+
+
 
       {/* Main Content */}
-      <main className="ml-[250px] flex-1 p-6 md:p-10 space-y-6 max-w-7xl">
+      <main className="flex-1 p-4 md:p-10 space-y-6 max-w-7xl w-full md:ml-[250px]">
         <h1 className="text-3xl font-bold text-[#0046A5] mb-6">
           Welcome to {businessName}
         </h1>
@@ -147,6 +173,7 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
       </main>
+      {children}
     </div>
   );
 };

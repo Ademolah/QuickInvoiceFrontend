@@ -15,10 +15,14 @@ import Support from "./pages/Support";
 import Receipts from "./pages/Receipts";
 import ReceiptDetails from "./pages/ReceiptDetails";
 import Billing from "./pages/Billing";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <AuthProvider>
+
+      <Toaster position="top-right" reverseOrder={false} />
+      
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />

@@ -1,6 +1,7 @@
 // src/pages/Billing.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CreditCard, CheckCircle, Loader2, Clock } from "lucide-react";
 
@@ -12,6 +13,7 @@ export default function Billing() {
   const [loading, setLoading] = useState(true);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchUserAndHistory = async () => {
@@ -230,7 +232,7 @@ export default function Billing() {
             <h3 className="text-lg font-semibold text-[#0046A5]">Payment History</h3>
 
             {history.length === 0 ? (
-              <p className="mt-4 text-gray-600">No payments found.</p>
+              <p className="mt-4 text-gray-600">Coming soon...</p>
             ) : (
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full text-left">
@@ -261,6 +263,16 @@ export default function Billing() {
             )}
           </div>
         </motion.div>
+      </div>
+
+      {/* Back to Dashboard button */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+        >
+          ⬅ Back to Dashboard
+        </button>
       </div>
     </div>
   );
