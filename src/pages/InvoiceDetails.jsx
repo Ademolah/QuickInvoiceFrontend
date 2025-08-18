@@ -49,7 +49,7 @@ export default function InvoiceDetails() {
     const AccountDetails = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:4000/api/users/account-details', {
+      const res = await axios.get(`${API_BASE}/api/users/account-details`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -125,7 +125,7 @@ export default function InvoiceDetails() {
         // setActionLoading(false);
         // return; // 🚫 Stop here if limit reached
         // }
-        const logRes = await fetch("http://localhost:4000/api/invoices/log", {
+        const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

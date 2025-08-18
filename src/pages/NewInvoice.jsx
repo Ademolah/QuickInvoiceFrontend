@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Trash } from 'lucide-react';
 
+
+const API =  "http://localhost:4000";
+
 const NewInvoice = () => {
   const navigate = useNavigate();
 
@@ -46,7 +49,7 @@ const [discount, setDiscount] = useState('');
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:4000/api/invoices`,
+        `${API}/api/invoices`,
         { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes },
         { headers: { Authorization: `Bearer ${token}` } }
       );

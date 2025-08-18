@@ -6,6 +6,9 @@ import { FileText, Search, ReceiptText } from "lucide-react";
 // const brandBlue = "#0046A5";
 // const brandGreen = "#00B86B";
 
+
+const API =  "http://localhost:4000";
+
 export default function Receipts() {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
@@ -16,7 +19,7 @@ export default function Receipts() {
     const load = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/api/invoices", {
+        const res = await axios.get(`${API}/api/invoices`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Only PAID invoices are receipt-ready

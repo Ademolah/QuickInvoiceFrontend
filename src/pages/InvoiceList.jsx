@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Trash2, Edit, Eye, CheckCircle } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
+const API =  "http://localhost:4000";
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -16,7 +17,7 @@ const InvoiceList = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/api/invoices", {
+      const res = await axios.get(`${API}/api/invoices`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(res.data);
@@ -31,7 +32,7 @@ const InvoiceList = () => {
     if (!window.confirm("Are you sure you want to delete this invoice?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/invoices/${id}`, {
+      await axios.delete(`${API}/api/invoices/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(invoices.filter(inv => inv._id !== id));
@@ -43,7 +44,7 @@ const InvoiceList = () => {
   const markPaid = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.patch(`http://localhost:4000/api/invoices/${id}/pay`, null, {
+      const res = await axios.patch(`${API}/api/invoices/${id}/pay`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(invoices.map(inv => (inv._id === id ? res.data : inv)));

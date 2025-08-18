@@ -6,6 +6,9 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 // import Sidebar from "../components/Sidebar";
 
+
+const API =  "http://localhost:4000";
+
 export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [bankDetails, setBankDetails] = useState({
@@ -32,7 +35,7 @@ export default function Settings() {
     const token = localStorage.getItem('token');
 
     await axios.put(
-      'http://localhost:4000/api/users/change-password',
+      `${API}/api/users/change-password`,
       { currentPassword, newPassword },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -55,7 +58,7 @@ export default function Settings() {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          "http://localhost:4000/api/users/account-details",
+          `${API}/api/users/account-details`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -87,7 +90,7 @@ export default function Settings() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:4000/api/users/account-details",
+        `${API}/api/users/account-details`,
         bankDetails,
         {
           headers: {

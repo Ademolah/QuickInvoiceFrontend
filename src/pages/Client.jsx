@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API =  "http://localhost:4000";
+
 export default function Client() {
   const [clients, setClients] = useState([]);
   const navigate = useNavigate();
@@ -10,7 +12,7 @@ export default function Client() {
     const fetchClients = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/api/clients", {
+        const res = await axios.get(`${API}/api/clients`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setClients(res.data);

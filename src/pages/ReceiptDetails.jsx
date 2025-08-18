@@ -5,6 +5,9 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { ArrowLeft, Download, CheckCircle2 } from "lucide-react";
 
+
+const API =  "http://localhost:4000";
+
 export default function ReceiptDetails() {
   const { invoiceId } = useParams();
   const navigate = useNavigate();
@@ -17,10 +20,10 @@ export default function ReceiptDetails() {
     const load = async () => {
       try {
         const token = localStorage.getItem("token");
-        const inv = await axios.get(`http://localhost:4000/api/invoices/${invoiceId}`, {
+        const inv = await axios.get(`${API}/api/invoices/${invoiceId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const usr = await axios.get(`http://localhost:4000/api/users/me`, {
+        const usr = await axios.get(`${API}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setInvoice(inv.data);
@@ -41,7 +44,7 @@ export default function ReceiptDetails() {
     
 
 
-    const logRes = await fetch("http://localhost:4000/api/invoices/log", {
+    const logRes = await fetch(`${API}/api/invoices/log`, {
     method: "POST",
     headers: {
         "Content-Type": "application/json",

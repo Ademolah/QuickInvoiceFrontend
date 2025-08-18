@@ -7,6 +7,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } fro
 import Sidebar from "../components/Sidebar"; // Adjust path if needed
 import {Menu, X} from 'lucide-react'
 
+const API =  "http://localhost:4000";
+
 const Dashboard = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState('');
@@ -26,13 +28,13 @@ const Dashboard = ({children}) => {
         const token = localStorage.getItem('token');
 
         // Fetch invoices
-        const invoiceRes = await axios.get('http://localhost:4000/api/invoices', {
+        const invoiceRes = await axios.get(`${API}/api/invoices`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const invoicesData = invoiceRes.data;
 
         // Fetch user (business name)
-        const userRes = await axios.get('http://localhost:4000/api/users/me', {
+        const userRes = await axios.get(`${API}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBusinessName(userRes.data.businessName || '');

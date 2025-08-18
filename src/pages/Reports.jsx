@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const API =  "http://localhost:4000";
+
 const Reports = () => {
   const [stats, setStats] = useState(null);
   const [invoices, setInvoices] = useState([]);
@@ -40,10 +42,10 @@ const Reports = () => {
       try {
         const token = localStorage.getItem("token");
         const [statsRes, invoicesRes] = await Promise.all([
-          axios.get("http://localhost:4000/api/reports", {
+          axios.get(`${API}/api/reports`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4000/api/invoices", {
+          axios.get(`${API}/api/invoices`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
