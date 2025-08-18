@@ -10,9 +10,9 @@ const NewInvoice = () => {
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [items, setItems] = useState([{ description: '', quantity: '', unitPrice: '' }]);
-//   const [tax, setTax] = useState(0);
+  // const [tax, setTax] = useState(0);
   const [tax, setTax] = useState('');
-//   const [discount, setDiscount] = useState(0);
+  // const [discount, setDiscount] = useState(0);
 const [discount, setDiscount] = useState('');
   const [notes, setNotes] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -30,6 +30,8 @@ const [discount, setDiscount] = useState('');
 
   const subtotal = items.reduce((sum, it) => sum + it.quantity * it.unitPrice, 0);
   const total = Math.max(0, subtotal + Number(tax) - Number(discount));
+
+  console.log('Total at new invoice ',total)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -165,7 +167,7 @@ const [discount, setDiscount] = useState('');
             placeholder="Tax"
             value={tax}
             min={0}
-            onChange={(e) => setTax(e.target.value)}
+            onChange={(e) => setTax(Number(e.target.value))}
             className="border p-2 rounded w-full"
           />
           <input
@@ -173,7 +175,7 @@ const [discount, setDiscount] = useState('');
             placeholder="Discount"
             value={discount}
             min={0}
-            onChange={(e) => setDiscount(e.target.value)}
+            onChange={(e) => setDiscount(Number(e.target.value))}
             className="border p-2 rounded w-full"
           />
           <input
