@@ -17,6 +17,7 @@ import ReceiptDetails from "./pages/ReceiptDetails";
 import Billing from "./pages/Billing";
 import Reports from "./pages/Reports";
 import { Toaster } from "react-hot-toast";
+import Contact from "./pages/Contact";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />}/>
           <Route
             path="/dashboard"
             element={

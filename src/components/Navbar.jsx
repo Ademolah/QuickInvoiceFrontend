@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Contact from "../pages/Contact";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -20,10 +21,14 @@ export default function Navbar() {
           className="flex items-center gap-2"
         >
           <div className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white font-bold text-lg px-3 py-1 rounded-lg shadow-sm">
+            <Link to="/">
             Q
+            </Link>
           </div>
           <h1 className="font-poppins font-bold text-xl text-gray-800">
+            <Link to="/">
             QuickInvoice
+            </Link>
             <span className="text-[#00B86B]"> NG</span>
           </h1>
         </motion.div>
@@ -49,7 +54,7 @@ export default function Navbar() {
             Pricing
           </Link>
           <Link
-            to="/#contact"
+            to="/contact"
             className="text-gray-700 hover:text-[#0046A5] transition-colors duration-200 font-medium"
           >
             Contact
