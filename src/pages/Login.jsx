@@ -57,41 +57,29 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
-
-  if (loading) return; // prevent double-submits
-  if (!formData?.email || !formData?.password) {
-    setError("Email and password are required.");
-    return;
-  }
-
   setLoading(true);
   setError("");
 
   try {
-    const res = await axios.post(
-      `${API}/api/auth/login`,
-      { email: formData.email.trim(), password: formData.password },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    const { data } = await axios.post(`${API}/api/auth/login`, formData, {
+      headers: { "Content-Type": "application/json" },
+    });
 
-    const { token } = res.data || {};
-    if (!token) throw new Error("Invalid response from server.");
+    if (!data?.token) {
+      throw new Error("No token received from server.");
+    }
 
-    // Persist token and ensure immediate availability to subsequent requests
-    localStorage.setItem("token", token);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    // Give React a tick so any guards that read localStorage/axios headers see the token
-    await Promise.resolve();
-
-    navigate("/dashboard", { replace: true });
+    localStorage.setItem("token", data.token);
+    navigate("/dashboard");
   } catch (err) {
-    console.error("Login failed:", err);
+    console.error("Login error:", err.response || err.message);
     setError(err.response?.data?.message || "Login failed. Please try again.");
   } finally {
     setLoading(false);
   }
 };
+
+
 
 
   return (
