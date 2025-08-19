@@ -30,6 +30,8 @@ import { useNavigate } from "react-router-dom";
 
 const API =  "http://localhost:4000";
 
+// const API = "https://quickinvoice-backend-1.onrender.com"
+
 const Reports = () => {
   const [stats, setStats] = useState(null);
   const [invoices, setInvoices] = useState([]);

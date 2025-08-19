@@ -9,6 +9,8 @@ import { FileText, Search, ReceiptText } from "lucide-react";
 
 const API =  "http://localhost:4000";
 
+// const API = "https://quickinvoice-backend-1.onrender.com"
+
 export default function Receipts() {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);

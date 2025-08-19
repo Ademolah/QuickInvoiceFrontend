@@ -24,6 +24,8 @@ import {
 
 const API_BASE = "http://localhost:4000";
 
+// const API_BASE = "https://quickinvoice-backend-1.onrender.com"
+
 
 const currencyFmt = (amt = 0) =>
   `₦${Number(amt || 0).toLocaleString("en-NG")}`;

@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 const API =  "http://localhost:4000";
 
+// const API = "https://quickinvoice-backend-1.onrender.com"
+
 export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [bankDetails, setBankDetails] = useState({

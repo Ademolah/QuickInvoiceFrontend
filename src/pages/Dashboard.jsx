@@ -9,6 +9,8 @@ import {Menu, X} from 'lucide-react'
 
 const API =  "http://localhost:4000";
 
+// const API = "https://quickinvoice-backend-1.onrender.com"
+
 const Dashboard = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState('');
