@@ -18,6 +18,7 @@ import Billing from "./pages/Billing";
 import Reports from "./pages/Reports";
 import { Toaster } from "react-hot-toast";
 import Contact from "./pages/Contact";
+import Inventory from "./pages/Inventory";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/invoices/new" element={<ProtectedRoute> <NewInvoice /> </ProtectedRoute>}/>
           <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
           <Route path="/billing" element={<ProtectedRoute> <Billing /> </ProtectedRoute>}/>
+          <Route path="/inventory" element={<ProtectedRoute> <Inventory /> </ProtectedRoute>}/>
           <Route path="/clients" element={<ProtectedRoute> <Client /> </ProtectedRoute>}/>
           <Route path="/reports" element={<ProtectedRoute> <Reports /> </ProtectedRoute>}/>
           <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
