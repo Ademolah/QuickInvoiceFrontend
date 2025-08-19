@@ -39,51 +39,98 @@ export default function ReceiptDetails() {
     load();
   }, [invoiceId]);
 
-  const downloadPDF = async () => {
-    if (!captureRef.current) return;
-
-    console.log("I am in receipt endpoint");
+  // const downloadPDF = async () => {
+  //   if (!captureRef.current) return;
     
+  //   const logRes = await fetch(`${API}/api/invoices/log`, {
+  //   method: "POST",
+  //   headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
+  //   },
+  //   body: JSON.stringify({ type: "receipt" }),
+  //   });
 
+  //   const logData = await logRes.json(); // ✅ now guaranteed JSON
+  //   console.log("Usage log response:", logData);
 
-    const logRes = await fetch(`${API}/api/invoices/log`, {
+  //   if (!logRes.ok) {
+  //       alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+  //       return; // 🚨 Stop download here
+  //       }
+
+  //   const node = captureRef.current;
+  //   const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+  //   const imgData = canvas.toDataURL("image/png");
+  //   const pdf = new jsPDF("p", "pt", "a4");
+  //   const pageWidth = pdf.internal.pageSize.getWidth();
+  //   const pageHeight = pdf.internal.pageSize.getHeight();
+
+  //   const imgWidth = pageWidth - 48; // 24px margin each side
+  //   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  //   let y = 24;
+  //   pdf.addImage(imgData, "PNG", 24, y, imgWidth, imgHeight);
+  //   pdf.save(`Receipt_${invoice?._id?.slice(-6).toUpperCase()}.pdf`);
+  // };
+
+  const downloadPDF = async () => {
+  if (!captureRef.current) return;
+
+  // ✅ Log usage
+  const logRes = await fetch(`${API}/api/invoices/log`, {
     method: "POST",
     headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({ type: "receipt" }),
-    });
+  });
 
-    const logData = await logRes.json(); // ✅ now guaranteed JSON
-    console.log("Usage log response:", logData);
+  const logData = await logRes.json();
+  console.log("Usage log response:", logData);
 
-    if (!logRes.ok) {
-        alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
-        return; // 🚨 Stop download here
-        }
+  if (!logRes.ok) {
+    alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+    return;
+  }
 
-    const node = captureRef.current;
-    const canvas = await html2canvas(node, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+  // ✅ Capture the receipt
+  const node = captureRef.current;
+  const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+  const imgData = canvas.toDataURL("image/png");
 
-    const imgWidth = pageWidth - 48; // 24px margin each side
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  const pdf = new jsPDF("p", "pt", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
 
-    let y = 24;
-    pdf.addImage(imgData, "PNG", 24, y, imgWidth, imgHeight);
-    pdf.save(`Receipt_${invoice?._id?.slice(-6).toUpperCase()}.pdf`);
-  };
+  const imgWidth = pageWidth - 48; // margins
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 24; // first margin top
+
+  // ✅ First page
+  pdf.addImage(imgData, "PNG", 24, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight - 48; // subtract content area
+
+  // ✅ Add extra pages if needed
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight + 24;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 24, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  pdf.save(`Receipt_${invoice?._id?.slice(-6).toUpperCase()}.pdf`);
+};
 
   if (loading) return <div className="p-6 md:p-10">Loading receipt…</div>;
   if (!invoice || !user) return <div className="p-6 md:p-10">Not found.</div>;
 
   const { clientName, clientEmail, clientPhone, items = [], subtotal, tax, discount, total, createdAt } = invoice;
   const { businessName, email, phone, accountDetails } = user || {};
-  const { bankName, accountNumber, accountName } = accountDetails || {};
+  // const { bankName, accountNumber, accountName } = accountDetails || {};
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
