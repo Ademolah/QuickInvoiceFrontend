@@ -39,22 +39,60 @@ export default function Login() {
   //   }
   // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
 
-    try {
-      const res = await axios.post(`${API}/api/auth/login`, formData);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user))
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     const res = await axios.post(`${API}/api/auth/login`, formData);
+  //     localStorage.setItem("token", res.data.token);
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     setError(err.response?.data?.message || "Login failed. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (loading) return; // prevent double-submits
+  if (!formData?.email || !formData?.password) {
+    setError("Email and password are required.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await axios.post(
+      `${API}/api/auth/login`,
+      { email: formData.email.trim(), password: formData.password },
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    const { token } = res.data || {};
+    if (!token) throw new Error("Invalid response from server.");
+
+    // Persist token and ensure immediate availability to subsequent requests
+    localStorage.setItem("token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    // Give React a tick so any guards that read localStorage/axios headers see the token
+    await Promise.resolve();
+
+    navigate("/dashboard", { replace: true });
+  } catch (err) {
+    console.error("Login failed:", err);
+    setError(err.response?.data?.message || "Login failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#0046A5] to-[#00B86B] p-4">
