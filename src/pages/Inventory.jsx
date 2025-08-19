@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import PremiumTrashButton from "../components/ui/Delete";
 import {
   Plus,
   Pencil,
@@ -409,7 +410,7 @@ export default function Inventory() {
                               />
                             </svg>
                           ) : (
-                            <Trash2 size={18} />
+                            <Trash2  size={18} />
                           )}
                         </GhostButton>
                       </div>
