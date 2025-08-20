@@ -39,21 +39,7 @@ export default function Login() {
   //   }
   // };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError("");
-
-  //   try {
-  //     const res = await axios.post(`${API}/api/auth/login`, formData);
-  //     localStorage.setItem("token", res.data.token);
-  //     navigate("/dashboard");
-  //   } catch (err) {
-  //     setError(err.response?.data?.message || "Login failed. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -61,23 +47,24 @@ export default function Login() {
   setError("");
 
   try {
-    const { data } = await axios.post(`${API}/api/auth/login`, formData, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await axios.post(`${API}/api/auth/login`, formData);
 
-    if (!data?.token) {
-      throw new Error("No token received from server.");
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+      // wait until it's saved
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 200); 
+    } else {
+      setError("No token received. Please try again.");
     }
-
-    localStorage.setItem("token", data.token);
-    navigate("/dashboard");
   } catch (err) {
-    console.error("Login error:", err.response || err.message);
     setError(err.response?.data?.message || "Login failed. Please try again.");
   } finally {
     setLoading(false);
   }
 };
+
 
 
 
