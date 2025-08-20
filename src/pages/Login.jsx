@@ -22,6 +22,7 @@ export default function Login() {
       [e.target.name]: e.target.value
     });
   };
+  
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -48,6 +49,8 @@ export default function Login() {
 
   try {
     const res = await axios.post(`${API}/api/auth/login`, formData);
+    console.log(formData);
+    
 
     if (res.data.token) {
       localStorage.setItem("token", res.data.token);
