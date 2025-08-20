@@ -32,20 +32,20 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />}/>
-          {/* <Route
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             }
-          /> */}
-          <Route
+          />
+          {/* <Route
             path="/dashboard"
             element={
                 <Dashboard />
             }
-          />
+          /> */}
           <Route path="/invoices" element={<ProtectedRoute> <InvoiceList /> </ProtectedRoute>}/>
           <Route path="/invoices/:id" element={<ProtectedRoute> <InvoiceDetails /> </ProtectedRoute>}/>
           <Route path="/invoices/new" element={<ProtectedRoute> <NewInvoice /> </ProtectedRoute>}/>
