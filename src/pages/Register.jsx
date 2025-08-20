@@ -41,7 +41,10 @@ export default function Register() {
       });
       localStorage.setItem("token", res.data.token);
       console.log(res.data);
-      navigate("/dashboard");
+      // navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 200); 
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
