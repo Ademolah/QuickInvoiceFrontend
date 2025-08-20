@@ -121,6 +121,7 @@ export default function Register() {
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
+              value={formData.password}
               onChange={handleChange}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
               required
