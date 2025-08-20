@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // restore from localStorage
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
 
@@ -53,7 +54,8 @@ export const AuthProvider = ({ children }) => {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
-    setLoading(false); // done checking
+
+    setLoading(false); // finished initializing
   }, []);
 
   const login = (data) => {
