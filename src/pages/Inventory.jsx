@@ -244,7 +244,7 @@ export default function Inventory() {
           name: form.name,
           sku: form.sku,
           price: Number(form.price),
-          quantity: Number(form.stock),
+          stock: Number(form.stock),
           category: form.category,
           description: form.description,
         });
