@@ -55,9 +55,10 @@ export default function Login() {
     if (res.data.token) {
       localStorage.setItem("token", res.data.token);
       // wait until it's saved
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 200); 
+      // setTimeout(() => {
+      //   navigate("/dashboard");
+      // }, 200); 
+      navigate("/dashboard")
     } else {
       setError("No token received. Please try again.");
     }
