@@ -137,7 +137,7 @@ export default function Navbar() {
             Pricing
           </Link>
           <Link
-            to="/#contact"
+            to="/contact"
             className="text-gray-700 hover:text-[#0046A5] transition-colors duration-200 font-medium"
             onClick={toggleDrawer}
           >
