@@ -97,7 +97,7 @@ export default function Contact() {
           </p>
           <div className="space-y-4 text-gray-700">
             <p>
-              <span className="font-semibold">📍 Address:</span> Lagos, Nigeria
+              <span className="font-semibold">📍 Address:</span> Abuja, Nigeria
             </p>
             <p>
               <span className="font-semibold">📧 Email:</span>{" "}
