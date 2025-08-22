@@ -40,10 +40,10 @@ const Sidebar = () => {
     }`;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    // localStorage.clear();
-    // window.location.href = "/";
-    navigate("/");
+    // localStorage.removeItem("token");
+    localStorage.clear();
+    window.location.href = "/";
+    // navigate("/");
   };
 
   return (
