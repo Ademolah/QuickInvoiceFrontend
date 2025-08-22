@@ -46,7 +46,7 @@ export default function App() {
                 <Dashboard />
             }
           />
-          <Route path="/invoices" element={<ProtectedRoute> <InvoiceList /> </ProtectedRoute>}/>
+          {/* <Route path="/invoices" element={<ProtectedRoute> <InvoiceList /> </ProtectedRoute>}/>
           <Route path="/invoices/:id" element={<ProtectedRoute> <InvoiceDetails /> </ProtectedRoute>}/>
           <Route path="/invoices/new" element={<ProtectedRoute> <NewInvoice /> </ProtectedRoute>}/>
           <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
@@ -56,7 +56,18 @@ export default function App() {
           <Route path="/reports" element={<ProtectedRoute> <Reports /> </ProtectedRoute>}/>
           <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
           <Route path="/receipts" element={ <ProtectedRoute> <Receipts /> </ProtectedRoute>} />
-          <Route path="/receipts/:invoiceId" element={ <ProtectedRoute> <ReceiptDetails /> </ProtectedRoute>} />
+          <Route path="/receipts/:invoiceId" element={ <ProtectedRoute> <ReceiptDetails /> </ProtectedRoute>} /> */}
+          <Route path="/invoices" element={ <InvoiceList /> }/>
+          <Route path="/invoices/:id" element={ <InvoiceDetails /> }/>
+          <Route path="/invoices/new" element={ <NewInvoice /> }/>
+          <Route path="/settings" element={ <Settings /> }/>
+          <Route path="/billing" element={ <ProtectedRoute> <Billing /> </ProtectedRoute>}/>
+          <Route path="/inventory" element={ <Inventory /> }/>
+          <Route path="/clients" element={ <Client />}/>
+          <Route path="/reports" element={ <Reports />}/>
+          <Route path="/support" element={<Support /> }/>
+          <Route path="/receipts" element={ <Receipts /> } />
+          <Route path="/receipts/:invoiceId" element={ <ReceiptDetails /> } />
         </Routes>
       </Router>
     </AuthProvider>
