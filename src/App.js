@@ -61,7 +61,7 @@ export default function App() {
           <Route path="/invoices/:id" element={ <InvoiceDetails /> }/>
           <Route path="/invoices/new" element={ <NewInvoice /> }/>
           <Route path="/settings" element={ <Settings /> }/>
-          <Route path="/billing" element={ <ProtectedRoute> <Billing /> </ProtectedRoute>}/>
+          <Route path="/billing" element={ <Billing /> }/>
           <Route path="/inventory" element={ <Inventory /> }/>
           <Route path="/clients" element={ <Client />}/>
           <Route path="/reports" element={ <Reports />}/>
