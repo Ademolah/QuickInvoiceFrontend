@@ -71,7 +71,7 @@ const Support = () => {
       icon: <Mail className="w-8 h-8 text-blue-600" />,
       title: "Email Support",
       description: "Get in touch with our team via email for assistance.",
-      action: () => window.location.href = "mailto:support@quickinvoiceng.com",
+      action: () => window.location.href = "mailto:info@hqbinary.com",
     },
     {
       icon: <MessageSquare className="w-8 h-8 text-green-500" />,
