@@ -263,7 +263,7 @@ export default function InvoiceDetails() {
     notes,
   } = invoice;
 
-  const accountDetails = user?.accountDetails || {};
+  // const accountDetails = user?.accountDetails || {};
   
   
 
@@ -313,13 +313,13 @@ export default function InvoiceDetails() {
               {actionLoading ? "Preparing..." : "Download PDF"}
             </button>
 
-            <button
+            {/* <button
               onClick={() => navigate(`/invoices/${id}/edit`)}
               className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-200"
             >
               <Edit3 size={16} />
               Edit
-            </button>
+            </button> */}
 
             <button
               onClick={handleDelete}

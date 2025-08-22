@@ -43,6 +43,18 @@ const InvoiceList = () => {
     }
   };
 
+  const updateInvoice = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API}/api/invoices/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setInvoices(invoices.filter(inv => inv._id !== id));
+    } catch (err) {
+      alert("Failed to delete invoice");
+    }
+  };
+
   const markPaid = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -104,6 +116,7 @@ const InvoiceList = () => {
                   <td className="px-4 py-3 flex justify-center gap-2">
                     <button
                       onClick={() => markPaid(inv._id)}
+                      to={`/invoices/${inv._id}`}
                       className="bg-green-100 text-green-700 p-2 rounded-lg hover:bg-green-200 transition"
                       title="Mark Paid"
                       disabled={inv.status === 'paid'}
@@ -117,13 +130,13 @@ const InvoiceList = () => {
                     >
                       <Eye size={18} />
                     </Link>
-                    <Link
-                      to={`/invoices/edit/${inv._id}`}
+                    {/* <Link
+                      onClick={()=> updateInvoice(inv._id)}
                       className="bg-yellow-100 text-yellow-700 p-2 rounded-lg hover:bg-yellow-200 transition"
                       title="Edit"
                     >
                       <Edit size={18} />
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={() => deleteInvoice(inv._id)}
                       className="bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200 transition"
