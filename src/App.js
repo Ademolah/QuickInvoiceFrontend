@@ -19,6 +19,7 @@ import Reports from "./pages/Reports";
 import { Toaster } from "react-hot-toast";
 import Contact from "./pages/Contact";
 import Inventory from "./pages/Inventory";
+// import Payments from "./pages/Payments";
 
 export default function App() {
   return (

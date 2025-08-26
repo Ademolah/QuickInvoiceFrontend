@@ -88,7 +88,7 @@ export default function Receipts() {
           <table className="min-w-full text-left">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 font-semibold text-gray-600">Invoice #</th>
+                <th className="px-4 py-3 font-semibold text-gray-600">Receipt #</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Client</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Total</th>
                 <th className="px-4 py-3 font-semibold text-gray-600">Date</th>
