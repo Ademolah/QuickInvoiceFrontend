@@ -239,7 +239,7 @@ export default function Settings() {
       </select>
     </div> */}
 
-    <div className="p-6 bg-white rounded-2xl shadow-lg border border-gray-100 max-w-md">
+    <div className="p-6 bg-white rounded-2xl mt-9 shadow-lg border border-gray-100 max-w-md">
   <h2 className="text-xl font-bold text-[#0046A5] mb-4">
     💱 Currency Settings
   </h2>
