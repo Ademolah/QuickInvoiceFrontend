@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import Sidebar from "../components/Sidebar"; // Adjust path if needed
-import {Menu, X} from 'lucide-react'
+import { X} from 'lucide-react'
+import { useCurrency } from '../context/CurrencyContext';
 
 // const API =  "http://localhost:4000";
 
@@ -80,6 +81,15 @@ const Dashboard = ({children}) => {
     fetchData();
   }, []);
 
+  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  
+    // helper to format currency
+    const formatCurrency = (amount) =>
+      new Intl.NumberFormat('en', {
+        style: 'currency',
+        currency: code,
+      }).format(amount);
+
   const chartData = invoices.map(inv => ({
     date: new Date(inv.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
     Paid: inv.status === 'paid' ? inv.total : 0,
@@ -153,7 +163,7 @@ const Dashboard = ({children}) => {
 
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
             <h2 className="text-lg font-semibold mb-2 text-[#0046A5]">Total Sales</h2>
-            <p className="text-xl font-bold">₦{stats.totalSales.toLocaleString()}</p>
+            <p className="text-xl font-bold">{formatCurrency(stats.totalSales)}</p>
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
@@ -169,7 +179,7 @@ const Dashboard = ({children}) => {
             <BarChart data={chartData}>
               <XAxis dataKey="date" />
               <YAxis />
-              <Tooltip formatter={(value) => `₦${value.toLocaleString()}`} />
+              <Tooltip formatter={(value) => formatCurrency(value)} />
               <Legend />
               <Bar dataKey="Paid" fill="#0046A5" />
               <Bar dataKey="Unpaid" fill="#00B86B" />

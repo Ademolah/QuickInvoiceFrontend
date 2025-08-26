@@ -5,6 +5,7 @@ import { ClipLoader } from "react-spinners";
 import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 // import Sidebar from "../components/Sidebar";
+import { useCurrency } from "../context/CurrencyContext";
 
 
 // const API =  "http://localhost:4000";
@@ -24,6 +25,8 @@ export default function Settings() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loadingPassword, setLoadingPassword] = useState(false);
   const navigate = useNavigate()
+
+  const { currency, switchCurrency } = useCurrency();
 
   const handleChangePassword = async (e) => {
   e.preventDefault();
@@ -221,6 +224,40 @@ export default function Settings() {
     </button>
   </form>
 </div>
+
+{/* <div className="p-4">
+      <h2 className="text-lg font-bold">Currency Settings</h2>
+      <select
+        value={currency}
+        onChange={(e) => switchCurrency(e.target.value)}
+        className="border rounded p-2"
+      >
+        <option value="NGN">₦ - Nigerian Naira</option>
+        <option value="GBP">£ - British Pound</option>
+        <option value="USD">$ - USD (Dollar)</option>
+        <option value="EUR">€ - Euro</option>
+      </select>
+    </div> */}
+
+    <div className="p-6 bg-white rounded-2xl shadow-lg border border-gray-100 max-w-md">
+  <h2 className="text-xl font-bold text-[#0046A5] mb-4">
+    💱 Currency Settings
+  </h2>
+  <p className="text-sm text-gray-500 mb-3">
+    Choose your preferred currency for invoices & receipts.
+  </p>
+  <select
+    value={currency}
+    onChange={(e) => switchCurrency(e.target.value)}
+    className="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#00B86B] focus:border-[#0046A5] transition-all text-gray-700 font-medium"
+  >
+    <option value="NGN">₦ - Nigerian Naira</option>
+    <option value="GBP">£ - British Pound</option>
+    <option value="USD">$ - US Dollar</option>
+    <option value="EUR">€ - Euro</option>
+  </select>
+</div>
+
 
 {/* Back to Dashboard button */}
       <div className="flex justify-center mt-6">

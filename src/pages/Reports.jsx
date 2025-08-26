@@ -27,6 +27,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCurrency } from "../context/CurrencyContext";
 
 // const API =  "http://localhost:4000";
 
@@ -75,6 +76,15 @@ const Reports = () => {
       );
     });
   }, [selectedMonth, invoices]);
+
+  const { code, symbol } = useCurrency(); // 👈 get currency settings
+    
+      // helper to format currency
+      const formatCurrency = (amount) =>
+        new Intl.NumberFormat('en', {
+          style: 'currency',
+          currency: code,
+        }).format(amount);
 
   // Recalculate stats based on filtered invoices
   const dynamicStats = React.useMemo(() => {
@@ -182,7 +192,7 @@ const Reports = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ₦{dynamicStats.totalRevenue?.toLocaleString()}
+              {formatCurrency(dynamicStats.totalRevenue)?.toLocaleString()}
             </div>
           </CardContent>
         </Card>

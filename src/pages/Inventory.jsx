@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useCurrency } from "../context/CurrencyContext";
 import { motion, AnimatePresence } from "framer-motion";
 import PremiumTrashButton from "../components/ui/Delete";
 import {
@@ -122,6 +123,15 @@ api.interceptors.request.use((config) => {
    Inventory Page
    ========================= */
 export default function Inventory() {
+
+  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  
+    // helper to format currency
+    const formatCurrency = (amount) =>
+      new Intl.NumberFormat('en', {
+        style: 'currency',
+        currency: code,
+      }).format(amount);
     
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -339,7 +349,7 @@ export default function Inventory() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Stock Value</p>
-                  <p className="text-2xl font-bold text-gray-800">{NGN(totals.totalValue)}</p>
+                  <p className="text-2xl font-bold text-gray-800">{formatCurrency((totals.totalValue))}</p>
                 </div>
               </CardContent>
             </Card>
@@ -426,7 +436,7 @@ export default function Inventory() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-500">Price</span>
-                        <span className="font-semibold">{NGN(item.price)}</span>
+                        <span className="font-semibold">{formatCurrency((item.price))}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-500">Stock</span>
@@ -474,7 +484,7 @@ export default function Inventory() {
               icon={<Hash size={16} />}
             />
             <Field
-              label="Price (NGN)"
+              label="Price"
               type="number"
               value={form.price}
               onChange={(v) => setForm((f) => ({ ...f, price: v }))}
