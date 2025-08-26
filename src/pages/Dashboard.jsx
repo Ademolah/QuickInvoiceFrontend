@@ -153,7 +153,7 @@ const Dashboard = ({children}) => {
 
           <div className="bg-gradient-to-r from-[#50D6FE] to-[#0046A5] text-white p-6 rounded-xl shadow-lg">
             <h2 className="text-lg font-semibold mb-2">Revenue (Paid)</h2>
-            <p className="text-2xl font-bold">{formatCurrency(stats.totalRevenue.toLocaleString())}</p>
+            <p className="text-2xl font-bold">{formatCurrency(stats.totalRevenue).toLocaleString()}</p>
           </div>
 
           <div className="bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white p-6 rounded-xl shadow-lg">
