@@ -107,10 +107,18 @@ export default function ReceiptDetails() {
 
   // ✅ Capture the receipt
   const node = captureRef.current;
-  const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+  // const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+
+  const canvas = await html2canvas(node, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          scrollY: -window.scrollY, // avoid scroll offset
+        });
   const imgData = canvas.toDataURL("image/png");
 
-  const pdf = new jsPDF("p", "pt", "a4");
+  // const pdf = new jsPDF("p", "pt", "a4");
+  const pdf = new jsPDF("p", "mm", "a4");
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
 
