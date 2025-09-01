@@ -18,6 +18,7 @@ export default function ReceiptDetails() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const captureRef = useRef(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -86,8 +87,10 @@ export default function ReceiptDetails() {
 
   const downloadPDF = async () => {
   if (!captureRef.current) return;
-
-  // ✅ Log usage
+  setActionLoading(true)
+  
+  try{
+    // ✅ Log usage
   const logRes = await fetch(`${API}/api/invoices/log`, {
     method: "POST",
     headers: {
@@ -141,6 +144,13 @@ export default function ReceiptDetails() {
   }
 
   pdf.save(`Receipt_${invoice?._id?.slice(-6).toUpperCase()}.pdf`);
+  } catch (err){
+      console.error("PDF download failed", err);
+      alert("Failed to generate PDF. Try again.");
+  } finally{
+      setActionLoading(false)
+  }
+  
 };
 
   if (loading) return <div className="p-6 md:p-10">Loading receipt…</div>;
@@ -162,9 +172,11 @@ export default function ReceiptDetails() {
         </button>
         <button
           onClick={downloadPDF}
+          disabled={actionLoading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
         >
-          <Download size={16} /> Download PDF
+          <Download size={16} /> 
+          {actionLoading ? "Preparing..." : "Download PDF"}
         </button>
       </div>
 
