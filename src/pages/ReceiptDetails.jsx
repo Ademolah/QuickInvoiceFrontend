@@ -87,7 +87,7 @@ export default function ReceiptDetails() {
 
   const sharePDF = async () => {
     if (!captureRef.current) return;
-   
+    setActionLoading(true)
 
     // ✅ Log usage
     const logRes = await fetch(`${API}/api/invoices/log`, {
@@ -154,6 +154,8 @@ export default function ReceiptDetails() {
     } catch (error) {
       console.error("Error sharing PDF:", error);
       alert("Failed to share receipt.");
+    } finally {
+      setActionLoading(false)
     }
   };
 
@@ -244,10 +246,10 @@ export default function ReceiptDetails() {
           <ArrowLeft size={16} /> Back
         </button>
 
-        <button onClick={sharePDF} 
+        <button onClick={sharePDF} disabled={actionLoading}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
         variant="secondary">
-          Share 
+          {actionLoading ? "Preparing..." : "Share"}
           </button>
 
 

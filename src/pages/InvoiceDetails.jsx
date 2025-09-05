@@ -113,27 +113,27 @@ export default function InvoiceDetails() {
   }, [id, token]);
 
    const sharePDF = async () => {
-  if (!invoiceRef.current) return;
-  
+    if (!invoiceRef.current) return;
+    setActionLoading(true)
 
-  try {
-    // ✅ Log usage (same as download)
-    const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ type: "invoice" }),
-    });
+    try {
+      // ✅ Log usage (same as download)
+      const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ type: "invoice" }),
+      });
 
-    const logData = await logRes.json();
-    console.log("Usage log response:", logData);
+      const logData = await logRes.json();
+      console.log("Usage log response:", logData);
 
-    if (!logRes.ok) {
-      alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
-      return; // 🚨 Stop here
-    }
+      if (!logRes.ok) {
+        alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+        return; // 🚨 Stop here
+      }
 
     // ✅ Capture as before
     const canvas = await html2canvas(invoiceRef.current, {
@@ -181,7 +181,9 @@ export default function InvoiceDetails() {
   } catch (err) {
     console.error("PDF share failed", err);
     alert("Failed to share PDF. Try again.");
-  } 
+  } finally {
+    setActionLoading(false)
+  }
 };
 
 
@@ -387,10 +389,10 @@ export default function InvoiceDetails() {
               </button>
             )}
 
-            <button onClick={sharePDF} 
+            <button onClick={sharePDF} disabled={actionLoading}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
             variant="secondary">
-              Share
+              {actionLoading ? "Preparing..." : "Share"}
               </button>
 
             <button
