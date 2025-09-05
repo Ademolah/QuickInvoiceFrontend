@@ -412,14 +412,14 @@ export default function InvoiceDetails() {
               Edit
             </button> */}
 
-            <button
+            {/* <button
               onClick={handleDelete}
               disabled={actionLoading}
               className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-60"
             >
               <Trash2 size={16} />
               Delete
-            </button>
+            </button> */}
           </div>
         </div>
 
