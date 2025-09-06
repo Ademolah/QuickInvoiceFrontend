@@ -77,7 +77,7 @@ export default function Testimonials() {
       name: "Favour J.",
       role: "SweetToothiesByNk",
       feedback:
-        "QuickInvoice NG has completely simplified my invoicing. I can send, track, and even share invoices instantly. It saves me hours every week.",
+        "QuickInvoice NG has completely simplified my invoicing. I can send, track, and even share receipts instantly. It saves me hours every week.",
       rating: 4,
     },
     {
@@ -118,10 +118,10 @@ export default function Testimonials() {
       <div className="relative w-full overflow-hidden">
         <motion.div
           className="flex gap-6"
-          animate={{ x: ["0%", "-50%"] }}
+          animate={{ x: ["0%", "-100%"] }}
           transition={{
             repeat: Infinity,
-            duration: 30,
+            duration: 40,
             ease: "linear",
           }}
         >
