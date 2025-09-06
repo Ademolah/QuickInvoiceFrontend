@@ -467,8 +467,9 @@ export default function InvoiceDetails() {
             </div>
 
             {/* Items table */}
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px]">
+            <div className="overflow-x-auto rounded-xl border">
+              {/* <table className="w-full min-w-[600px]"> */}
+              <table className="min-w-full text-left">
                 <thead>
                   <tr className="bg-gray-50">
                     <th className="text-left px-4 py-3 text-sm text-gray-600">Description</th>
