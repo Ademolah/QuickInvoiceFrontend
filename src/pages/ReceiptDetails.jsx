@@ -89,25 +89,27 @@ export default function ReceiptDetails() {
     if (!captureRef.current) return;
     setActionLoading(true)
 
-    // ✅ Log usage
-    const logRes = await fetch(`${API}/api/invoices/log`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ type: "receipt" }),
-    });
-
-    const logData = await logRes.json();
-    console.log("Usage log response:", logData);
-
-    if (!logRes.ok) {
-    alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
-    return;
-  }
-
     try {
+
+
+        // ✅ Log usage
+      const logRes = await fetch(`${API}/api/invoices/log`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ type: "receipt" }),
+      });
+
+      const logData = await logRes.json();
+      console.log("Usage log response:", logData);
+
+      if (!logRes.ok) {
+      alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+      return;
+    }
+
       // ✅ Capture the receipt as before
       const node = captureRef.current;
       const canvas = await html2canvas(node, { scale: 2, useCORS: true });
