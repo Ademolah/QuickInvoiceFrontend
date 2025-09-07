@@ -104,7 +104,7 @@ export default function Testimonials() {
   ];
 
   // Duplicate list so it loops seamlessly
-  const loopTestimonials = [...testimonials, ...testimonials];
+  const loopTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
   return (
     <section className="bg-[#F9FAFB] py-16 overflow-hidden">
