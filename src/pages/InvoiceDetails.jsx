@@ -451,7 +451,7 @@ export default function InvoiceDetails() {
                 <h3 className="text-sm font-semibold text-[#0046A5]">From</h3>
                 <p className="font-bold text-gray-800">{user?.businessName || "-"}</p>
                 {user?.email && <p className="text-sm text-gray-600">{user.name}</p>}
-                {user?.phone && <p className="text-sm text-gray-600">+{user.phone}</p>}
+                {user?.phone && <p className="text-sm text-gray-600">{user.phone}</p>}
               </div>
 
               <div>

@@ -86,7 +86,29 @@ export default function Register() {
             required
           />
 
-          <input
+          <div className="flex items-center border border-gray-300 rounded focus-within:ring-2 focus-within:ring-[#0046A5]">
+  {/* Hardcoded prefix */}
+  <span className="px-3 text-gray-600  border-r border-gray-300">
+    +234
+  </span>
+
+  {/* Input field */}
+  <input
+    type="tel"
+    name="phone"
+    placeholder="8012345678"
+    value={formData.phone}
+    onChange={(e) => {
+      // remove any leading 0 automatically
+      let value = e.target.value.replace(/^0+/, "");
+      setFormData({ ...formData, phone: value });
+    }}
+    className="w-full p-3 rounded-r focus:outline-none"
+    required
+  />
+</div>
+
+          {/* <input
             type="tel"
             name="phone"
             placeholder="Phone Number (e.g. 2348012345678)"
@@ -94,7 +116,7 @@ export default function Register() {
             onChange={handleChange}
             className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
             required
-          />
+          /> */}
 
           <input
             type="text"
