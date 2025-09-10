@@ -210,12 +210,12 @@ export default function Hero({
               </button>
               </Link>
 
-              <button
+              {/* <button
                 onClick={onSecondaryClick}
                 className="inline-flex items-center justify-center rounded-full px-6 py-3 bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition"
               >
                 View Pricing
-              </button>
+              </button> */}
             </motion.div>
           </div>
 
