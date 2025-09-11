@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Trash } from 'lucide-react';
@@ -11,9 +11,25 @@ const API = "https://quickinvoice-backend-1.onrender.com"
 const NewInvoice = () => {
   const navigate = useNavigate();
 
+  const location = useLocation();
+  // const selectedClient = location.state?.client || {};
+   const selectedClient = useMemo(() => location.state?.client || null, [location.state]);
+
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
+
+// Prefill when coming from Clients.jsx
+  useEffect(() => {
+    if (selectedClient) {
+      setClientName(selectedClient.name || "");
+      setClientEmail(selectedClient.email || "");
+      setClientPhone(selectedClient.phone || "");
+    }
+  }, [selectedClient]);
+
+
+
   const [items, setItems] = useState([{ description: '', quantity: '', unitPrice: '' }]);
   // const [tax, setTax] = useState(0);
   const [tax, setTax] = useState('');
