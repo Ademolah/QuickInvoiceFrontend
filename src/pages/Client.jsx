@@ -40,6 +40,7 @@ export default function Client() {
             <th className="p-2 text-left text-white">Phone</th>
             <th className="p-2 text-left text-white">Email</th>
             <th className="p-2 text-left text-white">Paid Status</th>
+            <th className="p-2 text-left text-white">New Invoice</th>
           </tr>
         </thead>
         <tbody>
@@ -57,14 +58,14 @@ export default function Client() {
 
             
               </td>
-              {/* <td className="p-2">
+              <td className="p-2">
               <button
                 onClick={() => handleSelectClient(client)}
                 className="bg-[#0046A5] text-white px-3 py-1 rounded hover:bg-blue-700 transition"
               >
-                New Invoice
+                Create Invoice
               </button>
-            </td> */}
+            </td>
             </tr>
           ))}
         </tbody>
