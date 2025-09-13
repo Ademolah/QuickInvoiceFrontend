@@ -20,6 +20,17 @@ export default function Register() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Add country codes list (minimal example, you can expand it)
+  const countryCodes = [
+    { code: "+234", country: "Nigeria" },
+    { code: "+1", country: "USA" },
+    { code: "+44", country: "UK" },
+    { code: "+90", country: "Turkey" },
+    { code: "+91", country: "India" },
+    { code: "+27", country: "South Africa" },
+    { code: "+233", country: "Ghana" },
+  ];
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -86,14 +97,50 @@ export default function Register() {
             required
           />
 
+
+
+
           <div className="flex items-center border border-gray-300 rounded focus-within:ring-2 focus-within:ring-[#0046A5]">
+  {/* Country code selector */}
+  <select
+    value={formData.dialCode || "+234"}
+    onChange={(e) =>
+      setFormData({ ...formData, dialCode: e.target.value })
+    }
+    className="px-3 bg-white text-gray-600 border-r border-gray-300 focus:outline-none"
+  >
+    {countryCodes.map((item, idx) => (
+      <option key={idx} value={item.code}>
+        {item.code} ({item.country})
+      </option>
+    ))}
+  </select>
+
+  {/* Phone input field */}
+  <input
+    type="tel"
+    name="phone"
+    placeholder="7012345678"
+    value={formData.phone}
+    onChange={(e) => {
+      // remove any leading 0 automatically
+      let value = e.target.value.replace(/^0+/, "");
+      setFormData({ ...formData, phone: value });
+    }}
+    className="w-full p-3 rounded-r focus:outline-none"
+    required
+  />
+</div>
+
+
+          {/* <div className="flex items-center border border-gray-300 rounded focus-within:ring-2 focus-within:ring-[#0046A5]"> */}
   {/* Hardcoded prefix */}
-  <span className="px-3 text-gray-600  border-r border-gray-300">
+  {/* <span className="px-3 text-gray-600  border-r border-gray-300">
     +234
-  </span>
+  </span> */}
 
   {/* Input field */}
-  <input
+  {/* <input
     type="tel"
     name="phone"
     placeholder="8012345678"
@@ -105,8 +152,8 @@ export default function Register() {
     }}
     className="w-full p-3 rounded-r focus:outline-none"
     required
-  />
-</div>
+  /> */}
+{/* </div> */}
 
           {/* <input
             type="tel"
