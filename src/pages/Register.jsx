@@ -50,7 +50,7 @@ export default function Register() {
         email: formData.email,
         // phone: Number(formData.phone), // ensure numeric
         dialCode: formData.dialCode,
-        phone: (formData.phone),
+        phone: Number(formData.phone),
         businessName: formData.businessName,
         password: formData.password,
       });
