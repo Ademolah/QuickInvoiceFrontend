@@ -5,7 +5,8 @@ const currencies = {
   NGN: { symbol: "₦", code: "NGN" },
   USD: { symbol: "$", code: "USD" },
   GBP: { symbol: "£", code: "GBP" },
-  EUR: { symbol: "€", code: "EUR" }
+  EUR: { symbol: "€", code: "EUR" },
+  TRY: { symbol: "₺", code: "TRY" },
 };
 
 const CurrencyContext = createContext();

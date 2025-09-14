@@ -25,6 +25,8 @@ export default function Register() {
     { code: "+234", country: "Nigeria" },
     { code: "+1", country: "USA" },
     { code: "+44", country: "UK" },
+    { code: "+33", country: "France" },
+    { code: "+49", country: "Germany" },
     { code: "+90", country: "Turkey" },
     { code: "+91", country: "India" },
     { code: "+27", country: "South Africa" },

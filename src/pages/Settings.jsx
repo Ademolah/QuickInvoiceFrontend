@@ -255,6 +255,7 @@ export default function Settings() {
     <option value="GBP">£ - British Pound</option>
     <option value="USD">$ - US Dollar</option>
     <option value="EUR">€ - Euro</option>
+    <option value="TRY">₺ - Turkish Lira</option>
   </select>
 </div>
 
