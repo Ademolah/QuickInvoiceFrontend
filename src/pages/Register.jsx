@@ -46,7 +46,9 @@ export default function Register() {
       const res = await axios.post(`${API}/api/auth/register`, {
         name: formData.name,
         email: formData.email,
-        phone: Number(formData.phone), // ensure numeric
+        // phone: Number(formData.phone), // ensure numeric
+        dialCode: formData.dialCode,
+        phone: (formData.phone),
         businessName: formData.businessName,
         password: formData.password,
       });
