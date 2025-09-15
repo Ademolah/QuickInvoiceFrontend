@@ -20,6 +20,9 @@ import { Toaster } from "react-hot-toast";
 import Contact from "./pages/Contact";
 import Inventory from "./pages/Inventory";
 // import Payments from "./pages/Payments";
+import Blog from "./pages/Blog";
+import { blogPosts } from "./pages/data/blogPosts";
+import BlogDetail from "./pages/BlogDetails";
 
 export default function App() {
   return (
@@ -33,6 +36,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />}/>
+          <Route path="/blog" element={<Blog posts={blogPosts}/>}/> 
+          <Route path="/blog/:id" element={<BlogDetail posts={blogPosts} />} />
           {/* <Route
             path="/dashboard"
             element={
