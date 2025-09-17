@@ -6,11 +6,32 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 // import Sidebar from "../components/Sidebar";
 import { useCurrency } from "../context/CurrencyContext";
+import { uploadAvatar } from "../utils/upload";
 
 
 // const API =  "http://localhost:4000";
 
 const API = "https://quickinvoice-backend-1.onrender.com"
+
+export function Button({ children, className, ...props }) {
+  return (
+    <button
+      {...props}
+      className={`px-4 py-2 rounded-lg font-medium transition-colors ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
+export function Card({ children, className }) {
+  return (
+    <div className={`bg-white rounded-2xl shadow ${className}`}>{children}</div>
+  );
+}
+export function CardContent({ children, className }) {
+  return <div className={`p-6 ${className}`}>{children}</div>;
+}
+
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
@@ -107,6 +128,33 @@ export default function Settings() {
     } catch (err) {
       console.error(err);
       toast.error("Failed to update account details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //image upload 
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const token = localStorage.getItem("token"); // adjust if you use context
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+  const handleUpload = async () => {
+    if (!selectedFile) return alert("Please select an image first!");
+    try {
+      setLoading(true);
+      const url = await uploadAvatar(selectedFile, token);
+      setAvatarUrl(url);
+      alert("Avatar uploaded successfully!");
+    } catch (error) {
+      alert("Upload failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -258,6 +306,43 @@ export default function Settings() {
     <option value="TRY">₺ - Turkish Lira</option>
   </select>
 </div>
+
+
+{/* image upload */}
+
+<div className="max-w-2xl mx-auto p-6">
+      <Card className="border border-gray-100">
+        <CardContent className="flex flex-col items-center">
+          <h2 className="text-2xl font-bold text-[#0046A5] mb-6">
+            Update Profile Photo
+          </h2>
+          {/* Avatar Preview */}
+          <div className="mb-6">
+            <img
+              src={preview || avatarUrl || "/default-avatar.png"}
+              alt="avatar"
+              className="w-32 h-32 rounded-full border-4 border-[#0046A5] object-cover shadow-md"
+            />
+          </div>
+          {/* File Input */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="mb-4"
+          />
+          {/* Upload Button */}
+          <Button
+            onClick={handleUpload}
+            disabled={loading}
+            className="bg-[#0046A5] hover:bg-[#003a8c] text-white w-full md:w-auto shadow"
+          >
+            {loading ? "Uploading..." : "Upload Photo"}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+
 
 
 {/* Back to Dashboard button */}

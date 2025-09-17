@@ -8,6 +8,10 @@ import Sidebar from "../components/Sidebar"; // Adjust path if needed
 import { X} from 'lucide-react'
 import { useCurrency } from '../context/CurrencyContext';
 
+import { User } from 'lucide-react';
+
+import { fetchUser } from '../utils/getUser';
+
 // const API =  "http://localhost:4000";
 
 const API = "https://quickinvoice-backend-1.onrender.com"
@@ -24,6 +28,30 @@ const Dashboard = ({children}) => {
     totalSales: 0,
     totalQuantity: 0,
   });
+
+
+//image
+const [user, setUser] = useState(null);
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const data = await fetchUser(token);
+        setUser(data); // assuming backend responds with { user: {...} }
+        console.log(data);
+        
+      } catch (err) {
+        console.error("Failed to load user:", err);
+      }
+    };
+    if (token) {
+      getUser();
+    }
+  }, [token]);
+
+
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,9 +168,25 @@ const Dashboard = ({children}) => {
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-10 space-y-6 max-w-7xl w-full md:ml-[250px]">
+        <div className='flex items-center justify-between mb-6'>
         <h1 className="text-3xl font-bold text-[#0046A5] mb-6">
           Welcome to {businessName}
         </h1>
+
+        {/* Profile Image */}
+    {user?.avatar ? (
+      <img
+        src={user.avatar}
+        alt="Profile"
+        className="w-12 h-12 rounded-full object-cover border-2 border-[#0046A5] shadow-md"
+      />
+    ) : (
+      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm border-2 border-gray-300">
+        <User className='w-6 h-6 text-gray-500'/>
+      </div>
+    )}
+    </div>
+
 
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6">
