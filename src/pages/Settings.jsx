@@ -152,9 +152,9 @@ export default function Settings() {
       setLoading(true);
       const url = await uploadAvatar(selectedFile, token);
       setAvatarUrl(url);
-      alert("Avatar uploaded successfully!");
+      toast.success("Avatar uploaded successfully!");
     } catch (error) {
-      alert("Upload failed. Try again.");
+      toast.error("Upload failed. Try again.");
     } finally {
       setLoading(false);
     }
