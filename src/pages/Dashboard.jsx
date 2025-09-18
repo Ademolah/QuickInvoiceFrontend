@@ -170,7 +170,7 @@ const [user, setUser] = useState(null);
       <main className="flex-1 p-4 md:p-10 space-y-6 max-w-7xl w-full md:ml-[250px]">
         <div className='flex items-center justify-between mb-6'>
         <h1 className="text-3xl font-bold text-[#0046A5] mb-6 ml-14 md:ml-0">
-          Hello, {businessName}
+          Hi, {businessName}
         </h1>
 
         {/* Profile Image */}
