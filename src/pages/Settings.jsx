@@ -320,25 +320,64 @@ export default function Settings() {
           <div className="mb-6">
             <img
               src={preview || avatarUrl || "/default-avatar.png"}
-              alt="avatar"
+              alt=""
               className="w-32 h-32 rounded-full border-4 border-[#0046A5] object-cover shadow-md"
             />
           </div>
           {/* File Input */}
-          <input
+          {/* <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             className="mb-4"
-          />
+          /> */}
           {/* Upload Button */}
-          <Button
+          {/* <Button
             onClick={handleUpload}
             disabled={loading}
             className="bg-[#0046A5] hover:bg-[#003a8c] text-white w-full md:w-auto shadow"
           >
             {loading ? "Uploading..." : "Upload Photo"}
-          </Button>
+          </Button> */}
+
+          {/* File Picker (styled + centered) */}
+<div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
+  <label
+    htmlFor="file-upload"
+    className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm rounded-lg shadow-sm cursor-pointer hover:border-[#0046A5] hover:text-[#0046A5] transition"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 mr-2 text-[#0046A5]"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+      />
+    </svg>
+    Choose File
+  </label>
+  <input
+    type="file"
+    id="file-upload"
+    accept="image/*"
+    onChange={handleFileChange}
+    className="hidden"
+  />
+  {/* Upload Button */}
+  <Button
+    onClick={handleUpload}
+    disabled={loading}
+    className="bg-[#0046A5] hover:bg-[#003A8C] text-white shadow"
+  >
+    {loading ? "Uploading..." : "Upload Photo"}
+  </Button>
+</div>
         </CardContent>
       </Card>
     </div>
