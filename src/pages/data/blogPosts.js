@@ -200,7 +200,7 @@ export const blogPosts = [
     },
     {
       id: "Nigeria Tax Reforms",
-      title: "The Nigeria Tax 2025 Reforms & Policy",
+      title: "The 2025 Nigeria Tax Reforms & Policy",
       excerpt:
         "Nigeria's Big Tax Shake-Up: What the 2025 TaxReform Means for SMEs & Digital Businesses",
       date: "Sept 20, 2025",
