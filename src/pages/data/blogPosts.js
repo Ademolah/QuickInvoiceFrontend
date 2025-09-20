@@ -199,48 +199,100 @@ export const blogPosts = [
       `
     },
     {
-      id: "pro vs free",
-      title: "Pro vs Free: Which QuickInvoice Plan is Right for You?",
+      id: "Nigeria Tax Reforms",
+      title: "The Nigeria Tax 2025 Reforms & Policy",
       excerpt:
-        "Choosing the right plan can impact your business growth. We break down the key differences between Free and Pro.",
-      date: "Aug 29, 2025",
+        "Nigeria's Big Tax Shake-Up: What the 2025 TaxReform Means for SMEs & Digital Businesses",
+      date: "Sept 20, 2025",
       author: "QuickInvoice NG",
       image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format",
+        "/tax.jpg",
       content: `
-        <p>When it comes to managing business finances, every tool you choose matters. At QuickInvoice NG, we understand that different businesses have different needs. That’s why we created flexible plans — <strong>Free</strong> and <strong>Pro</strong> — designed to help you scale confidently without overspending.</p>
-
-<p>But the question remains: <strong>which plan is right for you?</strong> Let’s break it down.</p>
-
-<h2 class="text-2xl font-semibold text-[#0046A5] mt-8 mb-4">1. Free Plan — Perfect for getting started</h2>
-<p>Our Free Plan is designed for freelancers, small startups, or side hustles. You’ll enjoy:</p>
-<ul class="list-disc pl-6 text-gray-700">
-  <li>Up to <strong>5 invoices per month</strong></li>
-  <li>Professional invoice templates that carry your brand</li>
-  <li>Basic client management</li>
-  <li>Access to your dashboard anytime, anywhere</li>
-</ul>
-<p class="mt-4">If you’re just testing the waters or running a small operation, the Free Plan gives you all the basics without cost.</p>
-
-<h2 class="text-2xl font-semibold text-[#0046A5] mt-8 mb-4">2. Pro Plan — Built for growth</h2>
-<p>For growing businesses, the Pro Plan unlocks the power of efficiency and automation. With Pro, you get:</p>
-<ul class="list-disc pl-6 text-gray-700">
-  <li><strong>Unlimited invoices</strong> — no caps, no limits</li>
-  <li>Advanced reports and analytics to track your growth</li>
-  <li>Recurring billing and reminders to automate follow-ups</li>
-  <li>Priority support when you need it most</li>
-  <li>Integration with local & international payment gateways</li>
-</ul>
-<p class="mt-4">The Pro Plan ensures your business scales smoothly, without the bottlenecks of manual invoicing or limitations of a free tier.</p>
-
-<blockquote class="border-l-4 border-[#00B86B] pl-4 italic text-gray-700 my-6">
-  <p><em>Did you know?</em> Businesses using QuickInvoice Pro report <strong>40% faster client payments</strong> compared to those on the Free plan.</p>
-</blockquote>
-
-<h2 class="text-2xl font-semibold text-[#0046A5] mt-8 mb-4">Which one should you choose?</h2>
-<p>If you’re just starting out, the Free Plan is a great way to test the waters. But if you’re serious about scaling your business, <strong>Pro is the smarter choice</strong> — giving you the tools to save time, impress clients, and grow revenue faster.</p>
-
-<p class="mt-6">🚀 <a href="/" class="text-[#0046A5] font-semibold underline">Compare plans today</a> and choose the one that fuels your business growth.</p>
+        <div class="prose prose-lg max-w-none text-gray-700">
+        <img src="/tax.jpg" alt="Tax reforms in Nigeria" class="w-full h-64 object-cover rounded-lg mb-6" />
+  <p class="text-base text-gray-600 mb-6">
+    Nigeria has just passed one of the most comprehensive tax reforms in its history.
+    The <span class="font-semibold text-[#0046A5]">2025 Tax Reform Acts</span> are
+    designed to simplify tax laws, improve compliance, expand the tax base, and
+    ensure that Nigeria’s fiscal system is more aligned with modern businesses —
+    especially SMEs and digital enterprises. For millions of small businesses,
+    freelancers, and startups, this reform signals both opportunities and new responsibilities.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">A Unified Tax Framework</h2>
+  <p class="mb-6">
+    Four major laws — the Nigeria Tax Act (NTA), the Nigeria Tax Administration Act (NTAA),
+    the Nigeria Revenue Service Establishment Act (NRSA), and the Joint Revenue Board Act (JRBA)
+    — have replaced or harmonized several overlapping tax laws.
+    This means <span class="text-[#00B86B] font-medium">less ambiguity</span>,
+    <span class="text-[#00B86B] font-medium">simpler compliance</span>, and a more
+    efficient way to pay your dues. For business owners, it also means clearer guidance
+    on what taxes apply and how they should be filed.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">Personal Income Tax (PIT) Overhaul</h2>
+  <p class="mb-6">
+    The reforms introduce a new, progressive PIT system. Lower income earners are
+    granted more relief, while higher earners contribute proportionally more.
+    In addition, tax residency rules have been redefined to capture individuals
+    with significant ties to Nigeria, even if they split their time abroad.
+    New reliefs such as a <span class="font-semibold text-[#50D6FE]">20% rent relief (capped)</span>
+    provide some cushion for working families and SMEs renting office space.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">Digital & Virtual Assets in the Tax Net</h2>
+  <p class="mb-6">
+    One of the standout features of the reform is its recognition of
+    <span class="text-[#00B86B] font-medium">digital income and virtual assets</span>.
+    If your business earns through online services, crypto, or digital platforms,
+    this income will now fall under taxable categories. The aim is to broaden the tax base
+    while ensuring that Nigeria keeps pace with global digital economies.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">Capital Gains Tax (CGT) Adjustments</h2>
+  <p class="mb-6">
+    Capital Gains Tax has been revamped to capture more transactions, especially in
+    shares and asset disposals. Even <span class="italic">indirect share transfers</span>
+    may now trigger tax obligations. SMEs and startups should take note if they are
+    considering fundraising, restructuring, or selling stakes in their business.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">SME-Friendly Measures</h2>
+  <p class="mb-6">
+    Recognizing the weight of 40+ million small businesses in Nigeria, the reforms
+    introduce higher exemption thresholds for small companies. Many nuisance taxes
+    have been eliminated or reduced. This creates breathing space for businesses
+    with modest turnovers, while still ensuring that larger enterprises contribute
+    their fair share.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">Effective Dates & Transition</h2>
+  <p class="mb-6">
+    While the reforms have been signed into law, most provisions will take effect
+    from <span class="font-semibold text-[#0046A5]">January 2026</span>.
+    This transition period gives businesses and individuals time to adjust their
+    record-keeping, payroll systems, and compliance frameworks.
+    Don’t wait until the deadline — early preparation will save you stress later.
+  </p>
+  <h2 class="text-2xl font-bold text-[#0046A5] mt-10 mb-4">What This Means for Your Business</h2>
+  <ul class="list-disc pl-6 space-y-2 mb-6">
+    <li>Review your payroll and employee contracts to align with new PIT rules.</li>
+    <li>Keep clear records of rent, invoices, and receipts for tax relief claims.</li>
+    <li>Track digital/virtual income to ensure compliance with new obligations.</li>
+    <li>Assess potential CGT exposure if disposing of assets or raising capital.</li>
+    <li>Leverage new SME exemptions where applicable to reduce your tax burden.</li>
+  </ul>
+  <p class="text-base text-gray-600 mb-6">
+    For SMEs, freelancers, and startups, these reforms may seem overwhelming at first,
+    but they are also a chance to modernize business operations.
+    By keeping proper records and leveraging digital solutions like
+    <span class="font-semibold text-[#00B86B]">QuickInvoice NG</span>,
+    you can stay compliant while focusing on what truly matters:
+    growing your business in Nigeria’s evolving economy.
+  </p>
+  <div class="p-6 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white rounded-xl shadow-lg mt-10">
+    <p class="text-lg font-semibold mb-2">💡Quick Tip:</p>
+    <p>
+      Start adjusting your accounting systems now. By the time 2026 rolls around,
+      your business will be ready, compliant, and positioned to take advantage of
+      every relief and exemption available.
+    </p>
+  </div>
+</div>
 
       `
     },
