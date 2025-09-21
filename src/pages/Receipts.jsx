@@ -85,7 +85,7 @@ export default function Receipts() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by client or invoice #"
+            placeholder="Search by client or Receipt #"
             className="w-full border rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -108,9 +108,16 @@ export default function Receipts() {
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-4 py-6 text-gray-500 text-center">
-                    No paid invoices yet.
+                  <td
+                    colSpan="5"
+                    className="px-6 py-6 text-center text-[#0046A5] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg shadow-sm"
+                  >
+                    <span className="inline-block px-4 py-2 bg-[#0046A5]/10 text-[#0046A5] font-medium rounded-md">
+                      Receipts will be generated when you mark invoice as 
+                      <span className="text-[#00B86B] font-semibold"> "Paid"</span>
+                    </span>
                   </td>
+
                 </tr>
               )}
               {filtered.map((inv) => (
