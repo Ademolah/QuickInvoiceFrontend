@@ -27,7 +27,7 @@ const Sidebar = () => {
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
     { name: "Invoices", icon: <FileText size={20} />, path: "/invoices" },
     { name: "Receipts", icon: <ReceiptIcon size={20} />, path: "/receipts" },
-    { name: "Stocks", icon: <Building size={20} />, path: "/inventory" },
+    { name: "Inventory", icon: <Building size={20} />, path: "/inventory" },
     { name: "Clients", icon: <Users size={20} />, path: "/clients" },
     { name: "QuickDelivery", icon: <Bike size={20} />, comingSoon: true },
     { name: "QuickPay", icon: <CreditCardIcon size={20} />,  comingSoon: true },
