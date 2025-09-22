@@ -81,7 +81,7 @@ const Sidebar = () => {
                 key={link.name}
                 type="button"
                 onClick={() => {
-                  toast(`${link.name} 🚀 Coming soon!`, {
+                  toast(`${link.name} Coming soon!`, {
                     icon: "⌛",
                     style: {
                       borderRadius: "8px",
@@ -171,7 +171,7 @@ const Sidebar = () => {
                 key={link.name}
                 type="button"
                 onClick={() => {
-                  toast(`${link.name} 🚀 Coming soon!`, {
+                  toast(`${link.name} Coming soon!`, {
                     icon: "⌛",
                     style: {
                       borderRadius: "8px",
