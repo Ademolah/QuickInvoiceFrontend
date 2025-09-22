@@ -9,6 +9,7 @@ import {
   Settings,
   HelpCircle,
   LayoutDashboard,
+  CreditCardIcon,
   LogOut,
   Bike,
   ReceiptIcon,
@@ -29,6 +30,7 @@ const Sidebar = () => {
     { name: "Stocks", icon: <Building size={20} />, path: "/inventory" },
     { name: "Clients", icon: <Users size={20} />, path: "/clients" },
     { name: "QuickDelivery", icon: <Bike size={20} />, comingSoon: true },
+    { name: "QuickPay", icon: <CreditCardIcon size={20} />,  comingSoon: true },
     { name: "Reports", icon: <BarChart2 size={20} />, path: "/reports" },
     { name: "Billing", icon: <DollarSignIcon size={20} />, path: "/billing" },
     { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
@@ -64,14 +66,41 @@ const Sidebar = () => {
         {/* Top Section */}
         <div>
           <h2 className="text-2xl font-bold mb-6">QuickInvoice <span className="text-green-300">NG</span></h2>
-          <nav className="flex flex-col gap-2">
+          {/* <nav className="flex flex-col gap-2">
             {links.map((link) => (
               <Link key={link.name} to={link.path} className={linkClass(link.path)}>
                 {link.icon}
                 {link.name}
               </Link>
             ))}
-          </nav>
+          </nav> */}
+          <nav className="flex flex-col gap-2">
+                {links.map((link) =>
+                  link.comingSoon ? (
+                    <button
+                      key={link.name}
+                      onClick={() => {
+                        toast("🚀 QuickLogistics is coming soon!", { icon: "⌛" });
+                        setIsOpen(false);
+                      }}
+                      className={linkClass(link.path)}
+                    >
+                      {link.icon}
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={linkClass(link.path)}
+                    >
+                      {link.icon}
+                      {link.name}
+                    </Link>
+                  )
+                )}
+              </nav>
         </div>
 
         {/* Bottom Section (Logout) */}
@@ -108,7 +137,7 @@ const Sidebar = () => {
               <h2 className="text-2xl font-bold mb-6 text-white">
                 QuickInvoice <span className="text-green-300">NG</span>
               </h2>
-              {/* <nav className="flex flex-col gap-2">
+              <nav className="flex flex-col gap-2">
                 {links.map((link) => (
                   <Link
                     key={link.name}
@@ -120,34 +149,8 @@ const Sidebar = () => {
                     {link.name}
                   </Link>
                 ))}
-              </nav> */}
-              <nav className="flex flex-col gap-2">
-                {links.map((link) =>
-                  link.comingSoon ? (
-                    <button
-                      key={link.name}
-                      onClick={() => {
-                        toast("🚀 QuickLogistics is coming soon!", { icon: "⌛" });
-                        setIsOpen(false);
-                      }}
-                      className={linkClass(link.path)}
-                    >
-                      {link.icon}
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link
-                      key={link.name}
-                      to={link.path}
-                      onClick={() => setIsOpen(false)}
-                      className={linkClass(link.path)}
-                    >
-                      {link.icon}
-                      {link.name}
-                    </Link>
-                  )
-                )}
               </nav>
+              
             </div>
 
             {/* Bottom Section (Logout) */}
