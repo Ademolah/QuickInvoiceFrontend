@@ -168,51 +168,63 @@ const Sidebar = () => {
                 ))}
               </nav> */}
               <nav className="flex flex-col gap-2">
-          {links.map((link) =>
-            link.comingSoon ? (
-              <button
-                key={link.name}
-                type="button"
-                onClick={() => {
-                  toast(`${link.name} Coming soon!`, {
-                    icon: "⌛",
-                    style: {
-                      borderRadius: "8px",
-                      background: "#0046a5",
-                      color: "#fff",
-                      padding: "8px 12px",
-                    },
-                  });
-                  setIsOpen(false);
-                }}
-                className={linkClass(link.path) + " text-left flex items-center justify-between"}
-              >
-            <div className="flex items-center gap-2">
-              {link.icon}
-              {link.name}
-            </div>
-            <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-[#00B86B] text-white shadow">
-              Coming Soon
-            </span>
-          </button>
-                ) : (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={linkClass(link.path)}
-              >
-                {link.icon}
-                {link.name}
-              </Link>
-            )
-          )}
-        </nav>
+                {links.map((link) =>
+                  link.comingSoon ? (
+                    <button
+                      key={link.name}
+                      type="button"
+                      onClick={() => {
+                        toast(`${link.name} Coming soon!`, {
+                          icon: "⌛",
+                          style: {
+                            borderRadius: "8px",
+                            background: "#0046a5",
+                            color: "#fff",
+                            padding: "8px 12px",
+                          },
+                        });
+                        setIsOpen(false);
+                      }}
+                      className={linkClass(link.path) + " text-left flex items-center justify-between"}
+                    >
+                  <div className="flex items-center gap-2">
+                    {link.icon}
+                    {link.name}
+                  </div>
+                  <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-[#00B86B] text-white shadow">
+                    Coming Soon
+                  </span>
+                </button>
+                      ) : (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={linkClass(link.path)}
+                    >
+                      {link.icon}
+                      {link.name}
+                    </Link>
+                  )
+                )}
+
+
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all duration-300 mb-4"
+                >
+                  <LogOut size={20} />
+                  Logout
+                </button>
+              </nav>
               
             </div>
 
             {/* Bottom Section (Logout) */}
-            <button
+            {/* <button
               onClick={() => {
                 handleLogout();
                 setIsOpen(false);
@@ -221,7 +233,7 @@ const Sidebar = () => {
             >
               <LogOut size={20} />
               Logout
-            </button>
+            </button> */}
           </div>
         </div>
       )}
