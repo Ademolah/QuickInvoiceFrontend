@@ -139,7 +139,10 @@ const Sidebar = () => {
           ></div>
 
           {/* Drawer Content */}
-          <div className="relative bg-gradient-to-b from-[#0046A5] to-[#00B86B] w-64 p-4 shadow-lg flex flex-col justify-between">
+          {/* <div className="relative bg-gradient-to-b from-[#0046A5] to-[#00B86B] w-64 p-4 shadow-lg flex flex-col justify-between"> */}
+          <div className="relative z-50 h-full w-64 flex flex-col justify-between p-4 shadow-lg
+              bg-gradient-to-b from-[#0046A5] to-[#00B86B]
+              bg-clip-padding backdrop-blur-0 bg-opacity-100">
           
             {/* Close Button */}
             <button
