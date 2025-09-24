@@ -139,8 +139,15 @@ const Sidebar = () => {
           ></div>
 
           {/* Drawer Content */}
-          <div className="relative bg-gradient-to-b from-[#0046A5] to-[#00B86B] w-64 p-4 shadow-lg flex flex-col justify-between">
+          {/* <div className="relative bg-gradient-to-b from-[#0046A5] to-[#00B86B] w-64 p-4 shadow-lg flex flex-col justify-between"> */}
         
+          <div
+      className={`fixed top-0 left-0 h-full w-64 shadow-lg transform transition-transform duration-300 ease-in-out z-50
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+    >
+      <div className="h-full w-full bg-gradient-to-b from-[#0046A5] to-[#00B86B] p-4 flex flex-col justify-between"></div>
+            
+            
             {/* Close Button */}
             <button
               onClick={() => setIsOpen(false)}
