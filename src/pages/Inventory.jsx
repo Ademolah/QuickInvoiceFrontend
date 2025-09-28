@@ -211,7 +211,7 @@ export default function Inventory() {
     setOpen(true);
   };
 
-  const categories = ["Phones","Laptops","Gadgets", "Fashion", "Medicine", "Furniture", "Restaurant"];
+  const categories = ["Phones","Laptops","Gadgets", "Fashion", "Medicine", "Furniture", "Restaurant", "Journal"];
 
   const openEdit = (item) => {
     setMode("edit");
