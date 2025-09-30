@@ -257,6 +257,7 @@ const [user, setUser] = useState(null);
             <ul className="text-gray-600 text-left mb-4 list-disc list-inside space-y-1">
               <li>Create and send invoices easily.</li>
               <li>Mark invoices as paid to generate receipts.</li>
+              <li>Add or Update Bank Account details in "Setting" so it can show on Invoices</li>
               <li>Monitor business growth on your dashboard.</li>
               <li>Track business growth from your reports.</li>
               <li>And many other features to automate your business !</li>
