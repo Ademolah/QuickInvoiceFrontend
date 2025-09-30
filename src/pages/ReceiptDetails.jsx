@@ -381,7 +381,7 @@ export default function ReceiptDetails() {
             <h3 className="font-semibold text-[#0046A5] mb-2">Issued By</h3>
             <p className="font-medium">{businessName}</p>
             <p className="text-sm text-gray-600">{email}</p>
-            {phone && <p className="text-sm text-gray-600">+{phone}</p>}
+            {phone && <p className="text-sm text-gray-600">{phone}</p>}
           </div>
           <div className="bg-gray-50 rounded-xl p-4 border">
             <h3 className="font-semibold text-[#0046A5] mb-2">Issued To</h3>
