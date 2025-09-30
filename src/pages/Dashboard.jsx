@@ -29,6 +29,19 @@ const Dashboard = ({children}) => {
     totalQuantity: 0,
   });
 
+  //welcome modal
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem("hasSeenWelcomeModal");
+    if (!hasSeenWelcome) {
+      setShowWelcomeModal(true);
+    }
+  }, []);
+  const handleCloseWelcome = () => {
+    localStorage.setItem("hasSeenWelcomeModal", "true"); // :white_check_mark: Do not show again
+    setShowWelcomeModal(false);
+  };
+
 
 //image
 const [user, setUser] = useState(null);
@@ -230,6 +243,34 @@ const [user, setUser] = useState(null);
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        {/* modal */}
+        {showWelcomeModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-[90%] max-w-md rounded-xl shadow-lg p-6 text-center animate-fadeIn">
+            <h2 className="text-xl font-bold text-[#0046A5] mb-4">
+              Welcome to QuickInvoice NG 🎉
+            </h2>
+            <p className="text-gray-700 mb-2">
+              Here's how to get started:
+            </p>
+            <ul className="text-gray-600 text-left mb-4 list-disc list-inside space-y-1">
+              <li>Create and send invoices easily.</li>
+              <li>Mark invoices as paid to generate receipts.</li>
+              <li>Monitor business growth on your dashboard.</li>
+              <li>Track business growth from your reports.</li>
+              <li>And many other features to automate your business !</li>
+            </ul>
+            <button
+              onClick={handleCloseWelcome}
+              className="bg-[#0046A5] text-white px-6 py-2 rounded-lg hover:bg-[#00398D] transition"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
       </main>
       {children}
     </div>
