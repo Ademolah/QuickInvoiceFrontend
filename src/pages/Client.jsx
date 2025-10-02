@@ -77,7 +77,7 @@ export default function Client() {
           onClick={() => navigate("/dashboard")}
           className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
-          ⬅ Back to Dashboard
+          Q
         </button>
       </div>
       
