@@ -202,7 +202,7 @@ export default function QuickPay() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition"
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white rounded-xl font-medium hover:bg-blue-700 transition"
             >
               {loading ? "Creating..." : "Create Profile"}
             </button>
