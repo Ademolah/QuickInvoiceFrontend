@@ -72,21 +72,21 @@ export default function Client() {
       </table>
 
       {/* Back to Dashboard button */}
-      {/* <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6">
         <button
           onClick={() => navigate("/dashboard")}
-          className="fixed bottom-4 right-4 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+          className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
         >
           Q
         </button>
-      </div> */}
+      </div>
       
-        <button
+        {/* <button
           onClick={() => navigate("/dashboard")}
           className="fixed bottom-4 left-1/2  bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
         >
           Q
-        </button>
+        </button> */}
 
     </div> 
   );
