@@ -40,7 +40,7 @@ export default function Client() {
             <th className="p-2 text-left text-white">Phone</th>
             <th className="p-2 text-left text-white">Email</th>
             <th className="p-2 text-left text-white">Paid Status</th>
-            <th className="p-2 text-left text-white">New Invoice</th>
+            {/* <th className="p-2 text-left text-white">New Invoice</th> */}
           </tr>
         </thead>
         <tbody>
@@ -58,38 +58,36 @@ export default function Client() {
 
             
               </td>
-              <td className="p-2">
+              {/* <td className="p-2">
               <button
                 onClick={() => handleSelectClient(client)}
                 className="bg-[#0046A5] text-white px-3 py-1 rounded hover:bg-blue-700 transition"
               >
                 Create Invoice
               </button>
-            </td>
+            </td> */}
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Back to Dashboard button */}
-      {/* <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6">
         <button
-          onClick={() => navigate("/dashboard")}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
-        >
-          ⬅ Back to Dashboard
-        </button>
-      </div> */}
-      
-      <button
           onClick={() => navigate("/dashboard")}
           className="fixed bottom-4 right-4 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
         >
           Q
         </button>
+      </div>
+      
+        {/* <button
+          onClick={() => navigate("/dashboard")}
+          className="fixed bottom-4 right-4 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+        >
+          Q
+        </button> */}
 
-    </div>
-    
-    
+    </div> 
   );
 }
