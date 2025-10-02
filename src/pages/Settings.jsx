@@ -385,14 +385,21 @@ export default function Settings() {
 
 
 {/* Back to Dashboard button */}
-      <div className="flex justify-center mt-6">
+      {/* <div className="flex justify-center mt-6">
         <button
           onClick={() => navigate("/dashboard")}
           className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           ⬅ Back to Dashboard
         </button>
-      </div>
+      </div> */}
+      {/* Floating Q Button at Bottom */}
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="fixed bottom-4 right-4 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+        >
+          Q
+        </button>
 
     </div>
   );
