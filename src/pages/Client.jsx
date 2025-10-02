@@ -80,8 +80,8 @@ export default function Client() {
           ⬅ Back to Dashboard
         </button>
       </div> */}
-      {/* Floating Q Button at Bottom */}
-        <button
+      
+      <button
           onClick={() => navigate("/dashboard")}
           className="fixed bottom-4 right-4 bg-[#0046A5] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
         >
