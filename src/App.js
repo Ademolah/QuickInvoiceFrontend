@@ -24,6 +24,11 @@ import Blog from "./pages/Blog";
 import { blogPosts } from "./pages/data/blogPosts";
 import BlogDetail from "./pages/BlogDetails";
 
+//QuickPay
+import QuickPay from "./pages/QuickPay";
+import QuickPayDashboard from "./pages/QuickPayDashboard";
+import TransferTransaction from "./pages/TransferTransactions";
+
 export default function App() {
   return (
     <AuthProvider>
@@ -69,6 +74,9 @@ export default function App() {
           <Route path="/settings" element={ <Settings /> }/>
           <Route path="/billing" element={ <Billing /> }/>
           <Route path="/inventory" element={ <Inventory /> }/>
+          <Route path="/quickpay" element={ <QuickPay /> }/>
+          <Route path="/transfer" element={ <TransferTransaction /> }/>
+          <Route path="/quickpay/dashboard" element={ <QuickPayDashboard /> }/>
           <Route path="/clients" element={ <Client />}/>
           <Route path="/reports" element={ <Reports />}/>
           <Route path="/support" element={<Support /> }/>

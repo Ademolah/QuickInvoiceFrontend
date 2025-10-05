@@ -2,16 +2,16 @@ import React from "react";
 import { useState, useEffect } from "react"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {  toast } from 'react-hot-toast';
-
-
-
+import { Toaster, toast } from 'react-hot-toast';
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 
 
 
 // const BASEURL = "http://localhost:4000";
-const BASEURL= "https://quickinvoice-backend-1.onrender.com"
+
+const BASEURL = "https://quickinvoice-backend-1.onrender.com"
 
 const QuickPayDashboard = () => {
   const [showVerifyModal, setShowVerifyModal] = useState(false);
@@ -47,6 +47,7 @@ const QuickPayDashboard = () => {
   //   checkVerification();
   // }, []);
 
+
   useEffect(()=> {
     const fetchUser = async () => {
     try {
@@ -61,6 +62,7 @@ const QuickPayDashboard = () => {
   }
   fetchUser()
   })
+  
 
   const handleReceiveFunds = async () => {
   try {
@@ -101,8 +103,6 @@ const QuickPayDashboard = () => {
   const handleVerify = async () => {
     try {
       const token = localStorage.getItem("token");
-
-      console.log(token);
       
       // const user = JSON.parse(localStorage.getItem('user'))
 
@@ -113,7 +113,6 @@ const QuickPayDashboard = () => {
 
 
       const customerId = res.data?.anchor?.customerId;
-      console.log(customerId);
       
 
       if(!customerId){
@@ -216,6 +215,70 @@ const handlePrev = () => {
 }, [isPending]);
 
 
+const handleDownloadPDF = async () => {
+  const { jsPDF } = await import("jspdf");
+  const html2canvas = (await import("html2canvas")).default;
+  const receiptElement = document.getElementById("receipt-content");
+  const buttons = receiptElement.querySelector(".receipt-actions"); // :white_check_mark: Select the buttons wrapper
+  // :white_check_mark: Hide buttons before capture
+  if (buttons) buttons.style.display = "none";
+  const canvas = await html2canvas(receiptElement, { scale: 2 });
+  // :white_check_mark: Show buttons again
+  if (buttons) buttons.style.display = "flex";
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const imgProps = pdf.getImageProperties(imgData);
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  pdf.save(`transaction_${selectedTxn._id}.pdf`);
+};
+
+const handleShare = async (txn) => {
+  try {
+    const { jsPDF } = await import("jspdf");
+    const html2canvas = (await import("html2canvas")).default;
+
+    const receiptElement = document.getElementById("receipt-content");
+    const buttons = receiptElement.querySelector(".receipt-actions");
+
+    // Hide buttons temporarily
+    if (buttons) buttons.style.display = "none";
+
+    const canvas = await html2canvas(receiptElement, { scale: 2 });
+    if (buttons) buttons.style.display = "flex";
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+    // Convert to Blob for sharing
+    const pdfBlob = pdf.output("blob");
+
+    if (navigator.share) {
+      const file = new File([pdfBlob], `transaction_${txn._id}.pdf`, {
+        type: "application/pdf",
+      });
+
+      await navigator.share({
+        title: "Transaction Receipt",
+        text: "Here is your transaction receipt.",
+        files: [file],
+      });
+    } else {
+      alert("Sharing not supported on this device. Use Download instead.");
+    }
+  } catch (error) {
+    console.error("Share failed:", error);
+    alert("Unable to share receipt.");
+  }
+};
+
+
 // useEffect(() => {
 //   const checkInitialVerification = async () => {
 //     try {
@@ -233,6 +296,13 @@ const handlePrev = () => {
 //   };
 //   checkInitialVerification();
 // }, []);
+
+const [showReceipt, setShowReceipt] = useState(false);
+const [selectedTxn, setSelectedTxn] = useState(null);
+const handleOpenReceipt = (txn) => {
+  setSelectedTxn(txn);
+  setShowReceipt(true);  // You can use modal or navigate to a new screen
+};
 
 useEffect(() => {
   const checkVerification = async () => {
@@ -370,6 +440,109 @@ useEffect(() => {
           </div>
         )}
 
+        {/* Receipt Modal */}
+       
+        {showReceipt && selectedTxn && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    {/* :white_check_mark: Wrap ONLY this div */}
+    <div
+      id="receipt-content"
+      className="bg-white w-[95%] max-w-md rounded-xl shadow-2xl p-6 border-t-4 border-[#0046A5] relative"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-center gap-3 mb-6">
+          {/* Q Icon Box */}
+          <div className="w-10 h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-[#0046A5] to-[#00B86B] shadow-md">
+            <span className="text-white font-bold text-xl">Q</span>
+          </div>
+          {/* Text */}
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-[#0046A5] leading-tight">
+              Transaction Receipt
+            </h2>
+            <p className="text-sm text-gray-500 -mt-1">QuickPay</p>
+          </div>
+        </div>
+      {/* Details */}
+      <div className="space-y-4 text-gray-700 text-sm">
+        <div className="flex justify-between">
+          <span className="font-medium">Amount:</span>
+            <span
+              className={`font-semibold ${
+                selectedTxn.transactionType === "INBOUND_TRANSFER"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {selectedTxn.transactionType === "INBOUND_TRANSFER" ? "+" : "-"}
+              ₦{selectedTxn.transactionAmount?.toLocaleString()}
+            </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Account Name:</span>
+          <span>{selectedTxn.transactionDetail?.name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Bank Name:</span>
+          <span>{selectedTxn.transactionDetail?.bank}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Account Number:</span>
+          <span>{selectedTxn.transactionDetail?.accountNumber}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Description:</span>
+          <span>{selectedTxn?.transactionDescription || "N/A"}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Transaction Status:</span>
+          <span className="text-green-600">{selectedTxn?.transactionStatus || "N/A"}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Reference:</span>
+          <span>{selectedTxn?.transactionReference || "N/A"}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-medium">Date & Time:</span>
+          <span>{new Date(selectedTxn.createdAt).toLocaleString()}</span>
+        </div>
+      </div>
+      {/* Buttons */}
+      <div className="flex justify-between mt-8">
+        {/* Buttons */}
+        <div className="flex justify-between mt-8 receipt-actions">
+          <button
+            onClick={() => setShowReceipt(false)}
+            className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 transition mr-4"
+          >
+            Close
+          </button>
+          
+          <button
+            onClick={() => handleShare(selectedTxn)}
+            className="px-4 py-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white transition mr-4"
+          >
+            Share
+          </button>
+
+          <button
+            onClick={() => handleDownloadPDF(selectedTxn)}
+            className="px-4 py-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white transition"
+          >
+            Download
+          </button>
+        </div>
+              </div>
+              {/* Footer */}
+              <div className="mt-6 text-center text-xs text-gray-500">
+                Generated by{" "}
+                <span className="text-[#0046A5] font-semibold">QuickInvoice NG</span> © 2025
+              </div>
+            </div>
+          </div>
+        )}
+
+
       {/* HEADER */}
       <h1 className="text-3xl font-bold text-[#0046A5] mb-6">
         Hi, {businessName}
@@ -428,7 +601,8 @@ useEffect(() => {
               {transactions.length > 0 ? (
                 transactions.map((txn) => (
                   <tr
-                    key={txn._id}
+                    key={txn._id} 
+                    onClick={()=> handleOpenReceipt(txn)}
                     className="border-b hover:bg-gray-50 transition"
                   >
                     {/* :white_check_mark: Type (Display Credit/Debit based on transactionType) */}
@@ -503,12 +677,12 @@ useEffect(() => {
         </div>
 
         {/* Floating Q Button at Bottom */}
-      <button
-        onClick={() => navigate("/dashboard")}
-        className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
-      >
-        Q
-      </button>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+        >
+          Q
+        </button>
       </div>
     </div>
   );

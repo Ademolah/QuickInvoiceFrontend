@@ -160,6 +160,69 @@ export default function Settings() {
     }
   };
 
+  //QuickPay transaction pin
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  // Create PIN fields
+  const [createPin, setCreatePin] = useState("");
+  const [createPinConfirm, setCreatePinConfirm] = useState("");
+  // Update PIN fields
+  const [oldPin, setOldPin] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const [newPinConfirm, setNewPinConfirm] = useState("");
+
+  
+  // ✅Create PIN
+  const handleSetPin = async () => {
+    if (createPin !== createPinConfirm) {
+      toast.error("PIN does not match");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${API}/api/transaction-pin/set-transaction-pin`,
+        { pin: createPin},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(res.data.message || "Transaction PIN set successfully");
+      setShowCreateModal(false);
+      setCreatePin("");
+      setCreatePinConfirm("");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Error setting transaction PIN");
+    }
+  };
+
+  // ✅ Update PIN
+  const handleUpdatePin = async () => {
+    if (newPin !== newPinConfirm) {
+      alert("New PIN does not match");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `${API}/api/transaction-pin/update-transaction-pin`,
+        {
+          oldPin,
+          newPin,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(res.data.message || "Transaction PIN updated successfully");
+      setShowUpdateModal(false);
+      setOldPin("");
+      setNewPin("");
+      setNewPinConfirm("");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Error updating PIN");
+    }
+  };
+
   return (
     
     <div className="p-6 bg-gray-50 min-h-screen">

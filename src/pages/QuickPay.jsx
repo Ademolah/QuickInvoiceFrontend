@@ -36,7 +36,7 @@ export default function QuickPay() {
     setError("");
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post(`${BASEURL}/api/anchor/create-customer`, formData, {
+      const res = await axios.put(`${BASEURL}/api/anchor/create-customer`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("Customer created:", res.data);
@@ -59,10 +59,18 @@ export default function QuickPay() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // :white_check_mark: If user already exists on Anchor, go straight to dashboard
-        if (res.data?.anchorCustomerExists) {
-          navigate("/quickpay/dashboard");
+        // ✅  If user already exists on Anchor, go straight to dashboard
+        // if (res.data?.anchorCustomerExists) {
+        //   navigate("/quickpay/dashboard");
+        // }
+        const {anchorCustomerExists, verified} = res.data;
+
+        //✅ fully verified and onboarded customer
+
+        if(anchorCustomerExists && verified){
+          navigate("/quickpay/dashboard")
         }
+
       } catch (err) {
         console.log("QuickPay status check error:", err.message);
         // If error or no anchor record, user stays on onboarding
