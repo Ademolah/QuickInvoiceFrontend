@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CreditCard, CheckCircle, Loader2, Clock } from "lucide-react";
+import api from "../utils/api";
 
 // const API = process.env.REACT_APP_API_URL || "http://localhost:4000";
 

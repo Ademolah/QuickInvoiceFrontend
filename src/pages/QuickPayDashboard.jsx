@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from 'react-hot-toast';
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import api from "../utils/api";
 
 
 
@@ -594,7 +595,7 @@ useEffect(() => {
                 <th className="p-3">Name</th>
                 <th className="p-3">Bank</th>
                 <th className="p-3">Amount</th>
-                <th className="p-3">Date & Time</th>
+                <th className="p-3">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -634,9 +635,9 @@ useEffect(() => {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
+                        // hour: "2-digit",
+                        // minute: "2-digit",
+                        // second: "2-digit",
                       })}
                     </td>
                   </tr>

@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+import api from "../utils/api";
 
 
 /**
@@ -371,6 +372,15 @@ const sharePDF = async () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setInvoice(res.data);
+      // ✅ Check and display low stock or missing product warnings
+    if (res.data.lowStockWarnings && res.data.lowStockWarnings.length > 0) {
+      alert(
+        "⚠️ Inventory Notice:\n\n" +
+        res.data.lowStockWarnings.join("\n")
+      );
+      } else {
+      alert("✅ Invoice marked as paid successfully!");
+    }
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Failed to mark as paid");

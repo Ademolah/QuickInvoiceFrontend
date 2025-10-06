@@ -11,6 +11,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { User } from 'lucide-react';
 
 import { fetchUser } from '../utils/getUser';
+import api from '../utils/api';
 
 // const API =  "http://localhost:4000";
 

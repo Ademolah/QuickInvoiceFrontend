@@ -5,6 +5,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { ArrowLeft, Download, CheckCircle2 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+import api from "../utils/api";
 
 
 // const API =  "http://localhost:4000";

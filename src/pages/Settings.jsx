@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 // import Sidebar from "../components/Sidebar";
 import { useCurrency } from "../context/CurrencyContext";
 import { uploadAvatar } from "../utils/upload";
+import api from "../utils/api";
 
 
 // const API =  "http://localhost:4000";
