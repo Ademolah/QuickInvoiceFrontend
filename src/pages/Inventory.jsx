@@ -227,46 +227,87 @@ export default function Inventory() {
     setOpen(true);
   };
 
-  const saveItem = async () => {
-    // basic validation
-    if (!form.name || !String(form.price).length || !String(form.stock).length) {
-      setError("Please fill Name, Price and Quantity.");
-      return;
-    }
-    // if (!form.name.trim() || form.price === "" || form.quantity === "") {
-    // setError("Please fill Name, Price and Quantity.");
-    // return;
-    // }
-    try {
-      setError("");
-      if (mode === "create") {
-        const res = await api.post("/inventory", {
-          name: form.name,
-          sku: form.sku,
-          price: Number(form.price),
-          stock: Number(form.stock),
-          category: form.category,
-          description: form.description,
-        });
-        setItems((prev) => [res.data, ...prev]);
-      } else {
-        const res = await api.put(`/inventory/${form._id}`, {
-          name: form.name,
-          sku: form.sku,
-          price: Number(form.price),
-          stock: Number(form.stock),
-          category: form.category,
-          description: form.description,
-        });
-        setItems((prev) => prev.map((it) => (it._id === form._id ? res.data : it)));
-      }
-      setOpen(false);
-    } catch (e) {
-      console.error(e);
-      setError(e.response?.data?.message || "Save failed");
-    }
-  };
+  // const saveItem = async () => {
+  //   // basic validation
+  //   if (!form.name || !String(form.price).length || !String(form.stock).length) {
+  //     setError("Please fill Name, Price and Quantity.");
+  //     return;
+  //   }
+  //   // if (!form.name.trim() || form.price === "" || form.quantity === "") {
+  //   // setError("Please fill Name, Price and Quantity.");
+  //   // return;
+  //   // }
+  //   try {
+  //     setError("");
+  //     if (mode === "create") {
+  //       const res = await api.post("/inventory", {
+  //         name: form.name,
+  //         sku: form.sku,
+  //         price: Number(form.price),
+  //         stock: Number(form.stock),
+  //         category: form.category,
+  //         description: form.description,
+  //       });
+  //       setItems((prev) => [res.data, ...prev]);
+  //     } else {
+  //       const res = await api.put(`/inventory/${form._id}`, {
+  //         name: form.name,
+  //         sku: form.sku,
+  //         price: Number(form.price),
+  //         stock: Number(form.stock),
+  //         category: form.category,
+  //         description: form.description,
+  //       });
+  //       setItems((prev) => prev.map((it) => (it._id === form._id ? res.data : it)));
+  //     }
+  //     setOpen(false);
+  //   } catch (e) {
+  //     console.error(e);
+  //     setError(e.response?.data?.message || "Save failed");
+  //   }
+  // };
 
+  const [saving, setSaving] = useState(false);
+const saveItem = async () => {
+  // basic validation
+  if (!form.name || !String(form.price).length || !String(form.stock).length) {
+    setError("Please fill Name, Price and Quantity.");
+    return;
+  }
+  try {
+    setError("");
+    setSaving(true);
+    let res;
+    if (mode === "create") {
+      res = await api.post("/inventory", {
+        name: form.name,
+        sku: form.sku,
+        price: Number(form.price),
+        stock: Number(form.stock),
+        category: form.category,
+        description: form.description,
+      });
+      setItems((prev) => [res.data, ...prev]);
+    } else {
+      res = await api.put(`/inventory/${form._id}`, {
+        name: form.name,
+        sku: form.sku,
+        price: Number(form.price),
+        stock: Number(form.stock),
+        category: form.category,
+        description: form.description,
+      });
+      setItems((prev) => prev.map((it) => (it._id === form._id ? res.data : it)));
+    }
+    setOpen(false);
+  } catch (e) {
+    console.error(e);
+    setError(e.response?.data?.message || "Save failed");
+  } finally {
+    setSaving(false);
+  }
+}
+  
   const deleteItem = async (id) => {
     const ok = window.confirm("Delete this product? This cannot be undone.");
     if (!ok) return;
@@ -539,9 +580,23 @@ export default function Inventory() {
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-end gap-3">
+          {/* <div className="mt-6 flex items-center justify-end gap-3">
             <GhostButton onClick={() => setOpen(false)}>Cancel</GhostButton>
             <Button onClick={saveItem}>{mode === "create" ? "Add Product" : "Save Changes"}</Button>
+          </div> */}
+          <div className="mt-6 flex items-center justify-end gap-3">
+            <GhostButton onClick={() => setOpen(false)} disabled={saving}>
+              Cancel
+            </GhostButton>
+            <Button onClick={saveItem} disabled={saving}>
+              {saving
+                ? mode === "create"
+                  ? "Adding..."
+                  : "Saving..."
+                : mode === "create"
+                ? "Add Product"
+                : "Save Changes"}
+            </Button>
           </div>
         </div>
       </Dialog>
