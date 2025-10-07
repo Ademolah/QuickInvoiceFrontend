@@ -23,6 +23,7 @@ import Inventory from "./pages/Inventory";
 import Blog from "./pages/Blog";
 import { blogPosts } from "./pages/data/blogPosts";
 import BlogDetail from "./pages/BlogDetails";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 //QuickPay
 import QuickPay from "./pages/QuickPay";
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />}/>
+          <Route path="/privacy" element={<PrivacyPolicy />}/>
           <Route path="/blog" element={<Blog posts={blogPosts}/>}/> 
           <Route path="/blog/:id" element={<BlogDetail posts={blogPosts} />} />
           {/* <Route
