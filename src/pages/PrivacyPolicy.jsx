@@ -119,7 +119,7 @@ const PrivacyPolicy = () => {
           </h2>
           <p>
             All content, trademarks, and logos displayed on QuickInvoice NG are
-            the exclusive property of Binary Technologies and are protected by
+            the exclusive property of Staycon Skynett Technologies and are protected by
             copyright and trademark laws. You may not reproduce, modify, or
             redistribute any materials without written permission.
           </p>
@@ -155,7 +155,7 @@ const PrivacyPolicy = () => {
             us at:
           </p>
           <p className="mt-2">
-            📧 <strong>support@quickinvoice.ng</strong>
+            📧 <strong>support@quickinvoiceng.com</strong>
           </p>
           <p>
             📍 Binary Technologies, Abuja, Nigeria.
