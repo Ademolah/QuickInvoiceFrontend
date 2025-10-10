@@ -150,8 +150,8 @@ export default function Login() {
           </div>
 
           <div className="flex justify-between text-sm">
-            <Link to="/forgot-password" className="text-[#0046A5] hover:underline">
-              Forgot password?
+            <Link to="/contact" className="text-[#0046A5] hover:underline">
+              Forgot password ? send us a message
             </Link>
           </div>
 
