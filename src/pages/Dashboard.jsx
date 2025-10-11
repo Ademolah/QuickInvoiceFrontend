@@ -30,6 +30,47 @@ const Dashboard = ({children}) => {
     totalQuantity: 0,
   });
 
+  //KYC
+  const [showPromptModal, setShowPromptModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [formData, setFormData] = useState({
+    nationality: "",
+    date_of_birth: "",
+    residential_address: "",
+    occupation: "",
+  });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${API}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(res.data);
+      if (
+        !res.data.nationality ||
+        !res.data.date_of_birth ||
+        !res.data.residential_address ||
+        !res.data.occupation
+      ) {
+        setShowPromptModal(true);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    await axios.put(
+      `${API}/api/users/complete-profile`,
+      formData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setShowFormModal(false);
+    setShowPromptModal(false);
+    toast.success("Information updated successfully!");
+  };
+
   //welcome modal
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   useEffect(() => {
@@ -155,6 +196,76 @@ const [user, setUser] = useState(null);
       <div className="sm:hidden md:block fixed h-screen w-[250px]  ">
         <Sidebar />
       </div>    
+
+      {/* Prompt Modal */}
+      {showPromptModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white w-[400px] p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-lg font-semibold text-gray-800">Submit Further Information</h2>
+            <p className="text-sm text-gray-600 mt-2">
+              To comply with regulations, we need some additional details before you continue.
+            </p>
+            <button
+              onClick={() => setShowFormModal(true)}
+              className="bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Form Modal */}
+      {showFormModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white w-[400px] p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold text-gray-800">Complete Your Profile</h2>
+            <div className="mt-4 space-y-3">
+              <input
+                type="text"
+                placeholder="Nationality"
+                className="w-full border rounded px-3 py-2"
+                value={formData.nationality}
+                onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+              />
+              {/* <input
+                type="date"
+                className="w-full border rounded px-3 py-2"
+                value={formData.date_of_birth}
+                onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+              /> */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                <input
+                  type="date"
+                  className="w-full border rounded px-3 py-2"
+                  value={formData.date_of_birth}
+                  onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                />
+              </div>
+              <textarea
+                placeholder="Residential Address"
+                className="w-full border rounded px-3 py-2 h-20"
+                value={formData.residential_address}
+                onChange={(e) => setFormData({ ...formData, residential_address: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Occupation"
+                className="w-full border rounded px-3 py-2"
+                value={formData.occupation}
+                onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              className="bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+
 
 
       {/* Mobile Sidebar (Drawer) */}
