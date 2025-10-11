@@ -12,6 +12,7 @@ import { User } from 'lucide-react';
 
 import { fetchUser } from '../utils/getUser';
 import api from '../utils/api';
+import { toast } from 'react-hot-toast';
 
 // const API =  "http://localhost:4000";
 
