@@ -19,6 +19,7 @@ import { toast } from 'react-hot-toast';
 const API = "https://quickinvoice-backend-1.onrender.com"
 
 const Dashboard = ({children}) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState('');
   const [invoices, setInvoices] = useState([]);
@@ -61,6 +62,7 @@ const Dashboard = ({children}) => {
   }, []);
 
   const handleSubmit = async () => {
+    setIsSubmitting(true)
     const token = localStorage.getItem("token");
     await axios.put(
       `${API}/api/users/complete-profile`,
@@ -259,9 +261,12 @@ const [user, setUser] = useState(null);
             </div>
             <button
               onClick={handleSubmit}
-              className="bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
+              disabled={isSubmitting}
+              className={`bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4 ${
+                isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>
