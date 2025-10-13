@@ -36,7 +36,7 @@ const Dashboard = ({children}) => {
   const [showPromptModal, setShowPromptModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
   const [formData, setFormData] = useState({
-    nationality: "",
+    nationality: "Nigeria",
     date_of_birth: "",
     residential_address: "",
     occupation: "",
@@ -228,7 +228,8 @@ const [user, setUser] = useState(null);
                 placeholder="Nationality"
                 className="w-full border rounded px-3 py-2"
                 value={formData.nationality}
-                onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                // onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                disabled
               />
               {/* <input
                 type="date"
