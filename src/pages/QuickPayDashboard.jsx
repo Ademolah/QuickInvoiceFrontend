@@ -20,6 +20,12 @@ const QuickPayDashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [businessName, setBusinessName] = useState('');
 
+
+  //NIN
+  const [showNinModal, setShowNinModal] = useState(false)
+  const [ninInput, setNinInput] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const navigate = useNavigate()
 
 
@@ -47,6 +53,39 @@ const QuickPayDashboard = () => {
   //   };
   //   checkVerification();
   // }, []);
+
+  useEffect(() => {
+  const checkTransactions = async () => {
+    const res = await axios.get(`${BASEURL}/api/users/fetchTransactions`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    });
+    if (res.data.count >= 5 && !res.data.user.valid_NIN) {
+      setShowNinModal(true);
+    }
+  };
+  checkTransactions();
+  }, []);
+
+  const handleNinSubmit = async () => {
+    if (!/^\d{11}$/.test(ninInput)) {
+      return alert("NIN must be exactly 11 digits");
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `${BASEURL}/api/users/verify-nin`,
+        { nin: ninInput },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+      if (res.status === 200) {
+        setShowNinModal(false);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Verification failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   useEffect(()=> {
@@ -685,6 +724,32 @@ useEffect(() => {
           Q
         </button>
       </div>
+
+      {/* NIN MODAL */}
+
+      {showNinModal && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <h2 className="text-lg font-bold mb-3">Identity Verification Required</h2>
+          <p className="text-sm mb-4">For compliance purposes, please verify your NIN to continue.</p>
+          <input
+            type="text"
+            className="w-full border px-3 py-2 rounded"
+            placeholder="Enter 11-digit NIN"
+            value={ninInput}
+            onChange={(e) => setNinInput(e.target.value)}
+          />
+          <button
+            className="w-full bg-[#0046A5] text-white py-2 rounded-lg mt-4"
+            onClick={handleNinSubmit}
+            disabled={loading}
+          >
+            {loading ? "Verifying..." : "Submit"}
+          </button>
+        </div>
+      </div>
+    )}
+    
     </div>
   );
 };
