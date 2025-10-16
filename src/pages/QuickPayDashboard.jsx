@@ -747,7 +747,7 @@ useEffect(() => {
             onChange={(e) => setNinInput(e.target.value)}
           />
           <button
-            className="w-full bg-[#0046A5] text-white py-2 rounded-lg mt-4"
+            className="w-full bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white py-2 rounded-lg mt-4"
             onClick={handleNinSubmit}
             disabled={loading}
           >
