@@ -23,7 +23,7 @@ const QuickPayDashboard = () => {
 
   //NIN
   const [showNinModal, setShowNinModal] = useState(false)
-  const [ninInput, setNinInput] = useState(false)
+  const [ninInput, setNinInput] = useState("")
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -59,7 +59,14 @@ const QuickPayDashboard = () => {
     const res = await axios.get(`${BASEURL}/api/users/fetchTransactions`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     });
-    if (res.data.count >= 5 && !res.data.user.valid_NIN) {
+    
+    const userData = await api.get(`${BASEURL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+    
+     console.log("user data ",userData)   
+    
+    if (res.data.count >= 5 && !userData.data.valid_NIN) {
       setShowNinModal(true);
     }
   };
@@ -730,13 +737,13 @@ useEffect(() => {
       {showNinModal && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-          <h2 className="text-lg font-bold mb-3">Identity Verification Required</h2>
+          <h2 className="text-lg font-bold mb-3">NIN Verification Required</h2>
           <p className="text-sm mb-4">For compliance purposes, please verify your NIN to continue.</p>
           <input
             type="text"
             className="w-full border px-3 py-2 rounded"
             placeholder="Enter 11-digit NIN"
-            value={ninInput}
+            value={ninInput || ""}
             onChange={(e) => setNinInput(e.target.value)}
           />
           <button

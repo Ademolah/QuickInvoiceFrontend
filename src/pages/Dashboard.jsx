@@ -210,7 +210,7 @@ const [user, setUser] = useState(null);
             </p>
             <button
               onClick={() => setShowFormModal(true)}
-              className="bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
+              className="bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
             >
               Continue
             </button>
@@ -223,14 +223,16 @@ const [user, setUser] = useState(null);
           <div className="bg-white w-[400px] p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold text-gray-800">Complete Your Profile</h2>
             <div className="mt-4 space-y-3">
-              <input
-                type="text"
-                placeholder="Nationality"
-                className="w-full border rounded px-3 py-2"
-                value={formData.nationality}
-                // onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                disabled
-              />
+              <label className="block">
+                <span className="text-gray-700 font-medium mb-1 block">Nationality</span>
+                <input
+                  type="text"
+                  placeholder="Nationality"
+                  className="w-full border rounded px-3 py-2"
+                  value={formData.nationality}
+                  disabled
+                />
+              </label>
               {/* <input
                 type="date"
                 className="w-full border rounded px-3 py-2"
@@ -263,7 +265,7 @@ const [user, setUser] = useState(null);
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className={`bg-[#0046A5] text-white w-full py-2 rounded-lg mt-4 ${
+              className={`bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white w-full py-2 rounded-lg mt-4 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
