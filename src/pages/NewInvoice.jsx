@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Plus, Trash } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
+import VatToggle from '../components/VatToggle';
 
 
 // const API =  "http://localhost:4000";
@@ -55,6 +56,19 @@ const [discount, setDiscount] = useState('');
   const total = Math.max(0, subtotal + Number(tax) - Number(discount));
 
   console.log('Total at new invoice ',total)
+
+
+  //calculate vat
+  const [isVatEnabled, setIsVatEnabled] = useState(false);
+  //When toggle is clicked
+  const handleVatToggle = (checked) => {
+    setIsVatEnabled(checked);
+    if (checked) {
+      setTax(Number((subtotal * 0.075).toFixed(2))); // 7.5% VAT
+    } else {
+      setTax(0);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,6 +231,8 @@ const [discount, setDiscount] = useState('');
           />
         </div>
 
+          <VatToggle isVatEnabled={isVatEnabled} onToggle={handleVatToggle} />
+          
         {/* Total */}
         <div className="text-right font-bold text-xl">
           Total: <span className="text-[#0046A5]">{total.toLocaleString()}</span>
