@@ -201,7 +201,7 @@ const [discount, setDiscount] = useState('');
         <div className="grid md:grid-cols-4 gap-4">
           <input
             type="number"
-            placeholder="Tax"
+            placeholder="VAT"
             value={tax}
             min={0}
             onChange={(e) => setTax(Number(e.target.value))}
@@ -232,7 +232,7 @@ const [discount, setDiscount] = useState('');
         </div>
 
           <VatToggle isVatEnabled={isVatEnabled} onToggle={handleVatToggle} />
-          
+
         {/* Total */}
         <div className="text-right font-bold text-xl">
           Total: <span className="text-[#0046A5]">{total.toLocaleString()}</span>
