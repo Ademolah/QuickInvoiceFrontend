@@ -88,7 +88,7 @@ const QuickPayDashboard = () => {
         setShowNinModal(false);
       }
     } catch (err) {
-      alert(err.response?.data?.message || "Verification failed");
+      toast.error(err.response?.data?.message || "Verification failed");
     } finally {
       setLoading(false);
     }
