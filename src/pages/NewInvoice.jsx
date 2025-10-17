@@ -215,13 +215,16 @@ const [discount, setDiscount] = useState('');
             onChange={(e) => setDiscount(Number(e.target.value))}
             className="border p-2 rounded w-full"
           />
-          <input
-            type="date"
-            placeholder="Due Date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="border p-2 rounded w-full"
-          />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium mb-1">Invoice Due Date</span>
+            <input
+              type="date"
+              placeholder="Invoice Due Date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+          </div>
           <input
             type="text"
             placeholder="Notes"
