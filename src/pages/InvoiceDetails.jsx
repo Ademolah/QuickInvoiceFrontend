@@ -612,7 +612,7 @@ const sharePDF = async () => {
                   <span className="font-medium">{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-600">Tax</span>
+                  <span className="text-sm text-gray-600">VAT</span>
                   <span className="font-medium">{formatCurrency(tax)}</span>
                 </div>
                 <div className="flex justify-between mb-2">
