@@ -58,12 +58,23 @@ export default function QuickBuddy() {
       scroller.current.scrollTop = scroller.current.scrollHeight + 200;
     }
   }, [messages]);
+  // const handleSend = async (e) => {
+  //   e?.preventDefault();
+  //   if (!input.trim()) return;
+  //   setMessages(prev => [...prev, { role: "user", text: input.trim() }]);
+  //   await sendToBackend(input.trim());
+  // };
+
   const handleSend = async (e) => {
-    e?.preventDefault();
-    if (!input.trim()) return;
-    setMessages(prev => [...prev, { role: "user", text: input.trim() }]);
-    await sendToBackend(input.trim());
-  };
+      e?.preventDefault();
+      if (!input.trim()) return;
+      const userMessage = input.trim();   // store before clearing
+      setMessages(prev => [...prev, { role: "user", text: userMessage }]);
+      setInput("");                       // ✅ clear input immediately
+      setLoading(true);                   // ✅ trigger thinking/loading state
+      await sendToBackend(userMessage);
+      setLoading(false);                  // ✅ stop loading indicator once response comes back
+    };
   return (
     <>
       {/* Floating button */}
@@ -110,7 +121,7 @@ export default function QuickBuddy() {
           )}
           {/* input */}
           <form onSubmit={handleSend} className="p-3 bg-white border-t flex gap-2 items-center">
-            <input
+            {/* <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask Quick Buddy (e.g. Who owes me?)"
@@ -122,6 +133,23 @@ export default function QuickBuddy() {
               className="p-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white disabled:opacity-60"
             >
               <Send size={16} />
+            </button> */}
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask Quick Buddy (e.g. Who owes me?)"
+              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
+            />
+            <button
+              type="submit"
+              disabled={!input.trim() || loading}
+              className="p-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white disabled:opacity-60 flex items-center justify-center w-9 h-9"
+            >
+              {loading ? (
+                <span className="animate-pulse text-lg font-bold">...</span>
+              ) : (
+                <Send size={16} />
+              )}
             </button>
           </form>
         </div>
