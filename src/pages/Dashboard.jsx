@@ -1,6 +1,5 @@
 
 
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -13,6 +12,7 @@ import { User } from 'lucide-react';
 import { fetchUser } from '../utils/getUser';
 import api from '../utils/api';
 import { toast } from 'react-hot-toast';
+import QuickBuddy from '../components/QuickBuddy';
 
 // const API =  "http://localhost:4000";
 
@@ -395,6 +395,7 @@ const [user, setUser] = useState(null);
 
       </main>
       {children}
+      <QuickBuddy />
     </div>
   );
 };
