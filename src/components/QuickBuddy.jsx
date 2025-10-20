@@ -5,7 +5,7 @@ import { Send, MessageSquare, Bot } from "lucide-react";
 
 
 
-const BASE_URL = "http://localhost:4000"; //
+const BASE_URL = "https://quickinvoice-backend-1.onrender.com"; //
 
 
 export default function QuickBuddy() {
