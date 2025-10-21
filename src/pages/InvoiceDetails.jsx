@@ -551,7 +551,7 @@ const sharePDF = async () => {
 
 
                   {/* User image */}
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     {userData?.avatar ? (
                       <img
                         src={userData.avatar}
@@ -566,7 +566,28 @@ const sharePDF = async () => {
                     <h2 className="text-2xl md:text-3xl font-extrabold">Invoice</h2>
 
                   <p className="text-sm opacity-90 font-semibold">{user?.businessName ? user?.businessName : "QuickInvoice NG"}</p>
-                </div>
+                </div> */}
+
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        {userData?.avatar ? (
+                          <img
+                            src={userData.avatar}
+                            alt="Business Logo"
+                            className="w-10 h-10 rounded-md object-cover border border-gray-200"
+                          />
+                        ) : (
+                          <div className="bg-white/20 p-2 rounded-md font-bold w-10 h-10 flex items-center justify-center text-lg">
+                            Q
+                          </div>
+                        )}
+                        <h2 className="text-2xl md:text-3xl font-extrabold">Invoice</h2>
+                      </div>
+                      <p className="text-sm opacity-90 font-semibold mt-1">
+                        {user?.businessName ? user?.businessName : "QuickInvoice NG"}
+                      </p>
+                    </div>
+
               </div>
 
               <div className="text-right">
