@@ -545,28 +545,8 @@ const sharePDF = async () => {
           <div className="p-6 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-4">
-                {/* <div className="bg-white/20 p-2 rounded-md font-bold">Q</div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-extrabold">Invoice</h2> */}
-
 
                   {/* User image */}
-                  {/* <div className="flex items-center gap-2">
-                    {userData?.avatar ? (
-                      <img
-                        src={userData.avatar}
-                        alt="Business Logo"
-                        className="w-10 h-10 rounded-md object-cover border border-gray-200"
-                      />
-                    ) : (
-                      <div className="bg-white/20 p-2 rounded-md font-bold w-10 h-10 flex items-center justify-center text-lg">
-                        Q
-                      </div>
-                    )}
-                    <h2 className="text-2xl md:text-3xl font-extrabold">Invoice</h2>
-
-                  <p className="text-sm opacity-90 font-semibold">{user?.businessName ? user?.businessName : "QuickInvoice NG"}</p>
-                </div> */}
 
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">

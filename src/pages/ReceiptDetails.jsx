@@ -162,6 +162,24 @@ export default function ReceiptDetails() {
   //   }
   // };
 
+  //fetch user for avatar
+    const [userData, setUserData] = useState(null);
+      useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            const userRes = await axios.get(`${API}/api/users/me`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setUserData(userRes.data);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+        fetchUserData();
+      }, []);
+
   const sharePDF = async () => {
   if (!captureRef.current) return;
   setActionLoading(true);
@@ -361,11 +379,32 @@ export default function ReceiptDetails() {
         {/* Header */}
         <div className="p-8 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="bg-white/20 backdrop-blur px-3 py-1 rounded-lg font-bold">Q</div>
+
+
+            {/* <div className="bg-white/20 backdrop-blur px-3 py-1 rounded-lg font-bold">Q</div>
             <div>
               <h2 className="text-2xl font-bold">Receipt</h2>
               <p className="text-white/90 text-sm">{businessName}</p>
-            </div>
+            </div> */}
+
+              <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        {userData?.avatar ? (
+                          <img
+                            src={userData.avatar}
+                            alt="Business Logo"
+                            className="w-10 h-10 rounded-md object-cover border border-gray-200"
+                          />
+                        ) : (
+                          <div className="bg-white/20 backdrop-blur px-3 py-1 rounded-lg font-bold">Q</div>
+                        )}
+                        <h2 className="text-2xl font-bold">Receipt</h2>
+                      </div>
+                      <p className="text-white/90 text-sm">{businessName}</p>
+                    </div>
+
+
+
           </div>
           <div className="text-right">
             <p className="text-sm">Receipt No.</p>
