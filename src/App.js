@@ -30,6 +30,12 @@ import QuickPay from "./pages/QuickPay";
 import QuickPayDashboard from "./pages/QuickPayDashboard";
 import TransferTransaction from "./pages/TransferTransactions";
 
+//market
+import MarketSquare from "./pages/MarketSquare";
+import Market from "./pages/Market";
+import AddProduct from "./pages/AddProduct";
+import Products from "./pages/Products";
+
 export default function App() {
   return (
     <AuthProvider>
@@ -75,6 +81,12 @@ export default function App() {
           <Route path="/invoices/new" element={ <NewInvoice /> }/>
           <Route path="/settings" element={ <Settings /> }/>
           <Route path="/billing" element={ <Billing /> }/>
+
+          <Route path="/market" element={ <MarketSquare /> }/>
+          <Route path="/market/add-product" element={ <AddProduct /> }/>
+          <Route path="/product" element={ <Products /> }/>
+          <Route path="/market/:slug" element={<Market />} />
+
           <Route path="/inventory" element={ <Inventory /> }/>
           <Route path="/quickpay" element={ <QuickPay /> }/>
           <Route path="/transfer" element={ <TransferTransaction /> }/>
