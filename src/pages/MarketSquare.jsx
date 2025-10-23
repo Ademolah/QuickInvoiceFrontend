@@ -152,7 +152,7 @@ const MarketSquare = () => {
             </button>
             </div>
           <button
-            onClick={() => (window.location.href = "/market/add-product")}
+            onClick={() => (window.location.href = "/product")}
             className="mt-5 bg-[#0046A5] text-white px-6 py-2 rounded-lg hover:bg-[#00398D] transition"
           >
             Go to Product Manager
