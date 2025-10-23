@@ -158,6 +158,29 @@ const Market = () => {
           </motion.div>
         </div>
       )}
+
+      {/* Footer */}
+        <footer className="mt-12 bg-[#0046A5] text-white py-8 px-6 rounded-t-2xl shadow-inner">
+        <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-lg md:text-xl font-semibold mb-2">
+            MarketZone by <span className="text-[#00B86B]">QuickInvoice NG</span>
+            </h2>
+            <p className="text-sm text-gray-100 mb-3">
+            Empowering businesses to showcase and sell with ease.
+            </p>
+            <a
+            href="https://www.quickinvoiceng.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[#00B86B] text-[#0046A5] font-medium px-4 py-2 rounded-full hover:bg-[#00a060] transition"
+            >
+            Visit www.quickinvoiceng.com
+            </a>
+            <p className="text-xs text-gray-200 mt-4">
+            © {new Date().getFullYear()} QuickInvoice NG. All rights reserved.
+            </p>
+        </div>
+        </footer>
     </div>
   );
 };
