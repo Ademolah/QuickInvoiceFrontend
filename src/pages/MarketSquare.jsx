@@ -97,9 +97,9 @@ const MarketSquare = () => {
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
               /> */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                {/* <label className="block text-sm font-semibold text-gray-700 mb-1">
                     WhatsApp Number
-                </label>
+                </label> */}
                 <input
                     type="tel"
                     value={whatsapp}
