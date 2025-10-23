@@ -62,7 +62,7 @@ const MarketSquare = () => {
       );
       setActivated(true);
       setMarketProfile(res.data);
-      toast.success("Welcome to MarketSquare! 🎉");
+      toast.success("Welcome to MarketZone! 🎉");
     } catch (err) {
       console.error(err);
       toast.error("Setup failed, please try again");
@@ -78,10 +78,10 @@ const MarketSquare = () => {
             <ShoppingBag size={40} className="text-[#0046A5]" />
           </div>
           <h1 className="text-2xl font-bold text-[#0046A5] mb-3">
-            Welcome to MarketSquare 🛍️
+            Welcome to MarketZone 🛍️
           </h1>
           <p className="text-gray-600 mb-6">
-            MarketSquare lets you list and showcase your products beautifully
+            MarketZone lets you list and showcase your products beautifully
             for customers to see. Buyers will contact you directly via WhatsApp.
           </p>
           <form onSubmit={handleSetup} className="space-y-4">
@@ -132,7 +132,7 @@ const MarketSquare = () => {
         <div className="bg-white shadow-lg rounded-2xl p-8 max-w-lg w-full text-center animate-fadeIn">
           <CheckCircle size={40} className="text-green-600 mx-auto mb-3" />
           <h2 className="text-2xl font-bold text-[#0046A5] mb-3">
-            MarketSquare is Active 🎉
+            MarketZone is Active 🎉
           </h2>
           <p className="text-gray-700 mb-4">
             You're all set up,{" "}
@@ -140,10 +140,10 @@ const MarketSquare = () => {
             ! You can now start uploading your products and share your page link:
           </p>
             <div className="bg-gray-100 border rounded-lg p-3 text-sm text-gray-700 font-mono break-all flex justify-between items-center">
-            <span>{`https://www.quickinvoiceng.com/${marketProfile?.slug}`}</span>
+            <span>{`https://www.quickinvoiceng.com/market/${marketProfile?.slug}`}</span>
             <button
                 onClick={() => {
-                navigator.clipboard.writeText(`https://www.quickinvoiceng.com/${marketProfile?.slug}`);
+                navigator.clipboard.writeText(`https://www.quickinvoiceng.com/market/${marketProfile?.slug}`);
                 toast.success("Link copied!");
                 }}
                 className="text-[#0046A5] font-semibold ml-3 hover:underline"

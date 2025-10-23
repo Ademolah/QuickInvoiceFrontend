@@ -90,7 +90,7 @@ const Market = () => {
         <p className="text-gray-600 text-sm md:text-base">
             To advertise your store products here,{" "}
             <a
-            href="mailto:binaryhq@outlook.com?subject=Advertise%20on%20MarketSquare&body=Hi%20Binary%20Team,%20I%27d%20like%20to%20advertise%20my%20product%20on%20MarketSquare."
+            href="mailto:binaryhq@outlook.com?subject=Advertise%20on%20MarketZone&body=Hi%20Binary%20Team,%20I%27d%20like%20to%20advertise%20my%20product%20on%20MarketZone."
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#0046A5] font-medium hover:underline"

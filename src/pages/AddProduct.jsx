@@ -204,6 +204,7 @@ const generateWithQuickBuddy = async () => {
                   className="hidden"
                 />
               </div>
+              <small className="text-gray-500 block mt-1">Make sure image size is not more than 5MB</small>
               {/* Submit */}
               <button
                 type="submit"

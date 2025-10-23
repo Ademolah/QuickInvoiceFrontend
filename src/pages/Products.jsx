@@ -77,12 +77,12 @@ const Products = () => {
                 <p className="text-sm text-gray-600">Your Store Link:</p>
                 <div className="mt-1 flex items-center">
                 <span className="font-mono text-sm bg-white border rounded-md px-3 py-1 text-gray-700 break-all">
-                    {`https://www.quickinvoiceng.com/${user?.slug || "your-slug"}`}
+                    {`https://www.quickinvoiceng.com/market/${user?.slug || "your-slug"}`}
                 </span>
                 <button
                     onClick={() => {
                     navigator.clipboard.writeText(
-                        `https://www.quickinvoiceng.com/${user?.slug || ""}`
+                        `https://www.quickinvoiceng.com/market/${user?.slug || ""}`
                     );
                     toast.success("Store link copied!");
                     }}
