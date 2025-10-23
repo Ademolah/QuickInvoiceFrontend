@@ -89,13 +89,39 @@ const MarketSquare = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 WhatsApp Number
               </label>
-              <input
+              {/* <input
                 type="text"
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 placeholder="e.g. 08101234567"
                 className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
-              />
+              /> */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    WhatsApp Number
+                </label>
+                <input
+                    type="tel"
+                    value={whatsapp}
+                    onChange={(e) => {
+                    let value = e.target.value.replace(/\s+/g, ''); // remove spaces
+                    // If user types a local 0-number, automatically convert to +234
+                    if (value.startsWith('0')) {
+                        value = `+234${value.slice(1)}`;
+                    }
+                    // If user types without +234 or 0, also prefix
+                    if (!value.startsWith('+234')) {
+                        value = `+234${value}`;
+                    }
+                    setWhatsapp(value);
+                    }}
+                    placeholder="e.g. 08101234567"
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
+                />
+                <small className="text-gray-500">
+                    Please enter your WhatsApp number. +234 will be added automatically.
+                </small>
+                </div>
               <small className="text-gray-500">
                 Buyers will contact you through this number.
               </small>
