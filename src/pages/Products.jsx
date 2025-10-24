@@ -54,7 +54,7 @@ const Products = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      await axios.delete(`${API}/api/marketsquare/delete-product/${id}`, {
+      await axios.delete(`${API}/api/marketsquare/product/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Product deleted successfully!");
