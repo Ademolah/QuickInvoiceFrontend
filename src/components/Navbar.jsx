@@ -48,10 +48,10 @@ export default function Navbar() {
             Blog
           </Link>
           <Link
-            to="/#pricing"
+            to="/how"
             className="text-gray-700 hover:text-[#0046A5] transition-colors duration-200 font-medium"
           >
-            Pricing
+            How to Install
           </Link>
           <Link
             to="/contact"
@@ -130,11 +130,11 @@ export default function Navbar() {
             Blog
           </Link>
           <Link
-            to="/#pricing"
+            to="/how"
             className="text-gray-700 hover:text-[#0046A5] transition-colors duration-200 font-medium"
             onClick={toggleDrawer}
           >
-            Pricing
+            How to Install
           </Link>
           <Link
             to="/contact"
