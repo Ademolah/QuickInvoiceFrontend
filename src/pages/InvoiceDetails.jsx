@@ -10,12 +10,10 @@ import {
   ArrowLeft,
   Download,
   CheckCircle2,
-  Edit3,
-  Trash2,
   Loader2,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
-import api from "../utils/api";
+// import api from "../utils/api";
 
 
 /**
@@ -30,8 +28,8 @@ import api from "../utils/api";
 const API_BASE = "https://quickinvoice-backend-1.onrender.com"
 
 
-const currencyFmt = (amt = 0) =>
-  `₦${Number(amt || 0).toLocaleString("en-NG")}`;
+// const currencyFmt = (amt = 0) =>
+//   `₦${Number(amt || 0).toLocaleString("en-NG")}`;
 
 
 export default function InvoiceDetails() {
@@ -52,7 +50,7 @@ export default function InvoiceDetails() {
   const token = useMemo(() => localStorage.getItem("token"), []);
 
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code,  } = useCurrency(); // 👈 get currency settings
 
   // helper to format currency
   const formatCurrency = (amount) =>
@@ -407,21 +405,21 @@ const sharePDF = async () => {
       fetchUserData();
     }, []);
 
-  const handleDelete = async () => {
-    if (!window.confirm("Delete this invoice? This cannot be undone.")) return;
-    try {
-      setActionLoading(true);
-      await axios.delete(`${API_BASE}/api/invoices/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      navigate("/invoices");
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to delete invoice");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  // const handleDelete = async () => {
+  //   if (!window.confirm("Delete this invoice? This cannot be undone.")) return;
+  //   try {
+  //     setActionLoading(true);
+  //     await axios.delete(`${API_BASE}/api/invoices/${id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     navigate("/invoices");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.response?.data?.message || "Failed to delete invoice");
+  //   } finally {
+  //     setActionLoading(false);
+  //   }
+  // };
 
   if (loading) {
     return (

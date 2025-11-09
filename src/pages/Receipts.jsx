@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FileText, Search, ReceiptText } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
-import api from "../utils/api";
+// import api from "../utils/api";
 
 // const brandBlue = "#0046A5";
 // const brandGreen = "#00B86B";
@@ -37,7 +37,7 @@ export default function Receipts() {
     load();
   }, []);
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code, } = useCurrency(); // 👈 get currency settings
     
       // helper to format currency
       const formatCurrency = (amount) =>

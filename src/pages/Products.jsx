@@ -32,7 +32,7 @@ const Products = () => {
   };
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, );
 
   const [user, setUser] = useState(null);
   useEffect(() => {

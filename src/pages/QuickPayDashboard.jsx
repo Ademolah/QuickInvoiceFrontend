@@ -2,9 +2,9 @@ import React from "react";
 import { useState, useEffect } from "react"
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Toaster, toast } from 'react-hot-toast';
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import {  toast } from 'react-hot-toast';
+// import html2canvas from "html2canvas";
+// import { jsPDF } from "jspdf";
 import api from "../utils/api";
 
 

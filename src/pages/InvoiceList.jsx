@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Trash2, Edit, Eye, CheckCircle } from "lucide-react";
+import { Trash2,  Eye, CheckCircle } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from "../context/CurrencyContext";
-import api from "../utils/api";
+// import api from "../utils/api";
 
 // const API =  "http://localhost:4000";
 
@@ -32,7 +32,7 @@ const InvoiceList = () => {
     }
   };
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code, } = useCurrency(); // 👈 get currency settings
   
     // helper to format currency
     const formatCurrency = (amount) =>
@@ -54,17 +54,17 @@ const InvoiceList = () => {
     }
   };
 
-  const updateInvoice = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${API}/api/invoices/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setInvoices(invoices.filter(inv => inv._id !== id));
-    } catch (err) {
-      alert("Failed to delete invoice");
-    }
-  };
+  // const updateInvoice = async (id) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     await axios.delete(`${API}/api/invoices/${id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     setInvoices(invoices.filter(inv => inv._id !== id));
+  //   } catch (err) {
+  //     alert("Failed to delete invoice");
+  //   }
+  // };
 
   const markPaid = async (id) => {
     try {

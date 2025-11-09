@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Send, MessageSquare, Bot } from "lucide-react"; 
+import { Send, Bot } from "lucide-react"; 
 
 
 

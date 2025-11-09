@@ -44,6 +44,8 @@ const AddProduct = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(res);
+      
       toast.success("Product added successfully!");
       setSuccess(true);
       setName("");

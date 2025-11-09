@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
-import api from "../utils/api";
+// import api from "../utils/api";
 
 
 // const BASEURL = "http://localhost:4000";
@@ -78,7 +78,7 @@ export default function QuickPay() {
       }
     };
     checkAnchorStatus();
-  }, []);
+  },);
 
   
   return (

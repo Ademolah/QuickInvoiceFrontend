@@ -10,7 +10,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { User } from 'lucide-react';
 
 import { fetchUser } from '../utils/getUser';
-import api from '../utils/api';
+// import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import QuickBuddy from '../components/QuickBuddy';
 
@@ -167,7 +167,7 @@ const [user, setUser] = useState(null);
     fetchData();
   }, []);
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code,} = useCurrency(); // 👈 get currency settings
   
     // helper to format currency
     const formatCurrency = (amount) =>

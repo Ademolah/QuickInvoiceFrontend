@@ -77,7 +77,7 @@ const Reports = () => {
     });
   }, [selectedMonth, invoices]);
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code,  } = useCurrency(); // 👈 get currency settings
     
       // helper to format currency
       const formatCurrency = (amount) =>

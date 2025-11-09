@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import Contact from "../pages/Contact";
+// import Contact from "../pages/Contact";
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);

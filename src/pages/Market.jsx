@@ -27,6 +27,7 @@ const Market = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [slug]);
+  
   const fetchStore = async () => {
     try {
       const res = await axios.get(`${API}/api/marketsquare/store/${slug}`);

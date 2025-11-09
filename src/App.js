@@ -4,7 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoutes";
+// import ProtectedRoute from "./components/ProtectedRoutes";
 import Landing from "./pages/Landing";
 import InvoiceList from "./pages/InvoiceList";
 import InvoiceDetails from "./pages/InvoiceDetails";

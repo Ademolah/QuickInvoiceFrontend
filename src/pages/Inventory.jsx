@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useCurrency } from "../context/CurrencyContext";
 import { motion, AnimatePresence } from "framer-motion";
-import PremiumTrashButton from "../components/ui/Delete";
+// import PremiumTrashButton from "../components/ui/Delete";
 import {
   Plus,
   Pencil,
@@ -100,10 +100,10 @@ const Dialog = ({ open, onClose, children }) => {
 /* =========================
    Helpers
    ========================= */
-const NGN = (n) =>
-  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(
-    Number(n || 0)
-  );
+// const NGN = (n) =>
+//   new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(
+//     Number(n || 0)
+//   );
 
 // const api = axios.create({
 //   baseURL: "http://localhost:4000/api",
@@ -124,7 +124,7 @@ api.interceptors.request.use((config) => {
    ========================= */
 export default function Inventory() {
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code, } = useCurrency(); // 👈 get currency settings
   
     // helper to format currency
     const formatCurrency = (amount) =>

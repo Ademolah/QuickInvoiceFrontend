@@ -5,7 +5,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { ArrowLeft, Download, CheckCircle2 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
-import api from "../utils/api";
+// import api from "../utils/api";
 
 
 // const API =  "http://localhost:4000";
@@ -77,7 +77,7 @@ export default function ReceiptDetails() {
   //   pdf.save(`Receipt_${invoice?._id?.slice(-6).toUpperCase()}.pdf`);
   // };
 
-  const { code, symbol } = useCurrency(); // 👈 get currency settings
+  const { code } = useCurrency(); // 👈 get currency settings
   
     // helper to format currency
     const formatCurrency = (amount) =>
@@ -337,7 +337,7 @@ export default function ReceiptDetails() {
   if (!invoice || !user) return <div className="p-6 md:p-10">Not found.</div>;
 
   const { clientName, clientEmail, clientPhone, items = [], subtotal, tax, discount, total, createdAt } = invoice;
-  const { businessName, email, phone, accountDetails } = user || {};
+  const { businessName, email, phone } = user || {};
   // const { bankName, accountNumber, accountName } = accountDetails || {};
 
   return (
