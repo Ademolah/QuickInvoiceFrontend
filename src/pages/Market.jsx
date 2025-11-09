@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -27,7 +28,7 @@ const Market = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [slug]);
-  
+
   const fetchStore = async () => {
     try {
       const res = await axios.get(`${API}/api/marketsquare/store/${slug}`);
