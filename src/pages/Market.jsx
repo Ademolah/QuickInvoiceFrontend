@@ -39,14 +39,32 @@ const Market = () => {
       toast.error("Store not found or unavailable");
     }
   };
+
+
+  // const openWhatsApp = (number, name) => {
+  //   if (!number) {
+  //     toast.error("Seller has no WhatsApp number attached.");
+  //     return;
+  //   }
+  //   const message = encodeURIComponent(`Hi ${store?.name}, I’m interested in your product: ${name}.`);
+  //   window.open(`https://wa.me/${number}?text=${message}`, "_blank");
+  // };
   const openWhatsApp = (number, name) => {
-    if (!number) {
-      toast.error("Seller has no WhatsApp number attached.");
-      return;
-    }
-    const message = encodeURIComponent(`Hi ${store?.name}, I’m interested in your product: ${name}.`);
-    window.open(`https://wa.me/${number}?text=${message}`, "_blank");
-  };
+  console.log('WhatsApp button clicked');
+  if (!number) {
+    toast.error("Seller has no WhatsApp number attached.");
+    return;
+  }
+  const message = encodeURIComponent(`Hi ${store?.name}, I’m interested in your product: ${name}.`);
+  // Detect platform
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const whatsappURL = isMobile
+    ? `whatsapp://send?phone=${number}&text=${message}` // Opens the app directly on mobile
+    : `https://wa.me/${number}?text=${message}`;        // Opens WhatsApp Web on desktop
+  window.open(whatsappURL, "_blank");
+};
+
+
   if (!store) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] text-gray-500">

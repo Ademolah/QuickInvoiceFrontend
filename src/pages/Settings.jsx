@@ -174,7 +174,7 @@ export default function Settings() {
   // const [newPinConfirm, setNewPinConfirm] = useState("");
 
   
-  // ✅Create PIN
+  // // ✅Create PIN
   // const handleSetPin = async () => {
   //   if (createPin !== createPinConfirm) {
   //     toast.error("PIN does not match");
@@ -197,7 +197,7 @@ export default function Settings() {
   //   }
   // };
 
-  // ✅ Update PIN
+  // // ✅ Update PIN
   // const handleUpdatePin = async () => {
   //   if (newPin !== newPinConfirm) {
   //     alert("New PIN does not match");
@@ -284,6 +284,120 @@ export default function Settings() {
           </button>
         </form>
       </div>
+
+
+
+
+
+    {/* Transaction Pin Section   */}
+
+       {/* ✅ Buttons */}
+      {/* <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="bg-[#0046A5] hover:bg-[#00398D] text-white px-6 py-3 rounded-lg w-full sm:w-auto"
+        >
+          Create QPay Transaction Pin
+        </button>
+        <button
+          onClick={() => setShowUpdateModal(true)}
+          className="bg-[#00B86B] hover:bg-[#00965A] text-white px-6 py-3 rounded-lg w-full sm:w-auto"
+        >
+          Update QPay Transaction Pin
+        </button>
+      </div> */}
+      {/* ✅ Create PIN Modal */}
+      {/* {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[90%] max-w-sm shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Create Transaction PIN
+            </h2>
+            <input
+              type="password"
+              maxLength={4}
+              className="border p-2 w-full mb-3 rounded"
+              placeholder="Enter 4-digit PIN"
+              value={createPin}
+              onChange={(e) => setCreatePin(e.target.value.replace(/\D/g, ""))}
+            />
+            <input
+              type="password"
+              maxLength={4}
+              className="border p-2 w-full mb-4 rounded"
+              placeholder="Confirm 4-digit PIN"
+              value={createPinConfirm}
+              onChange={(e) =>
+                setCreatePinConfirm(e.target.value.replace(/\D/g, ""))
+              }
+            />
+            <button
+              onClick={handleSetPin}
+              className="bg-[#0046A5] hover:bg-[#00398D] text-white px-4 py-2 rounded w-full mb-2"
+            >
+              Create
+            </button>
+            <button
+              onClick={() => setShowCreateModal(false)}
+              className="text-sm text-gray-500 underline w-full"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )} */}
+
+      {/* ✅ Update PIN Modal */}
+      {/* {showUpdateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[90%] max-w-sm shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Update Transaction PIN
+            </h2>
+            <input
+              type="password"
+              maxLength={4}
+              className="border p-2 w-full mb-3 rounded"
+              placeholder="Enter Old PIN"
+              value={oldPin}
+              onChange={(e) => setOldPin(e.target.value.replace(/\D/g, ""))}
+            />
+            <input
+              type="password"
+              maxLength={4}
+              className="border p-2 w-full mb-3 rounded"
+              placeholder="Enter New PIN"
+              value={newPin}
+              onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ""))}
+            />
+            <input
+              type="password"
+              maxLength={4}
+              className="border p-2 w-full mb-4 rounded"
+              placeholder="Confirm New PIN"
+              value={newPinConfirm}
+              onChange={(e) =>
+                setNewPinConfirm(e.target.value.replace(/\D/g, ""))
+              }
+            />
+            <button
+              onClick={handleUpdatePin}
+              className="bg-[#00B86B] hover:bg-[#00965A] text-white px-4 py-2 rounded w-full mb-2"
+            >
+              Update
+            </button>
+            <button
+              onClick={() => setShowUpdateModal(false)}
+              className="text-sm text-gray-500 underline w-full"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )} */}
+
+
+
 
       {/* Profile Info Section */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
