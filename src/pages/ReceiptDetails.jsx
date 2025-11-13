@@ -336,7 +336,7 @@ export default function ReceiptDetails() {
   if (loading) return <div className="p-6 md:p-10">Loading receipt…</div>;
   if (!invoice || !user) return <div className="p-6 md:p-10">Not found.</div>;
 
-  const { clientName, clientEmail, clientPhone, items = [], subtotal, tax, discount, total, createdAt } = invoice;
+  const { clientName, clientEmail, clientPhone, items = [], subtotal, tax, discount, total, createdAt, outstandingBalance } = invoice;
   const { businessName, email, phone } = user || {};
   // const { bankName, accountNumber, accountName } = accountDetails || {};
 
@@ -481,6 +481,10 @@ export default function ReceiptDetails() {
             <div className="flex justify-between py-1">
               <span className="text-gray-600">Discount</span>
               <span className="font-medium">{formatCurrency(Number(discount || 0)).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span className="text-gray-600">Balance</span>
+              <span className="font-medium">{formatCurrency(Number(outstandingBalance || 0)).toLocaleString()}</span>
             </div>
             <div className="border-t mt-2 pt-2 flex justify-between">
               <span className="font-semibold text-[#0046A5]">Grand Total</span>

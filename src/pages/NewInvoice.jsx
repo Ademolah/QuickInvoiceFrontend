@@ -40,6 +40,7 @@ const NewInvoice = () => {
 const [discount, setDiscount] = useState('');
   const [notes, setNotes] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [outstandingBalance, setOutstandingBalance] = useState(''); // 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -84,7 +85,7 @@ const [discount, setDiscount] = useState('');
       const token = localStorage.getItem('token');
       const response = await axios.post(
         `${API}/api/invoices`,
-        { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes },
+        { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes, outstandingBalance },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       navigate(`/invoices/${response.data._id}`);
@@ -213,6 +214,14 @@ const [discount, setDiscount] = useState('');
             value={discount}
             min={0}
             onChange={(e) => setDiscount(Number(e.target.value))}
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="number"
+            placeholder="Balance"
+            value={outstandingBalance}
+            min={0}
+            onChange={(e) => setOutstandingBalance(Number(e.target.value))}
             className="border p-2 rounded w-full"
           />
           <div className="flex flex-col">

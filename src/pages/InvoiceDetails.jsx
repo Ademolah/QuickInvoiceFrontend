@@ -456,6 +456,7 @@ const sharePDF = async () => {
     tax,
     discount,
     total,
+    outstandingBalance,
     status,
     createdAt,
     dueDate,
@@ -652,6 +653,10 @@ const sharePDF = async () => {
                 <div className="flex justify-between mb-2">
                   <span className="text-sm text-gray-600">Discount</span>
                   <span className="font-medium">{formatCurrency(discount)}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-gray-600">Balance</span>
+                  <span className="font-medium">{formatCurrency(outstandingBalance)}</span>
                 </div>
 
                 <div className="h-px bg-gray-200 my-2" />
