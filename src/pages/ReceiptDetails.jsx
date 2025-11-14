@@ -475,7 +475,7 @@ export default function ReceiptDetails() {
               <span className="font-medium">{formatCurrency(subtotal).toLocaleString()}</span>
             </div>
             <div className="flex justify-between py-1">
-              <span className="text-gray-600">Tax</span>
+              <span className="text-gray-600">Vat</span>
               <span className="font-medium">{formatCurrency(Number(tax || 0)).toLocaleString()}</span>
             </div>
             <div className="flex justify-between py-1">
