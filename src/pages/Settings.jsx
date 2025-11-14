@@ -40,7 +40,31 @@ export default function Settings() {
     accountName: "",
     accountNumber: "",
     bankName: "",
+    bankCode: "",
   });
+
+  const [bankList, setBankList] = useState([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+
+  useEffect(() => {
+  const fetchBanks = async () => {
+    setLoadingBanks(true);
+    try {
+      const res = await axios.get(`${API}/api/banks`);
+      if (res.data && res.data.banks) {
+        setBankList(res.data.banks); // show all banks exactly as returned
+      } else {
+        toast.error("Failed to load banks");
+      }
+    } catch (err) {
+      console.error("Error fetching banks:", err);
+      toast.error("Could not fetch banks. Please try again later.");
+    } finally {
+      setLoadingBanks(false);
+    }
+  };
+  fetchBanks();
+}, []);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -264,7 +288,7 @@ export default function Settings() {
             />
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">Bank Name</label>
+            {/* <label className="block text-gray-600 mb-1">Bank Name</label>
             <input
               type="text"
               name="bankName"
@@ -273,7 +297,33 @@ export default function Settings() {
               placeholder="GTBank"
               className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#0046A5] outline-none"
               required
-            />
+            /> */}
+            <label className="block text-gray-600 mb-1">Bank Name</label>
+            <select
+              name="bankName"
+              value={bankDetails.bankName}
+              onChange={(e) => {
+                const selectedBank = bankList.find(
+                  (bank) => bank.name === e.target.value
+                );
+                setBankDetails((prev) => ({
+                  ...prev,
+                  bankName: selectedBank?.name || "",
+                  bankCode: selectedBank?.code || "",
+                }));
+              }}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#0046A5] outline-none"
+              required
+            >
+              <option value="">
+                {loadingBanks ? "Loading banks..." : "Select Bank"}
+              </option>
+              {bankList.map((bank) => (
+                <option key={bank.code} value={bank.name}>
+                  {bank.name}
+                </option>
+              ))}
+            </select>
           </div>
           <button
             type="submit"
