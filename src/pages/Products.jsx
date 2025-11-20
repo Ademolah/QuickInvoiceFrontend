@@ -51,7 +51,7 @@ const Products = () => {
   }, [token]);
 
 
-  // :wastebasket: Delete product logic
+  //  Delete product logic
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -146,6 +146,9 @@ const Products = () => {
                 </h2>
                 <p className="text-sm text-gray-500 mb-2">
                   {product.description || "No description"}
+                </p>
+                <p className="text-sm text-gray-500 mb-2">
+                  {product.category}
                 </p>
                 <p className="font-bold text-[#0046A5] mb-3">
                   ₦{product.price.toLocaleString()}

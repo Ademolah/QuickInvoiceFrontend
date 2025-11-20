@@ -141,6 +141,7 @@ const Market = () => {
               />
               <h3 className="text-lg font-semibold text-gray-900">{p.name}</h3>
               <p className="text-[#00B86B] font-medium">₦{p.price.toLocaleString()}</p>
+              <p className="text-gray-500 text-sm line-clamp-2">{p.category}</p>
               <p className="text-gray-500 text-sm line-clamp-2">{p.description}</p>
             </motion.div>
           ))
@@ -167,6 +168,7 @@ const Market = () => {
             />
             <h2 className="text-2xl font-semibold mb-2">{selected.name}</h2>
             <p className="text-[#00B86B] text-lg font-bold mb-2">₦{selected.price.toLocaleString()}</p>
+            <p className="text-gray-600 mb-4">{selected.category}</p>
             <p className="text-gray-600 mb-4">{selected.description}</p>
             {/* Custom Button */}
             <button
