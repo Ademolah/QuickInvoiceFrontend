@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { UploadCloud, Image as ImageIcon, CheckCircle } from "lucide-react";
+import { useEffect } from "react";
 
 
 
@@ -21,6 +22,28 @@ const AddProduct = () => {
   const [success, setSuccess] = useState(false);
 
   const categories = ["Electronics",'Gadgets', "Fashion", "Home", "Books", "Toys", "Health", "Sports","Groceries", "Beauty", "Automotive","Other"]
+
+
+
+  //shipping categories
+  const [shippingCategories, setShippingCategories] = useState([]);
+  const [shippingCategory, setShippingCategory] = useState("");
+  const [shippingCategoryId, setShippingCategoryId] = useState(null);
+  const fetchShippingCategories = async () => {
+    try {
+      const res = await axios.get(`${API}/api/logistics/categories`);
+      if (res.data.status === "success") {
+        setShippingCategories(res.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching shipping categories:", err);
+    }
+  };
+
+
+  useEffect(()=>{
+    fetchShippingCategories()
+  },[])
 
   
 
@@ -42,6 +65,9 @@ const AddProduct = () => {
     formData.append("price", price);
     formData.append("category", category);
     formData.append("description", description);
+
+    formData.append("shipping_category", shippingCategory)
+    formData.append("shipping_category_id", shippingCategoryId);
     if (image) formData.append("image", image);
     try {
       setLoading(true);
@@ -173,6 +199,32 @@ const generateWithQuickBuddy = async () => {
                   ))}
                 </select>
               </div>
+
+                  {/* Shipping Category */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Shipping Category <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={shippingCategory}
+                onChange={(e) => {
+                  const selected = shippingCategories.find(
+                    (c) => c.category === e.target.value
+                  );
+                  setShippingCategory(e.target.value);
+                  setShippingCategoryId(selected?.category_id);
+                }}
+                className="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
+              >
+                <option value="">Select a shipping category</option>
+                {shippingCategories.map((cat) => (
+                  <option key={cat.category_id} value={cat.category}>
+                    {cat.category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
               {/* Description */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">

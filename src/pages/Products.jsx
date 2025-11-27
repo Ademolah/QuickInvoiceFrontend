@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Plus, Trash2 } from "lucide-react";
+import PickupAddressModal from "../components/PickupAddressModal";
 
 
 
@@ -14,6 +15,22 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+
+  const [showModal, setShowModal] = useState(false);
+ 
+  useEffect(() => {
+    async function checkPickup() {
+      const res = await axios.get(`${API}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const addr = res.data.pickupAddress;
+      if (!addr || !addr.street || !addr.city || !addr.state || !addr.postalCode) {
+        setShowModal(true);
+      }
+    }
+    checkPickup();
+  }, []);
 
 
   // ✅ Fetch all user products
@@ -173,6 +190,11 @@ const Products = () => {
           Q
         </button>
 
+      <PickupAddressModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSuccess={(address) => console.log("Saved:", address)}
+      />
 
     </div>
   );
