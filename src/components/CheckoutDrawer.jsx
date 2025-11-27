@@ -365,6 +365,9 @@ const fetchCouriers = async () => {
                 If you're <strong>not in the same state</strong>, choose either 
                 <strong className="text-blue-900"> GIGL</strong> or 
                 <strong className="text-blue-900"> Fez Delivery</strong>. 
+                <p>
+                    For food deliveries, always choose <strong className="text-blue-900">Chowdeck or Glovo</strong>.
+                </p>
                 <br /><br />
                 After choosing a courier, please wait for the delivery fee to update before proceeding to payment.
             </p>
