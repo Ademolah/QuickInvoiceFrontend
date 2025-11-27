@@ -674,6 +674,9 @@ const handlePaystackPayment = async (deliveryFee, selectedCourier, checkoutData,
           <p className="text-sm text-gray-100 mb-3">
             Empowering businesses to showcase and sell with ease.
           </p>
+          <p className="text-sm text-gray-100 mb-3">
+            Contact us at : info@hqbinary.com
+          </p>
           <a
             href="https://www.quickinvoiceng.com"
             target="_blank"
