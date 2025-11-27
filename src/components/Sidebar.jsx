@@ -32,7 +32,7 @@ const Sidebar = () => {
     { name: "Inventory", icon: <Building size={20} />, path: "/inventory" },
     { name: "Clients", icon: <Users size={20} />, path: "/clients" },
     { name: "MarketZone", icon: <ShoppingCart size={20} />, path: "/market" },
-    { name: "QuickDelivery", icon: <Bike size={20} />, comingSoon: true },
+    // { name: "QuickDelivery", icon: <Bike size={20} />, comingSoon: true },
     { name: "QuickPay", icon: <CreditCardIcon size={20} />,  comingSoon: true },
     { name: "QuickBills", icon: <MonitorPlay size={20} />,  comingSoon: true },
     { name: "Reports", icon: <BarChart2 size={20} />, path: "/reports" },
