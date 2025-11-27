@@ -424,7 +424,7 @@ const fetchCouriers = async () => {
               <div className="font-semibold">₦{cartSubtotal.toLocaleString()}</div>
             </div>
             <div className="flex justify-between mt-1">
-              <div className="text-sm text-gray-600">Delivery</div>
+              <div className="text-sm text-gray-600">Delivery Fee</div>
               <div className="font-semibold">₦{(Number(deliveryFee) || 0).toLocaleString()}</div>
             </div>
             <div className="flex justify-between mt-2 text-lg font-bold">
