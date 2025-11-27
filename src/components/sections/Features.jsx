@@ -71,6 +71,11 @@ const features = [
     icon: "💳",
   },
   {
+    title: "E-Commerce Integration",
+    description: "Create a professional e-commerce store front for your business and go global in seconds.",
+    icon: "🏪",
+  },
+  {
     title: "Custom Branding",
     description: "Add your logo and customize invoice templates.",
     icon: "🎨",
@@ -84,12 +89,7 @@ const features = [
     title: "Multi-Currency Support",
     description: "Invoice clients in their local currency.",
     icon: "🌍",
-  },
-  {
-    title: "Team Collaboration",
-    description: "Add multiple team members with role-based permissions.",
-    icon: "👥",
-  },
+  }
 ];
 
 export default function Features() {
