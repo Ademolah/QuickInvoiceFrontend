@@ -351,7 +351,7 @@ const fetchCouriers = async () => {
             </label>
             <input
               type="text"
-              value={vendorAddress || "state"}
+              value={vendorAddress || ""}
               readOnly
               className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
             />
