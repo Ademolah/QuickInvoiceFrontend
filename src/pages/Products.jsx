@@ -18,7 +18,28 @@ const Products = () => {
 
 
   const [showModal, setShowModal] = useState(false);
- 
+
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalVolume, setTotalVolume] = useState(0);
+
+    useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API}/api/vendor/stats`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setTotalOrders(res.data.totalOrders);
+        setTotalVolume(res.data.totalVolume);
+      } catch (error) {
+        console.log("Error fetching vendor stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+  
   useEffect(() => {
     async function checkPickup() {
       const res = await axios.get(`${API}/api/users/me`, {
@@ -90,6 +111,24 @@ const Products = () => {
           <div className="w-max animate-marquee whitespace-nowrap text-white text-sm font-medium flex gap-24">
             <span>📩 Please always check your email for new order notifications.</span>
             <span>💼 We charge a 10% fee on every amount paid which automatically covers delivery fee.</span>
+          </div>
+        </div>
+
+        {/* Show stats */}
+
+        <div className="bg-white p-4 rounded-lg shadow mb-4">
+          <h2 className="text-lg font-semibold mb-2">Vendor Summary</h2>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600">Total Sales (Orders)</p>
+              <p className="text-xl font-bold">{totalOrders}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Total Volume (₦)</p>
+              <p className="text-xl font-bold">
+                ₦{Number(totalVolume).toLocaleString()}
+              </p>
+            </div>
           </div>
         </div>
 
