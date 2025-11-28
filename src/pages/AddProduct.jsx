@@ -21,7 +21,7 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const categories = ["Electronics",'Gadgets', "Fashion", "Home", "Books", "Toys", "Health", "Sports","Groceries", "Beauty", "Automotive","Other"]
+  const categories = ["Electronics",'Gadgets', "Fashion", "Home","Hot Food", "Books", "Toys", "Health", "Sports","Groceries", "Beauty", "Automotive","Other"]
 
 
 
