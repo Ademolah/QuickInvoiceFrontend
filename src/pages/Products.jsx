@@ -22,6 +22,54 @@ const Products = () => {
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalVolume, setTotalVolume] = useState(0);
 
+  const [showPickupModal, setShowPickupModal] = useState(false);
+  const [pickupAddress, setPickupAddress] = useState({
+  street: "",
+  city: "",
+  state: "",
+  country: "",
+  postalCode: "",
+});
+
+const [loadingAddressUpdate, setLoadingAddressUpdate] = useState(false);
+const [addressMessage, setAddressMessage] = useState("");
+
+
+const handlePickupChange = (e) => {
+  setPickupAddress({
+    ...pickupAddress,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const updatePickupAddress = async () => {
+  try {
+    setLoadingAddressUpdate(true);
+    setAddressMessage("");
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API}/api/users/pickup-address`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(pickupAddress),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setAddressMessage(data.message || "Update failed");
+      return;
+    }
+    toast.success("Pickup address updated!");
+    setAddressMessage("Pickup address updated successfully!");
+    setShowPickupModal(false);
+  } catch (error) {
+    setAddressMessage("Error updating address");
+  } finally {
+    setLoadingAddressUpdate(false);
+  }
+};
+
     useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -231,6 +279,15 @@ const Products = () => {
         </div>
       )}
 
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => setShowPickupModal(true)}
+          className="bg-[#0047AB] text-white px-6 py-3 rounded-lg shadow hover:bg-[#00398a] text-sm"
+        >
+          Update Pickup Address
+        </button>
+      </div>
+
         <button
           onClick={() => navigate("/dashboard")}
           className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
@@ -243,6 +300,73 @@ const Products = () => {
         onClose={() => setShowModal(false)}
         onSuccess={(address) => console.log("Saved:", address)}
       />
+
+
+
+        {showPickupModal && (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white w-[90%] max-w-lg p-6 rounded-lg shadow-xl">
+        <h2 className="text-xl font-semibold mb-4">Update Pickup Address</h2>
+        <div className="grid grid-cols-1 gap-3">
+          <input
+            name="street"
+            value={pickupAddress.street}
+            onChange={handlePickupChange}
+            placeholder="Street"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0046A5] transition duration-200"
+          />
+          <input
+            name="city"
+            value={pickupAddress.city}
+            onChange={handlePickupChange}
+            placeholder="City"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0046A5] transition duration-200"
+          />
+          <input
+            name="state"
+            value={pickupAddress.state}
+          onChange={handlePickupChange}
+          placeholder="State"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0046A5] transition duration-200"
+        />
+        <input
+          name="country"
+          value={pickupAddress.country}
+          onChange={handlePickupChange}
+          placeholder="Country"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0046A5] transition duration-200"
+        />
+        <input
+          name="postalCode"
+          value={pickupAddress.postalCode}
+          onChange={handlePickupChange}
+          placeholder="Postal Code"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0046A5] transition duration-200"
+        />
+      </div>
+      {addressMessage && (
+        <p className="mt-3 text-red-500">{addressMessage}</p>
+      )}
+      <div className="flex justify-end gap-3 mt-6">
+        <button
+          onClick={() => setShowPickupModal(false)}
+          className="px-4 py-2 bg-gray-300 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={updatePickupAddress}
+          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-green-500 text-white rounded"
+        >
+          {loadingAddressUpdate ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
 
     </div>
   );
