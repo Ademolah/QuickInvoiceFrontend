@@ -36,6 +36,7 @@ import MarketSquare from "./pages/MarketSquare";
 import Market from "./pages/Market";
 import AddProduct from "./pages/AddProduct";
 import Products from "./pages/Products";
+import MarketZone from "./pages/MarketZone";
 
 export default function App() {
   return (
@@ -85,6 +86,7 @@ export default function App() {
           <Route path="/billing" element={ <Billing /> }/>
 
           <Route path="/market" element={ <MarketSquare /> }/>
+          <Route path="/marketzone" element={ <MarketZone /> }/>
           <Route path="/market/add-product" element={ <AddProduct /> }/>
           <Route path="/product" element={ <Products /> }/>
           <Route path="/market/:slug" element={<Market />} />
