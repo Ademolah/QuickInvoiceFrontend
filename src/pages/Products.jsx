@@ -181,9 +181,9 @@ const updatePickupAddress = async () => {
         </div>
 
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#0046A5]">
+        {/* <h1 className="text-2xl md:text-3xl font-bold text-[#0046A5]">
           My Items
-        </h1>
+        </h1> */}
         
         {/* Store Link Box */}
             <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
