@@ -14,6 +14,8 @@ const MarketSquare = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activated, setActivated] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
+
 //   const [setupData, setSetupData] = useState(null);
   const [marketProfile, setMarketProfile] = useState(null);
   const token = localStorage.getItem("token");
@@ -43,33 +45,37 @@ const MarketSquare = () => {
 
 
   //✅ Handle setup submission
-  const handleSetup = async (e) => {
-    e.preventDefault();
-    if (!whatsapp.trim()) {
-      toast.error("Please enter your WhatsApp number");
-      return;
-    }
-    if (!termsAccepted) {
-      toast.error("You must agree to the terms and conditions");
-      return;
-    }
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `${API}/api/marketsquare/setup`,
-        { whatsapp, termsAccepted },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setActivated(true);
-      setMarketProfile(res.data);
-      toast.success("Welcome to MarketZone! 🎉");
-    } catch (err) {
-      console.error(err);
-      toast.error("Setup failed, please try again");
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleSetup = async (e) => {
+  e.preventDefault();
+  if (!whatsapp.trim()) {
+    toast.error("Please enter your WhatsApp number");
+    return;
+  }
+  if (!referralCode.trim()) {
+    toast.error("Please enter your referral code");
+    return;
+  }
+  if (!termsAccepted) {
+    toast.error("You must agree to the terms and conditions");
+    return;
+  }
+  try {
+    setLoading(true);
+    const res = await axios.post(
+      `${API}/api/marketsquare/setup`,
+      { whatsapp, termsAccepted, referralCode },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setActivated(true);
+    setMarketProfile(res.data);
+    toast.success("Welcome to MarketZone! :tada:");
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Setup failed, please try again");
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0046A5] to-[#00B86B]  flex flex-col items-center justify-center p-6">
       {!activated ? (
@@ -122,9 +128,28 @@ const MarketSquare = () => {
                     Please enter your WhatsApp number. +234 will be added automatically.
                 </small>
                 </div>
+              
+
+              <div className="text-left">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Referral Code
+                  </label>
+                  <input
+                    type="text"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                    placeholder="Enter referral code"
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0046A5] uppercase"
+                  />
+                  <small className="text-gray-500">
+                    Referral code from a verified QuickInvoiceNG vendor.
+                  </small>
+              </div>
+
               <small className="text-gray-500">
                 Buyers will contact you through this number.
               </small>
+
             </div>
             <div className="flex items-center space-x-2">
               <input
