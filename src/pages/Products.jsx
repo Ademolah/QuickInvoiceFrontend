@@ -34,6 +34,49 @@ const Products = () => {
 const [loadingAddressUpdate, setLoadingAddressUpdate] = useState(false);
 const [addressMessage, setAddressMessage] = useState("");
 
+const [showEditModal, setShowEditModal] = useState(false);
+const [editProductData, setEditProductData] = useState(null);
+const [editImagePreview, setEditImagePreview] = useState(null);
+
+
+const openEditModal = (product) => {
+  setEditProductData(product);
+  setEditImagePreview(product.image);
+  setShowEditModal(true);
+};
+
+const handleUpdateProduct = async () => {
+  try {
+    const formData = new FormData();
+    formData.append("name", editProductData.name);
+    formData.append("price", editProductData.price);
+    formData.append("description", editProductData.description);
+    formData.append("category", editProductData.category);
+    formData.append("shipping_category", editProductData.shipping_category);
+    formData.append("shipping_category_id", editProductData.shipping_category_id);
+    if (editProductData.image instanceof File) {
+      formData.append("image", editProductData.image);
+    }
+    await axios.patch(
+      `${API}/api/marketsquare/product/${editProductData._id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    toast.success("Product updated!");
+    setShowEditModal(false);
+    // Refresh Products
+    fetchProducts();
+  } catch (err) {
+    console.error(err);
+    toast.error("Update failed");
+  }
+};
+
 
 const handlePickupChange = (e) => {
   setPickupAddress({
@@ -266,13 +309,28 @@ const updatePickupAddress = async () => {
                 <p className="font-bold text-[#0046A5] mb-3">
                   ₦{product.price.toLocaleString()}
                 </p>
-                <button
+                {/* <button
                   onClick={() => handleDelete(product._id)}
                   className="flex items-center gap-1 text-red-600 hover:text-red-800 text-sm font-medium transition-all"
                 >
                   <Trash2 size={16} />
                   Delete
+                </button> */}
+                <div className="flex gap-4 mt-2">
+                <button
+                  onClick={() => openEditModal(product)}
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  ✏️ Edit
                 </button>
+                <button
+                  onClick={() => handleDelete(product._id)}
+                  className="flex items-center gap-1 text-red-600 hover:text-red-800 text-sm font-medium"
+                >
+                  <Trash2 size={16} />
+                  Delete
+                </button>
+              </div>
               </div>
             </div>
           ))}
@@ -366,6 +424,91 @@ const updatePickupAddress = async () => {
 )}
 
 
+{showEditModal && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <h2 className="text-xl font-semibold mb-4 text-[#0046A5]">
+        Edit Product
+      </h2>
+      {/* Image Preview */}
+      {editImagePreview && (
+        <img
+          src={editImagePreview}
+          alt="Preview"
+          className="w-full h-40 object-cover rounded mb-3"
+        />
+      )}
+      {/* Image Upload */}
+      <input
+        type="file"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            setEditProductData({ ...editProductData, image: file });
+            setEditImagePreview(URL.createObjectURL(file));
+          }
+        }}
+        className="mb-3"
+      />
+      <input
+        type="text"
+        value={editProductData.name}
+        onChange={(e) =>
+          setEditProductData({ ...editProductData, name: e.target.value })
+        }
+        placeholder="Product Name"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
+      <input
+        type="text"
+        value={editProductData.price}
+        onChange={(e) =>
+          setEditProductData({ ...editProductData, price: e.target.value })
+        }
+        placeholder="Price"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
+      <textarea
+        value={editProductData.description}
+        onChange={(e) =>
+          setEditProductData({
+            ...editProductData,
+            description: e.target.value,
+          })
+        }
+        placeholder="Description"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
+      <input
+        type="text"
+        value={editProductData.category}
+        onChange={(e) =>
+          setEditProductData({
+            ...editProductData,
+            category: e.target.value,
+          })
+        }
+        placeholder="Category"
+        className="w-full border rounded px-3 py-2 mb-3"
+      />
+      {/* Modal Buttons */}
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={() => setShowEditModal(false)}
+          className="px-4 py-2 bg-gray-300 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleUpdateProduct}
+          className="px-4 py-2 bg-[#0046A5] text-white rounded"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
 
     </div>
