@@ -201,7 +201,7 @@ const updatePickupAddress = async () => {
         <div className="w-full bg-[#0047AB] py-2 overflow-hidden">
           <div className="w-max animate-marquee whitespace-nowrap text-white text-sm font-medium flex gap-24">
             <span>📩 Please always check your email for new order notifications.</span>
-            <span>💼 We charge a 10% fee on every amount paid which automatically covers delivery fee.</span>
+            <span>💼 We charge a 3% fee on every amount paid which automatically covers delivery fee.</span>
           </div>
         </div>
 
