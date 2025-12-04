@@ -38,6 +38,8 @@ const [showEditModal, setShowEditModal] = useState(false);
 const [editProductData, setEditProductData] = useState(null);
 const [editImagePreview, setEditImagePreview] = useState(null);
 
+const categories = ["Electronics",'Gadgets', "Fashion", "Home", "Books", "Toys", "Health", "Sports","Groceries", "Beauty", "Automotive","Other"]
+
 
 const openEditModal = (product) => {
   setEditProductData(product);
@@ -479,8 +481,7 @@ const updatePickupAddress = async () => {
         placeholder="Description"
         className="w-full border rounded px-3 py-2 mb-3"
       />
-      <input
-        type="text"
+      <select
         value={editProductData.category}
         onChange={(e) =>
           setEditProductData({
@@ -488,9 +489,15 @@ const updatePickupAddress = async () => {
             category: e.target.value,
           })
         }
-        placeholder="Category"
         className="w-full border rounded px-3 py-2 mb-3"
-      />
+      >
+        <option value="">Select Category</option>
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
       {/* Modal Buttons */}
       <div className="flex justify-between mt-4">
         <button
