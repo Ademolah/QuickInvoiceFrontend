@@ -11,10 +11,10 @@ export default function HowToInstall() {
       <main className="flex-grow flex flex-col items-center px-6 py-16">
         <div className="max-w-4xl w-full bg-white rounded-2xl shadow-md p-8">
           <h1 className="text-3xl md:text-4xl font-bold text-[#0046A5] mb-6 text-center">
-            How to Install QuickInvoice NG
+            How to Install QuickInvoice 
           </h1>
           <p className="text-gray-600 text-center mb-12">
-            You can install QuickInvoice NG on your mobile device or desktop for a fast, app-like experience.
+            You can install QuickInvoice  on your mobile device or desktop for a fast, app-like experience.
           </p>
           <div className="grid md:grid-cols-2 gap-10">
             {/* Android Instructions */}
@@ -25,7 +25,7 @@ export default function HowToInstall() {
               </div>
               <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
                 <li>
-                  Open <span className="font-semibold text-[#0046A5]">QuickInvoice NG</span> in{" "}
+                  Open <span className="font-semibold text-[#0046A5]">QuickInvoice </span> in{" "}
                   <span className="font-medium text-[#00B86B]">Google Chrome</span>.
                 </li>
                 <li>
@@ -33,7 +33,7 @@ export default function HowToInstall() {
                 </li>
                 <li>Choose <span className="font-semibold">“Add to Home screen”</span>.</li>
                 <li>Confirm and tap <span className="font-semibold">“Install”</span>.</li>
-                <li>Now, QuickInvoice NG will appear on your home screen like a native app!</li>
+                <li>Now, QuickInvoice  will appear on your home screen like a native app!</li>
               </ol>
               <div className="mt-6 flex justify-center">
                 <Download className="text-[#00B86B]" size={40} />
@@ -47,7 +47,7 @@ export default function HowToInstall() {
               </div>
               <ol className="list-decimal list-inside space-y-3 text-gray-700 leading-relaxed">
                 <li>
-                  Open <span className="font-semibold text-[#0046A5]">QuickInvoice NG</span> in{" "}
+                  Open <span className="font-semibold text-[#0046A5]">QuickInvoice </span> in{" "}
                   <span className="font-medium text-[#00B86B]">Safari</span>.
                 </li>
                 <li>
@@ -58,7 +58,7 @@ export default function HowToInstall() {
                 </li>
                 <li>Tap <span className="font-semibold">Add</span> in the top-right corner.</li>
                 <li>
-                  You’ll now have QuickInvoice NG on your home screen just like a mobile app.
+                  You’ll now have QuickInvoice  on your home screen just like a mobile app.
                 </li>
               </ol>
               <div className="mt-6 flex justify-center">
@@ -71,7 +71,7 @@ export default function HowToInstall() {
             <Chrome className="mx-auto mb-3" size={36} />
             <h2 className="text-2xl font-semibold mb-3">Supported Browsers</h2>
             <p className="text-white/90 max-w-2xl mx-auto">
-              QuickInvoice NG works best on modern browsers like Google Chrome, Safari, and Microsoft Edge. 
+              QuickInvoice  works best on modern browsers like Google Chrome, Safari, and Microsoft Edge. 
               Make sure you’re using the latest version for the smoothest experience.
             </p>
           </div>
