@@ -16,14 +16,8 @@ import { useCurrency } from "../context/CurrencyContext";
 // import api from "../utils/api";
 
 
-/**
- * Premium InvoiceDetails.jsx
- * - Fetches invoice and user
- * - Renders premium invoice
- * - Downloads pixel-perfect PDF with html2canvas + jsPDF
- */
 
-// const API_BASE = "http://localhost:4000";
+
 
 const API_BASE = "https://quickinvoice-backend-1.onrender.com"
 
@@ -111,30 +105,33 @@ export default function InvoiceDetails() {
     load();
   }, [id, token]);
 
-//    const sharePDF = async () => {
-//     if (!invoiceRef.current) return;
-//     setActionLoading(true)
 
-//     try {
-//       // ✅ Log usage (same as download)
-//       const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//         body: JSON.stringify({ type: "invoice" }),
-//       });
 
-//       const logData = await logRes.json();
-//       console.log("Usage log response:", logData);
+// const sharePDF = async () => {
+//   if (!invoiceRef.current) return;
+//   setActionLoading(true);
 
-//       if (!logRes.ok) {
-//         alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
-//         return; // 🚨 Stop here
-//       }
+//   try {
+//     // ✅ Log usage
+//     const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${localStorage.getItem("token")}`,
+//       },
+//       body: JSON.stringify({ type: "invoice" }),
+//     });
 
-//     // ✅ Capture as before
+//     const logData = await logRes.json();
+//     console.log("Usage log response:", logData);
+
+//     if (!logRes.ok) {
+//       alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+//       setActionLoading(false);
+//       return;
+//     }
+
+//     // ✅ Capture invoice as before
 //     const canvas = await html2canvas(invoiceRef.current, {
 //       scale: 2,
 //       useCORS: true,
@@ -162,12 +159,12 @@ export default function InvoiceDetails() {
 //       heightLeft -= pageHeight - margin * 2;
 //     }
 
-//     // ✅ Convert PDF to blob and share
+//     // ✅ Convert PDF to blob & file
 //     const pdfBlob = pdf.output("blob");
-//     const file = new File([pdfBlob], `Invoice-${id}.pdf`, {
-//       type: "application/pdf",
-//     });
+//     const fileName = `Invoice-${id}.pdf`;
+//     const file = new File([pdfBlob], fileName, { type: "application/pdf" });
 
+//     // ✅ Try Web Share API first
 //     if (navigator.canShare && navigator.canShare({ files: [file] })) {
 //       await navigator.share({
 //         title: "QuickInvoice Invoice",
@@ -175,22 +172,34 @@ export default function InvoiceDetails() {
 //         files: [file],
 //       });
 //     } else {
-//       alert("Sharing not supported on this device/browser. Please download instead.");
+//       // 🚨 Fallback: Download PDF
+//       const pdfUrl = URL.createObjectURL(pdfBlob);
+//       const link = document.createElement("a");
+//       link.href = pdfUrl;
+//       link.download = fileName;
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+
+//       // Optional: WhatsApp / Email fallback
+//       // window.open(`https://wa.me/?text=Here’s your invoice: ${pdfUrl}`, "_blank");
+//       // window.location.href = `mailto:?subject=Invoice&body=Download your invoice here: ${pdfUrl}`;
+
+//       alert("Sharing not supported on this device. The invoice has been downloaded instead.");
 //     }
 //   } catch (err) {
 //     console.error("PDF share failed", err);
 //     alert("Failed to share PDF. Try again.");
 //   } finally {
-//     setActionLoading(false)
+//     setActionLoading(false);
 //   }
 // };
 
 const sharePDF = async () => {
   if (!invoiceRef.current) return;
   setActionLoading(true);
-
   try {
-    // ✅ Log usage
+    // LOG USAGE
     const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
       method: "POST",
       headers: {
@@ -199,166 +208,162 @@ const sharePDF = async () => {
       },
       body: JSON.stringify({ type: "invoice" }),
     });
-
     const logData = await logRes.json();
-    console.log("Usage log response:", logData);
-
     if (!logRes.ok) {
       alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
       setActionLoading(false);
       return;
     }
-
-    // ✅ Capture invoice as before
+    const width = invoiceRef.current.scrollWidth;
     const canvas = await html2canvas(invoiceRef.current, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
-      allowTaint: true,
-      scrollY: -window.scrollY,
+      scrollY: 0,
+      width: width,
+      windowWidth: width,
     });
-
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    const margin = 12;
-    const imgWidth = pageWidth - margin * 2;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let position = margin;
-    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-
-    let heightLeft = imgHeight - (pageHeight - margin * 2);
-    while (heightLeft > -1) {
-      pdf.addPage();
-      position = margin - (imgHeight - heightLeft);
-      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight - margin * 2;
-    }
-
-    // ✅ Convert PDF to blob & file
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pdfHeight);
     const pdfBlob = pdf.output("blob");
-    const fileName = `Invoice-${id}.pdf`;
-    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-
-    // ✅ Try Web Share API first
+    const file = new File([pdfBlob], `Invoice-${id}.pdf`, {
+      type: "application/pdf",
+    });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
-        title: "QuickInvoice Invoice",
-        text: `Here is your invoice #${id}`,
+        title: "QuickInvoice NG",
+        text: `Invoice #${id}`,
         files: [file],
       });
     } else {
-      // 🚨 Fallback: Download PDF
-      const pdfUrl = URL.createObjectURL(pdfBlob);
+      const url = URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
-      link.href = pdfUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
+      link.href = url;
+      link.download = `Invoice-${id}.pdf`;
       link.click();
-      document.body.removeChild(link);
-
-      // Optional: WhatsApp / Email fallback
-      // window.open(`https://wa.me/?text=Here’s your invoice: ${pdfUrl}`, "_blank");
-      // window.location.href = `mailto:?subject=Invoice&body=Download your invoice here: ${pdfUrl}`;
-
-      alert("Sharing not supported on this device. The invoice has been downloaded instead.");
+      alert("Sharing not supported. PDF downloaded instead.");
     }
   } catch (err) {
-    console.error("PDF share failed", err);
-    alert("Failed to share PDF. Try again.");
+    console.error("Share error:", err);
+    alert("Failed to share PDF.");
   } finally {
     setActionLoading(false);
   }
 };
-
-
-  const downloadPDF = async () => {
-
-    if (!invoiceRef.current) return;
-    setActionLoading(true);
-    try {
-
-
-        // 🔑 Step 1: Check logs/limits before generating
-        // const token = localStorage.getItem("token");
-        // const logRes = await fetch("http://localhost:4000/api/invoices/log", {
-        // method: "POST",
-        // headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${token}`,
-        // },
-        // body: JSON.stringify({ type: "invoice" }), // or "receipt"
-        // });
-
-        // const logData = await logRes.json();
-
-        // if (!logData.success) {
-        // alert(logData.message); // e.g., "Upgrade to Pro..."
-        // setActionLoading(false);
-        // return; // 🚫 Stop here if limit reached
-        // }
-        const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
-        },
-        body: JSON.stringify({ type: "invoice" }),
-        });
-
-        const logData = await logRes.json(); // ✅ now guaranteed JSON
-        console.log("Usage log response:", logData);
-
-        if (!logRes.ok) {
-        alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
-        return; // 🚨 Stop download here
-        }
-
-
-
-      // Increase scale to keep crispness
-      const canvas = await html2canvas(invoiceRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        scrollY: -window.scrollY, // avoid scroll offset
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      // convert px -> mm: width_mm = px * 25.4 / dpi. html2canvas default 96dpi; but we used scale to 2 for crispness.
-      // simpler approach: fit image to pageWidth with margin
-      const margin = 12; // mm
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let position = margin;
-      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-
-      // If content larger than one page, add pages
-      let heightLeft = imgHeight - (pageHeight - margin * 2);
-      while (heightLeft > -1) {
-        pdf.addPage();
-        position = margin - (imgHeight - heightLeft);
-        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight - margin * 2;
-      }
-
-      pdf.save(`Invoice-${id}.pdf`);
-    } catch (err) {
-      console.error("PDF download failed", err);
-      alert("Failed to generate PDF. Try again.");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   
+// const downloadPDF = async () => {
+
+//     if (!invoiceRef.current) return;
+//     setActionLoading(true);
+//     try {
+
+
+        
+//         const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${localStorage.getItem("token")}`, // ensure token
+//         },
+//         body: JSON.stringify({ type: "invoice" }),
+//         });
+
+//         const logData = await logRes.json(); // ✅ now guaranteed JSON
+//         console.log("Usage log response:", logData);
+
+//         if (!logRes.ok) {
+//         alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+//         return; // 🚨 Stop download here
+//         }
+
+
+
+//       // Increase scale to keep crispness
+//       const canvas = await html2canvas(invoiceRef.current, {
+//         scale: 2,
+//         useCORS: true,
+//         allowTaint: true,
+//         scrollY: -window.scrollY, // avoid scroll offset
+//       });
+
+//       const imgData = canvas.toDataURL("image/png");
+//       const pdf = new jsPDF("p", "mm", "a4");
+//       const pageWidth = pdf.internal.pageSize.getWidth();
+//       const pageHeight = pdf.internal.pageSize.getHeight();
+
+//       // convert px -> mm: width_mm = px * 25.4 / dpi. html2canvas default 96dpi; but we used scale to 2 for crispness.
+//       // simpler approach: fit image to pageWidth with margin
+//       const margin = 12; // mm
+//       const imgWidth = pageWidth - margin * 2;
+//       const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+//       let position = margin;
+//       pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+
+//       // If content larger than one page, add pages
+//       let heightLeft = imgHeight - (pageHeight - margin * 2);
+//       while (heightLeft > -1) {
+//         pdf.addPage();
+//         position = margin - (imgHeight - heightLeft);
+//         pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+//         heightLeft -= pageHeight - margin * 2;
+//       }
+
+//       pdf.save(`Invoice-${id}.pdf`);
+//     } catch (err) {
+//       console.error("PDF download failed", err);
+//       alert("Failed to generate PDF. Try again.");
+//     } finally {
+//       setActionLoading(false);
+//     }
+//   };
+
+const downloadPDF = async () => {
+  if (!invoiceRef.current) return;
+  setActionLoading(true);
+  try {
+    // LOG USAGE
+    const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ type: "invoice" }),
+    });
+    const logData = await logRes.json();
+    if (!logRes.ok) {
+      alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+      setActionLoading(false);
+      return;
+    }
+    // CAPTURE INVOICE PERFECTLY
+    const width = invoiceRef.current.scrollWidth;
+    const canvas = await html2canvas(invoiceRef.current, {
+      scale: 3,
+      useCORS: true,
+      scrollY: 0,
+      width: width,
+      windowWidth: width,
+    });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
+    // ALWAYS SINGLE PAGE
+    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pdfHeight);
+    pdf.save(`Invoice-${id}.pdf`);
+  } catch (error) {
+    console.error("PDF generation error:", error);
+    alert("Failed to generate PDF.");
+  } finally {
+    setActionLoading(false);
+  }
+};  
 
   const handleMarkPaid = async () => {
     if (!window.confirm("Mark invoice as paid?")) return;
@@ -539,7 +544,16 @@ const sharePDF = async () => {
         </div>
 
         {/* Invoice card that will be captured for PDF */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden" ref={invoiceRef}>
+        {/* <div className="bg-white rounded-2xl shadow-xl overflow-hidden" ref={invoiceRef}> */}
+        <div
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+          ref={invoiceRef}
+          style={{
+            width: "794px",           // A4 width at 96dpi
+            margin: "0 auto",
+            padding: 0,
+          }}
+        >
           {/* Premium gradient header */}
           <div className="p-6 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -614,10 +628,14 @@ const sharePDF = async () => {
                 <tbody>
                   {items.map((it, idx) => (
                     <tr key={idx} className="border-b last:border-b-0 hover:bg-gray-50">
-                      <td className="px-4 py-4 text-sm text-gray-800">{it.description}</td>
+                      {/* <td className="px-4 py-4 text-sm text-gray-800">{it.description}</td>
                       <td className="px-4 py-4 text-right text-sm">{it.quantity}</td>
                       <td className="px-4 py-4 text-right text-sm">{formatCurrency(it.unitPrice)}</td>
-                      <td className="px-4 py-4 text-right font-semibold">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
+                      <td className="px-4 py-4 text-right font-semibold">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td> */}
+                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{it.description}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{it.quantity}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{formatCurrency(it.unitPrice)}</td>
+                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -679,14 +697,7 @@ const sharePDF = async () => {
       </div>
 
       {/* Back to Dashboard button */}
-      {/* <div className="flex justify-center mt-6">
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
-        >
-          ⬅ Back to Dashboard
-        </button>
-      </div> */}
+      
       {/* Floating Q Button at Bottom */}
         <button
           onClick={() => navigate("/dashboard")}
