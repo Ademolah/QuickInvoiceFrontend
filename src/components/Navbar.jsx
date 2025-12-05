@@ -29,7 +29,7 @@ export default function Navbar() {
             <Link to="/">
             QuickInvoice
             </Link>
-            <span className="text-[#00B86B]"> NG</span>
+            {/* <span className="text-[#00B86B]"> NG</span> */}
           </h1>
         </motion.div>
 
