@@ -182,16 +182,62 @@ const [user, setUser] = useState(null);
     Unpaid: inv.status !== 'paid' ? inv.total : 0,
   }));
 
+  // if (loading) {
+  //   return (
+  //     <div className="flex">
+  //       <Sidebar className="fixed h-screen" />
+  //       <div className="ml-[250px] flex-1 p-6">
+  //         <div className="text-center mt-10 text-[#0046A5] font-semibold">Loading Dashboard...</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   if (loading) {
-    return (
-      <div className="flex">
-        <Sidebar className="fixed h-screen" />
-        <div className="ml-[250px] flex-1 p-6">
-          <div className="text-center mt-10 text-[#0046A5] font-semibold">Loading Dashboard...</div>
+  return (
+    <div className="flex bg-[#F9FAFB] min-h-screen">
+      <Sidebar className="fixed h-screen" />
+      <div className="ml-[250px] flex-1 p-6">
+        <div className="flex flex-col items-center justify-center h-full">
+          {/* Animated Logo Loader */}
+          <div className="flex items-center gap-3 mb-6 animate-fadeIn">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0046A5] to-[#00B86B] animate-pulse" />
+            <p className="text-xl font-semibold text-[#0046A5]">
+              Preparing your dashboard…
+            </p>
+          </div>
+          {/* Skeleton Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            {/* Skeleton card */}
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 animate-fadeIn"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className="h-4 w-24 bg-gray-200 rounded-md mb-4 animate-pulse"></div>
+                <div className="h-6 w-32 bg-gray-200 rounded-md animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+          {/* Wide skeleton table */}
+          <div className="w-full max-w-4xl mt-10 bg-white border shadow-md rounded-2xl p-6 animate-fadeIn">
+            <div className="h-4 w-40 bg-gray-200 rounded-md mb-4 animate-pulse"></div>
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="h-3 w-full bg-gray-200 rounded-md animate-pulse"
+                  style={{ animationDelay: `${i * 0.08}s` }}
+                ></div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="flex min-h-screen">
