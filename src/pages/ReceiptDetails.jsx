@@ -690,7 +690,7 @@ export default function ReceiptDetails() {
                 <div>{formatCurrency(discount)}</div>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", color: "#6b7280" }}>
-                <div>Discount</div>
+                <div>Balance</div>
                 <div>{formatCurrency(outstandingBalance)}</div>
               </div>
               <div style={{ borderTop: "1px dashed #E6EEF6", marginTop: 8, paddingTop: 8, display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
