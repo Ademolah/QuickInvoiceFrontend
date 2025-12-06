@@ -21,9 +21,9 @@ export const CurrencyProvider = ({ children }) => {
     localStorage.setItem("currency", currency);
   }, [currency]);
 
-  const switchCurrency = (code) => {
-    if (currencies[code]) {
-      setCurrency(code);
+  const switchCurrency = (symbol) => {
+    if (currencies[symbol]) {
+      setCurrency(symbol);
     }
   };
 
