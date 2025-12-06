@@ -451,7 +451,7 @@ export default function ReceiptDetails() {
 
   // format currency helper
   const formatCurrency = (amount) =>
-    new Intl.NumberFormat("en", { style: "currency", currency: code || "NGN" }).format(Number(amount || 0));
+    new Intl.NumberFormat("en", { style: "currency", currency: code || "₦" }).format(Number(amount || 0));
 
   if (loading) return <div className="p-6 md:p-10">Loading receipt…</div>;
   if (!invoice || !user) return <div className="p-6 md:p-10">Not found.</div>;

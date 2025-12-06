@@ -14,7 +14,7 @@ const CurrencyContext = createContext();
 export const CurrencyProvider = ({ children }) => {
   const [currency, setCurrency] = useState(() => {
     // Load from localStorage if user had previously selected one
-    return localStorage.getItem("currency") || "NGN";
+    return localStorage.getItem("currency") || "₦";
   });
 
   useEffect(() => {
