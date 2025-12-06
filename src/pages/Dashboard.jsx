@@ -193,11 +193,12 @@ const [user, setUser] = useState(null);
   //   );
   // }
 
+  
   if (loading) {
   return (
     <div className="flex bg-[#F9FAFB] min-h-screen">
       <Sidebar className="fixed h-screen" />
-      <div className="ml-[250px] flex-1 p-6">
+      <div className="md:ml-[250px] ml-0 flex-1 p-4 md:p-6">
         <div className="flex flex-col items-center justify-center h-full">
           {/* Animated Logo Loader */}
           <div className="flex items-center gap-3 mb-6 animate-fadeIn">
@@ -208,7 +209,6 @@ const [user, setUser] = useState(null);
           </div>
           {/* Skeleton Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-            {/* Skeleton card */}
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
