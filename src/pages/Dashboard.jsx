@@ -167,14 +167,15 @@ const [user, setUser] = useState(null);
     fetchData();
   }, []);
 
-  const { code,} = useCurrency(); // 👈 get currency settings
+  // const { code, symbol} = useCurrency(); // 👈 get currency settings
+  const { formatCurrency } = useCurrency()
   
     // helper to format currency
-    const formatCurrency = (amount) =>
-      new Intl.NumberFormat('en', {
-        style: 'currency',
-        currency: code,
-      }).format(amount);
+    // const formatCurrency = (amount) =>
+    //   new Intl.NumberFormat('en', {
+    //     style: 'currency',
+    //     currency: code,
+    //   }).format(amount);
 
   const chartData = invoices.map(inv => ({
     date: new Date(inv.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),

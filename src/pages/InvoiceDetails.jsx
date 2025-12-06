@@ -19,6 +19,7 @@ import { useCurrency } from "../context/CurrencyContext";
 
 
 
+
 const API_BASE = "https://quickinvoice-backend-1.onrender.com"
 
 
@@ -44,14 +45,16 @@ export default function InvoiceDetails() {
   const token = useMemo(() => localStorage.getItem("token"), []);
 
 
-  const { code,  } = useCurrency(); // 👈 get currency settings
+  // const { code, } = useCurrency(); // 👈 get currency settings
+  
+  const { formatCurrency } = useCurrency()
 
   // helper to format currency
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('en', {
-      style: 'currency',
-      currency: code,
-    }).format(amount);
+  // const formatCurrency = (amount) =>
+  //   new Intl.NumberFormat('en', {
+  //     style: 'currency',
+  //     currency: code,
+  //   }).format(amount);
 
     const AccountDetails = async () => {
     try {
