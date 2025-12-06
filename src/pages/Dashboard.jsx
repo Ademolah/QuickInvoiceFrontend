@@ -167,13 +167,13 @@ const [user, setUser] = useState(null);
     fetchData();
   }, []);
 
-  const { code,} = useCurrency(); // 👈 get currency settings
+  const { symbol,} = useCurrency(); // 👈 get currency settings
   
     // helper to format currency
     const formatCurrency = (amount) =>
       new Intl.NumberFormat('en', {
         style: 'currency',
-        currency: code,
+        currency: symbol,
       }).format(amount);
 
   const chartData = invoices.map(inv => ({

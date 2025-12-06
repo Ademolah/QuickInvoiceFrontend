@@ -427,7 +427,7 @@ export default function ReceiptDetails() {
   const [loading, setLoading] = useState(true);
   const captureRef = useRef(null);
   const [actionLoading, setActionLoading] = useState(false);
-  const { code } = useCurrency();
+  const { symbol } = useCurrency();
 
   // fetch invoice + user on mount
   useEffect(() => {
@@ -451,7 +451,7 @@ export default function ReceiptDetails() {
 
   // format currency helper
   const formatCurrency = (amount) =>
-    new Intl.NumberFormat("en", { style: "currency", currency: code || "₦" }).format(Number(amount || 0));
+    new Intl.NumberFormat("en", { style: "currency", currency: symbol || "₦" }).format(Number(amount || 0));
 
   if (loading) return <div className="p-6 md:p-10">Loading receipt…</div>;
   if (!invoice || !user) return <div className="p-6 md:p-10">Not found.</div>;
