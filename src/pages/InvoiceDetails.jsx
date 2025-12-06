@@ -44,13 +44,13 @@ export default function InvoiceDetails() {
   const token = useMemo(() => localStorage.getItem("token"), []);
 
 
-  const { symbol,  } = useCurrency(); // 👈 get currency settings
+  const { code,  } = useCurrency(); // 👈 get currency settings
 
   // helper to format currency
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('en', {
       style: 'currency',
-      currency: symbol,
+      currency: code,
     }).format(amount);
 
     const AccountDetails = async () => {
