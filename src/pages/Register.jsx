@@ -13,6 +13,7 @@ export default function Register() {
     name: "",
     email: "",
     phone: "",
+    dialCode: "+234",
     businessName: "",
     password: "",
   });

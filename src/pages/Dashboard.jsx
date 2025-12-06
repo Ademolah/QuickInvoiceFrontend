@@ -167,15 +167,13 @@ const [user, setUser] = useState(null);
     fetchData();
   }, []);
 
-  // const { code, symbol} = useCurrency(); // 👈 get currency settings
+
+   // helper to format currency
+
   const { formatCurrency } = useCurrency()
   
-    // helper to format currency
-    // const formatCurrency = (amount) =>
-    //   new Intl.NumberFormat('en', {
-    //     style: 'currency',
-    //     currency: code,
-    //   }).format(amount);
+   
+    
 
   const chartData = invoices.map(inv => ({
     date: new Date(inv.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
@@ -183,16 +181,7 @@ const [user, setUser] = useState(null);
     Unpaid: inv.status !== 'paid' ? inv.total : 0,
   }));
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex">
-  //       <Sidebar className="fixed h-screen" />
-  //       <div className="ml-[250px] flex-1 p-6">
-  //         <div className="text-center mt-10 text-[#0046A5] font-semibold">Loading Dashboard...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+ 
 
   
   if (loading) {
