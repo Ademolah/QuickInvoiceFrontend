@@ -22,16 +22,27 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
 
   // Add country codes list (minimal example, you can expand it)
-  const countryCodes = [
-    { code: "+234", country: "Nigeria" },
-    { code: "+1", country: "USA" },
-    { code: "+44", country: "UK" },
-    { code: "+33", country: "France" },
-    { code: "+49", country: "Germany" },
-    { code: "+90", country: "Turkey" },
-    { code: "+91", country: "India" },
-    { code: "+27", country: "South Africa" },
-    { code: "+233", country: "Ghana" },
+  // const countryCodes = [
+  //   { code: "+234", country: "Nigeria" },
+  //   { code: "+1", country: "USA" },
+  //   { code: "+44", country: "UK" },
+  //   { code: "+33", country: "France" },
+  //   { code: "+49", country: "Germany" },
+  //   { code: "+90", country: "Turkey" },
+  //   { code: "+91", country: "India" },
+  //   { code: "+27", country: "South Africa" },
+  //   { code: "+233", country: "Ghana" },
+  // ];
+    const countryCodes = [
+    { code: "+234", country: "Nigeria", flag: "🇳🇬" },
+    { code: "+1", country: "USA", flag: "🇺🇸" },
+    { code: "+44", country: "UK", flag: "🇬🇧" },
+    { code: "+33", country: "France", flag: "🇫🇷" },
+    { code: "+49", country: "Germany", flag: "🇩🇪" },
+    { code: "+90", country: "Turkey", flag: "🇹🇷" },
+    { code: "+91", country: "India", flag: "🇮🇳" },
+    { code: "+27", country: "South Africa", flag: "🇿🇦" },
+    { code: "+233", country: "Ghana", flag: "🇬🇭" },
   ];
 
   const handleChange = (e) => {
@@ -106,36 +117,36 @@ export default function Register() {
 
 
           <div className="flex items-center border border-gray-300 rounded focus-within:ring-2 focus-within:ring-[#0046A5]">
-  {/* Country code selector */}
-  <select
-    value={formData.dialCode || "+234"}
-    onChange={(e) =>
-      setFormData({ ...formData, dialCode: e.target.value })
-    }
-    className="px-3 bg-white text-gray-600 border-r border-gray-300 focus:outline-none"
-  >
-    {countryCodes.map((item, idx) => (
-      <option key={idx} value={item.code}>
-        {item.code} ({item.country})
-      </option>
-    ))}
-  </select>
+            {/* Country code selector */}
+            <select
+              value={formData.dialCode || "+234"}
+              onChange={(e) =>
+                setFormData({ ...formData, dialCode: e.target.value })
+              }
+              className="px-3 bg-white text-gray-600 border-r border-gray-300 focus:outline-none"
+            >
+              {countryCodes.map((item, idx) => (
+                <option key={idx} value={item.code}>
+                  {item.flag} {item.code} ({item.country})
+                </option>
+              ))}
+            </select>
 
-  {/* Phone input field */}
-  <input
-    type="tel"
-    name="phone"
-    placeholder="7012345678"
-    value={formData.phone}
-    onChange={(e) => {
-      // remove any leading 0 automatically
-      let value = e.target.value.replace(/^0+/, "");
-      setFormData({ ...formData, phone: value });
-    }}
-    className="w-full p-3 rounded-r focus:outline-none"
-    required
-  />
-</div>
+            {/* Phone input field */}
+            <input
+              type="tel"
+              name="phone"
+              placeholder="7012345678"
+              value={formData.phone}
+              onChange={(e) => {
+                // remove any leading 0 automatically
+                let value = e.target.value.replace(/^0+/, "");
+                setFormData({ ...formData, phone: value });
+              }}
+              className="w-full p-3 rounded-r focus:outline-none"
+              required
+            />
+          </div>
 
 
           {/* <div className="flex items-center border border-gray-300 rounded focus-within:ring-2 focus-within:ring-[#0046A5]"> */}
