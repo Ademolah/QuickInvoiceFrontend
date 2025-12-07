@@ -30,11 +30,11 @@ code {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-33.33%);
   }
 }
 .animate-scrollSlide {
-  animation: scrollSlide 30s linear infinite;
+  animation: scrollSlide 40s linear infinite;
 }
 
 
