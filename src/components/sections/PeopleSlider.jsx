@@ -65,7 +65,7 @@ const PeopleSlider = () => {
     setImages(imgs);
   }, []);
   // Duplicate twice only (not 3×)
-  const extendedImages = [...images, ...images];
+  const extendedImages = [...images, ...images, ...images];
   return (
     <div className="w-full py-14 bg-white select-none">
       <h2 className="text-center text-3xl md:text-4xl font-bold text-gray-800 mb-10">
