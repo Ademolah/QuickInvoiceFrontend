@@ -33,7 +33,7 @@ code {
     transform: translateX(-50%);
   }
 }
-.animate-scrollSlide {
+.animate-scrollFast {
   animation: scrollSlide 18s linear infinite;
 }
 
