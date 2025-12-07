@@ -69,7 +69,7 @@ const Sidebar = () => {
       <aside className="hidden md:flex flex-col w-64 h-screen bg-gradient-to-b from-[#0046A5] to-[#00B86B] text-white p-4 shadow-xl justify-between">
         {/* Top Section */}
         <div>
-          <h2 className="text-2xl font-bold mb-6">QuickInvoice <span className="text-green-300">NG</span></h2>
+          <h2 className="text-2xl font-bold mb-6">QuickInvoice <span className="text-green-300"></span></h2>
           {/* <nav className="flex flex-col gap-2">
             {links.map((link) => (
               <Link key={link.name} to={link.path} className={linkClass(link.path)}>
@@ -155,7 +155,7 @@ const Sidebar = () => {
             {/* Top Section */}
             <div className="mt-8">
               <h2 className="text-2xl font-bold mb-6 text-white">
-                QuickInvoice <span className="text-green-300">NG</span>
+                QuickInvoice <span className="text-green-300"></span>
               </h2>
               {/* <nav className="flex flex-col gap-2">
                 {links.map((link) => (

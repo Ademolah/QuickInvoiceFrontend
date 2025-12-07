@@ -88,7 +88,7 @@ const MarketSquare = () => {
           </h1>
           <p className="text-gray-600 mb-6">
             MarketZone lets you list and showcase your products beautifully
-            for customers to see. Buyers will contact you directly via WhatsApp.
+            for customers to see. Buyers will pay directly to your account during checkout.
           </p>
           <form onSubmit={handleSetup} className="space-y-4">
             <div className="text-left">
@@ -142,12 +142,12 @@ const MarketSquare = () => {
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0046A5] uppercase"
                   />
                   <small className="text-gray-500">
-                    Referral code from a verified QuickInvoiceNG vendor.
+                    Referral code from a verified QuickInvoice vendor.
                   </small>
               </div>
 
               <small className="text-gray-500">
-                Buyers will contact you through this number.
+                Buyers will contact you through this number if necessary.
               </small>
 
             </div>
