@@ -88,7 +88,7 @@ export default function Login() {
           Welcome Back
         </h1>
         <p className="text-center text-gray-500 mb-6 font-inter">
-          Sign in to your QuickInvoice NG account
+          Sign in to your QuickInvoice account
         </p>
 
         {/* Error */}

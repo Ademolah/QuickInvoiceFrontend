@@ -103,7 +103,7 @@ export default function Navbar() {
             </div>
             <h1 className="font-poppins font-bold text-xl text-gray-800">
               QuickInvoice
-              <span className="text-[#00B86B]"> NG</span>
+              <span className="text-[#00B86B]"></span>
             </h1>
           </div>
           <button
