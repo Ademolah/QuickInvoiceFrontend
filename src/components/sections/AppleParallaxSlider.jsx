@@ -1,6 +1,4 @@
 import React from "react";
-
-
 const AppleParallaxSlider = () => {
   const images = [
     "/people/img1.jpg",
@@ -12,28 +10,29 @@ const AppleParallaxSlider = () => {
     "/people/img7.jpg",
     "/people/img8.jpg",
   ];
+  // Double list for continuous looping
   const doubled = [...images, ...images];
   return (
     <section className="w-full bg-white py-16 overflow-hidden relative">
       <h2 className="text-center text-3xl md:text-4xl font-bold text-gray-700 mb-10">
-        Businesses Like Yours Trust QuickInvoice 
+        Businesses Like Yours Trust QuickInvoice
       </h2>
-      {/* BACK LAYER (slow parallax) */}
+      {/* BACK LAYER (slow) */}
       <div className="absolute top-0 left-0 w-full opacity-20 pointer-events-none">
-        <div className="flex animate-scrollSlow hover:pause-scroll gap-8">
+        <div className="slider-track-slow">
           {doubled.map((img, i) => (
             <img
               key={`bg-${i}`}
               src={img}
-              alt="People"
+              alt="people"
               className="w-[180px] h-[120px] md:w-[220px] md:h-[150px] object-cover rounded-2xl shadow"
             />
           ))}
         </div>
       </div>
-      {/* FRONT LAYER (fast parallax) */}
+      {/* FRONT LAYER (fast) */}
       <div className="relative">
-        <div className="flex animate-scrollFast hover:pause-scroll gap-8">
+        <div className="slider-track-fast">
           {doubled.map((img, i) => (
             <img
               key={`fg-${i}`}
@@ -52,4 +51,6 @@ const AppleParallaxSlider = () => {
     </section>
   );
 };
+
+
 export default AppleParallaxSlider;
