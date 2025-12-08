@@ -218,26 +218,55 @@ const MarketZone = () => {
         )}
       </div>
       {/* FOOTER */}
-      <footer className="bg-white border-t mt-8">
-        <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <footer className="bg-[#0046A5] mt-10 text-white">
+        <div className="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+          {/* Brand Section */}
           <div>
-            <h4 className="text-[#0046A5] font-poppins font-semibold mb-2">MarketZone</h4>
-            <p className="text-gray-500 text-sm max-w-sm">
-              Discover and shop verified products from vendors across Nigeria. Built by QuickInvoice NG, empowering commerce.
+            <h4 className="text-2xl font-poppins font-bold mb-3 text-[#00B86B]">
+              MarketZone
+            </h4>
+            <p className="text-gray-200 text-sm leading-relaxed">
+              Discover and shop verified products from trusted vendors.
+              Powered by QuickInvoice NG — enabling modern commerce for everyone.
             </p>
           </div>
+          {/* Links */}
           <div>
-            <h5 className="text-gray-700 font-semibold mb-2">Quick Links</h5>
-            <ul className="text-sm text-gray-500 space-y-1">
-              <li><a href="https://www.instagram.com/quickinvoiceng/" className="hover:underline">Instagram</a></li>
-              <li><a href="https://web.facebook.com/profile.php?id=61579992747218" className="hover:underline">Facebook</a></li>
-              <li><a href="https://www.linkedin.com/company/quickinvoice-ng" className="hover:underline">LinkedIn</a></li>
+            <h5 className="text-lg font-semibold mb-3 text-white">Quick Links</h5>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://www.instagram.com/quickinvoiceng/"
+                  className="text-gray-200 hover:text-[#00B86B] transition"
+                >
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://web.facebook.com/profile.php?id=61579992747218"
+                  className="text-gray-200 hover:text-[#00B86B] transition"
+                >
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/company/quickinvoice-ng"
+                  className="text-gray-200 hover:text-[#00B86B] transition"
+                >
+                  LinkedIn
+                </a>
+              </li>
             </ul>
           </div>
+          {/* Contact */}
           <div>
-            <h5 className="text-gray-700 font-semibold mb-2">Contact</h5>
-            <p className="text-sm text-gray-500">support@quickinvoiceng.com</p>
-            <p className="text-sm text-gray-500 mt-2">© {new Date().getFullYear()} QuickInvoice NG</p>
+            <h5 className="text-lg font-semibold mb-3 text-white">Contact</h5>
+            <p className="text-gray-200 text-sm">support@quickinvoiceng.com</p>
+            <p className="text-gray-300 text-sm mt-4">
+              © {new Date().getFullYear()} QuickInvoice 
+            </p>
           </div>
         </div>
       </footer>
