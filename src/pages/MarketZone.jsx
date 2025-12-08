@@ -209,7 +209,7 @@ const MarketZone = () => {
                     >
                       Visit store
                     </button>
-                    <div className="text-xs text-gray-500">Free returns</div>
+                    <div className="text-xs text-gray-500">Verified Sellers</div>
                   </div>
                 </div>
               </article>
