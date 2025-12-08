@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FileText, Search, ReceiptText } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+import LoadingState from "../components/LoadingState";
 // import api from "../utils/api";
 
 // const brandBlue = "#0046A5";
@@ -59,14 +60,17 @@ export default function Receipts() {
       .slice(0, 10);
   }, [invoices, query]);
 
-  if (loading) {
-    return (
-      <div className="p-6 md:p-10">
-        <p className="text-[color:var(--brandBlue,#0046A5)] font-semibold">
-          Loading receipts…
-        </p>
-      </div>
-    );
+  // if (loading) {
+  //   return (
+  //     <div className="p-6 md:p-10">
+  //       <p className="text-[color:var(--brandBlue,#0046A5)] font-semibold">
+  //         Loading receipts…
+  //       </p>
+  //     </div>
+  //   );
+  // }
+  if(loading){
+    return <LoadingState title="Fetching your receipts..."/>
   }
 
   return (

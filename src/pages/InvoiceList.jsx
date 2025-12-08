@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Trash2,  Eye, CheckCircle } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from "../context/CurrencyContext";
+import LoadingState from "../components/LoadingState";
 // import api from "../utils/api";
 
 // const API =  "http://localhost:4000";
@@ -82,8 +83,10 @@ const InvoiceList = () => {
     fetchInvoices();
   }, []);
 
-  if (loading) return <div className="text-center mt-20 text-xl text-[#0046A5]">Loading invoices...</div>;
-  if (error) return <div className="text-center mt-20 text-red-500">{error}</div>;
+  // if (loading) return <div className="text-center mt-20 text-xl text-[#0046A5]">Loading invoices...</div>;
+  // if (error) return <div className="text-center mt-20 text-red-500">{error}</div>;
+  if(loading) return <LoadingState title="Loading your invoices..."/>
+  if(error) return <div className="text-center mt-20 text-red-500">{error}</div>;
 
   return (
     <div className="p-6 md:p-10">

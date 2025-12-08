@@ -162,6 +162,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   type="text"
+                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter product name"
@@ -175,6 +176,7 @@ const AddProduct = () => {
                 </label>
                 <input
                   type="number"
+                  required
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="Enter price"
@@ -233,6 +235,7 @@ const AddProduct = () => {
                 <div className="flex items-start space-x-2">
                     <textarea
                     value={description}
+                    required
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Please put a detailed description of the product."
                     rows="3"
