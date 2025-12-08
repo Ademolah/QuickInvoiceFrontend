@@ -16,5 +16,6 @@ module.exports = {
   theme: {
     extend: {},
   },
+  safelist: ["animate-scrollFast", "animate-scrollSlow", "pause-scroll"],
   plugins: [],
 }

@@ -37,6 +37,26 @@ code {
   animation: scrollSlide 18s linear infinite;
 }
 
+@keyframes scrollFast {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes scrollSlow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* speeds */
+.animate-scrollFast {
+  animation: scrollFast 16s linear infinite;
+}
+.animate-scrollSlow {
+  animation: scrollSlow 35s linear infinite;
+}
+/* Hover pause */
+.pause-scroll {
+  animation-play-state: paused !important;
+}
+
 
 @keyframes gradient {
   0% { background-position: 0% 50%; }
