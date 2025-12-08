@@ -207,7 +207,7 @@ const MarketZone = () => {
                       }}
                       className="text-sm bg-[#0046A5] text-white px-3 py-1 rounded-md"
                     >
-                      Visit store
+                      Store
                     </button>
                     <div className="text-xs text-gray-500">Verified Sellers</div>
                   </div>
