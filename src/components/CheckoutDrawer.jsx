@@ -5,7 +5,7 @@
 import axios from "axios"
 import React from "react";
 import toast from "react-hot-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -23,6 +23,12 @@ const CheckoutDrawer = ({
     name: initialCheckoutData.name || "",
     phone: initialCheckoutData.phone || "",
     email: initialCheckoutData.email || "",
+
+    street: "",
+    city:  "",
+    state: "",
+    country:  "Nigeria",
+
     address: initialCheckoutData.address || "",
     deliveryType: initialCheckoutData.deliveryType || "regular", // ui-level only
   });
@@ -113,16 +119,35 @@ const CheckoutDrawer = ({
         return { valid: false, message: "Network error" };
       }
     };
+
+    //automatically compose the values
+    useEffect(()=> {
+      const {street, city , state, country} = checkoutData;
+      const fullAddress = [street, city, state, country].filter(Boolean).join(", ");
+      setCheckoutData(prev => ({
+        ...prev, address: fullAddress
+      }));
+    },[checkoutData.street, checkoutData.city, checkoutData.state, checkoutData.country])
  
   //  Validate vendor address when drawer opens
-  useEffect(() => {
-    if (isOpen && vendorId) {
-      validateVendor();   // <-- Runs immediately when user clicks “Proceed to checkout”
-    }
-  }, [isOpen, vendorId]);
+  // useEffect(() => {
+  //   if (isOpen && vendorId) {
+  //     validateVendor();   // <-- Runs immediately when user clicks “Proceed to checkout”
+  //   }
+  // }, [isOpen, vendorId]);
+
+  const hasValidateVendor = useRef(false)
+  useEffect(()=>{
+     if(!hasValidateVendor.current && isOpen && vendorId){
+      hasValidateVendor.current = true;
+      validateVendor()
+     }
+  }, [isOpen, vendorId])
+  
+
   // 🔥 Step 2: Validate customer address as they type
   useEffect(() => {
-    if (checkoutData.address && checkoutData.address.length > 5) {
+    if (checkoutData.state.trim().length > 0) {
       validateCustomer();
     }
   }, [checkoutData.address]);
@@ -337,12 +362,43 @@ const fetchCouriers = async () => {
             onChange={(e) => setCheckoutData({ ...checkoutData, email: e.target.value })}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
           />
-          <textarea
+          <label className="block text-gray-700 text-sm font-medium mb-1">
+              Buyer Address
+            </label>
+          {/* <textarea
             placeholder="Delivery Address. Please follow this format and be very detailed(Street, City, State, Country)"
             value={checkoutData.address}
             onChange={(e) => setCheckoutData({ ...checkoutData, address: e.target.value })}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B] resize-none"
             rows="3"
+          /> */}
+          <input
+            type="text"
+            placeholder="Street address"
+            value={checkoutData.street}
+            onChange={(e)=> setCheckoutData({...checkoutData, street: e.target.value})}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
+          />
+          <input
+            type="text"
+            placeholder="City"
+            value={checkoutData.city}
+            onChange={(e)=> setCheckoutData({...checkoutData, city: e.target.value})}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
+          />
+          <input
+            type="text"
+            placeholder="State"
+            value={checkoutData.state}
+            onChange={(e)=> setCheckoutData({...checkoutData, state: e.target.value})}
+            onBlur={validateCustomer}
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
+          />
+          <input
+            type="text"
+            value="Nigeria"
+            disabled
+            className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-gray-700"
           />
 
           <div className="mb-4">
