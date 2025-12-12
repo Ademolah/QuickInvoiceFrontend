@@ -66,7 +66,6 @@ const CheckoutDrawer = ({
       body: JSON.stringify({ vendorId })
     });
     const data = await res.json();
-    console.log("Vendor Address Data: ", data);
     setVendorAddress(data.data.state);
     return data;
   } catch (error) {
