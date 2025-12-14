@@ -9,6 +9,46 @@ import { useState, useEffect, useRef } from "react";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
+const nigerianStates = [
+  "Abia",
+  "Federal Capital Territory",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara"
+];
+
 
 const CheckoutDrawer = ({
   isOpen,
@@ -388,14 +428,28 @@ const fetchCouriers = async () => {
             onChange={(e)=> setCheckoutData({...checkoutData, city: e.target.value})}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
           />
-          <input
+          {/* <input
             type="text"
             placeholder="State"
             value={checkoutData.state}
             onChange={(e)=> setCheckoutData({...checkoutData, state: e.target.value})}
             onBlur={validateCustomer}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
-          />
+          /> */}
+          <select
+            value={checkoutData.state}
+            onChange={(e) =>
+              setCheckoutData({ ...checkoutData, state: e.target.value })
+            }
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
+          >
+            <option value="">Select State</option>
+            {nigerianStates.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value="Nigeria"
