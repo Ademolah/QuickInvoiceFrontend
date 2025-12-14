@@ -145,11 +145,21 @@ const CheckoutDrawer = ({
   
 
   // 🔥 Step 2: Validate customer address as they type
-  useEffect(() => {
-    if (checkoutData.state.trim().length > 0) {
-      validateCustomer();
+  // useEffect(() => {
+  //   if (checkoutData.state.trim().length > 0) {
+  //     validateCustomer();
+  //   }
+  // }, [checkoutData.address]);
+  const hasValidatedCustomer = useRef(false)
+  useEffect(()=>{
+    const state = checkoutData.state?.trim();
+
+    if(!hasValidatedCustomer.current && state && checkoutData.street?.trim() && checkoutData.city?.trim()){
+      hasValidatedCustomer.current = true;
+      validateCustomer()
     }
-  }, [checkoutData.address]);
+  }, [checkoutData.state])
+
   // Step 3: When both address codes are ready → auto fetch couriers
   useEffect(() => {
     if (senderCode && receiverCode) {
