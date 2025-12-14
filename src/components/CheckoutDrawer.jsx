@@ -127,13 +127,6 @@ const CheckoutDrawer = ({
         ...prev, address: fullAddress
       }));
     },[checkoutData.street, checkoutData.city, checkoutData.state, checkoutData.country])
- 
-  //  Validate vendor address when drawer opens
-  // useEffect(() => {
-  //   if (isOpen && vendorId) {
-  //     validateVendor();   // <-- Runs immediately when user clicks “Proceed to checkout”
-  //   }
-  // }, [isOpen, vendorId]);
 
   const hasValidateVendor = useRef(false)
   useEffect(()=>{
@@ -158,7 +151,7 @@ const CheckoutDrawer = ({
       hasValidatedCustomer.current = true;
       validateCustomer()
     }
-  }, [checkoutData.state])
+  }, [checkoutData.state, checkoutData.street, checkoutData.city])
 
   // Step 3: When both address codes are ready → auto fetch couriers
   useEffect(() => {
