@@ -12,6 +12,20 @@ const MarketZone = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [heroPlaying, setHeroPlaying] = useState(true);
+
+
+  const [vendorInfo, setVendorInfo] = useState(null)
+  
+  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const openProductModal = async  (product) => {
+    setSelectedProduct(product);
+    const info = await fetchVendorMeta(product.userId);
+    setVendorInfo(info)
+  };
+  const closeProductModal = () => {
+    setSelectedProduct(null);
+  };
+
   // --- fetch products ---
   useEffect(() => {
     let mounted = true;
@@ -67,6 +81,25 @@ const MarketZone = () => {
       return null;
     }
   }, []);
+
+
+  // vendor meta
+  const fetchVendorMeta = useCallback(async (vendorId) => {
+  try {
+    const res = await axios.get(`${API}/api/users/vendor/${vendorId}`);
+    if (res.data?.success) {
+      return {
+        slug: res.data.slug,
+        businessName: res.data.businessName,
+      };
+    }
+    return null;
+  } catch (err) {
+    console.error("Error fetching vendor meta:", err);
+    return null;
+  }
+}, []);
+
   // --- navigate to vendor store ---
   const openVendor = async (vendorId) => {
     if (!vendorId) return alert("Vendor id missing");
@@ -180,11 +213,17 @@ const MarketZone = () => {
                 tabIndex={0}
                 onKeyDown={(e) => e.key === "Enter" && openVendor(item.userId)}
               >
-                <div className="relative w-full h-40 overflow-hidden rounded-t-lg bg-gray-50">
+                <div
+                  className="relative w-full h-40 overflow-hidden rounded-t-lg bg-gray-50 cursor-zoom-in"
+                  onClick={(e) => {
+                    e.stopPropagation(); // :fire: prevent opening vendor
+                    openProductModal(item);
+                  }}
+                >
                   <img
                     src={item.image || "/placeholder.jpg"}
                     alt={item.name || "product"}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     loading="lazy"
                   />
                   {/* price badge */}
@@ -217,6 +256,60 @@ const MarketZone = () => {
           </div>
         )}
       </div>
+      {/* product grid */}
+
+        {selectedProduct && (
+  <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl relative">
+      {/* Close */}
+      <button
+        onClick={closeProductModal}
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-xl"
+      >
+        ✕
+      </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+        {/* LEFT: Image */}
+        <div className="bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center">
+          <img
+            src={selectedProduct.image || "/placeholder.jpg"}
+            alt={selectedProduct.name}
+            className="w-full h-full object-contain max-h-[420px]"
+          />
+        </div>
+        {/* RIGHT: Details */}
+        <div className="flex flex-col">
+          <h2 className="text-2xl font-bold text-[#0046A5]">
+            {selectedProduct.name}
+          </h2>
+          <p className="text-xl font-semibold text-[#00B86B] mt-2">
+            ₦{Number(selectedProduct.price || 0).toLocaleString()}
+          </p>
+          <div className="mt-3 text-sm text-gray-500">
+            <p>Category: <span className="font-medium">{selectedProduct.category || "Uncategorized"}</span></p>
+            <p className="mt-1">Vendor: <span className="font-medium">{vendorInfo?.businessName}</span></p>
+          </div>
+          <div className="mt-4">
+            <h4 className="font-semibold text-gray-700 mb-1">Description</h4>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {selectedProduct.description || "No description provided."}
+            </p>
+          </div>
+          <div className="mt-auto pt-6">
+            <button
+              onClick={() => openVendor(selectedProduct.userId)}
+              className="w-full bg-[#0046A5] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+            >
+              Visit Vendor Store
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
       {/* FOOTER */}
       <footer className="bg-[#0046A5] mt-10 text-white">
         <div className="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">

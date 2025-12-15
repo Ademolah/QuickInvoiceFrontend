@@ -68,7 +68,7 @@ const MarketSquare = () => {
     );
     setActivated(true);
     setMarketProfile(res.data);
-    toast.success("Welcome to MarketZone! :tada:");
+    toast.success("Welcome to MarketZone! 🎉");
   } catch (err) {
     console.error(err);
     toast.error(err.response?.data?.message || "Setup failed, please try again");
