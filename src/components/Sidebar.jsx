@@ -14,7 +14,8 @@ import {
   // Bike,
   ReceiptIcon,
   DollarSignIcon, 
-  MonitorPlay,
+  HelpCircleIcon,
+  // MonitorPlay,
   ShoppingCart,
   Building
 } from "lucide-react";
@@ -37,7 +38,7 @@ const Sidebar = () => {
     // { name: "QuickBills", icon: <MonitorPlay size={20} />,  comingSoon: true },
     { name: "Reports", icon: <BarChart2 size={20} />, path: "/reports" },
     { name: "Billing", icon: <DollarSignIcon size={20} />, path: "/billing" },
-    { name: "How To Use", icon: <MonitorPlay size={20} />, path: "/how-to-use" },
+    { name: "How To Use", icon: <HelpCircleIcon size={20} />, path: "/how-to-use" },
     { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
     { name: "Support", icon: <HelpCircle size={20} />, path: "/support" },
   ];
