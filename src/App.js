@@ -38,6 +38,8 @@ import AddProduct from "./pages/AddProduct";
 import Products from "./pages/Products";
 import MarketZone from "./pages/MarketZone";
 
+import HowToUse from "./pages/HowToUse";
+
 export default function App() {
   return (
     <AuthProvider>
@@ -87,6 +89,7 @@ export default function App() {
 
           <Route path="/market" element={ <MarketSquare /> }/>
           <Route path="/marketzone" element={ <MarketZone /> }/>
+          <Route path="/how-to-use" element={ <HowToUse /> }/>
           <Route path="/market/add-product" element={ <AddProduct /> }/>
           <Route path="/product" element={ <Products /> }/>
           <Route path="/market/:slug" element={<Market />} />

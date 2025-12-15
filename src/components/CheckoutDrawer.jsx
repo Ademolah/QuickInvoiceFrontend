@@ -178,11 +178,7 @@ const CheckoutDrawer = ({
   
 
   // 🔥 Step 2: Validate customer address as they type
-  // useEffect(() => {
-  //   if (checkoutData.state.trim().length > 0) {
-  //     validateCustomer();
-  //   }
-  // }, [checkoutData.address]);
+ 
   const hasValidatedCustomer = useRef(false)
   useEffect(()=>{
     const state = checkoutData.state?.trim();
@@ -428,14 +424,6 @@ const fetchCouriers = async () => {
             onChange={(e)=> setCheckoutData({...checkoutData, city: e.target.value})}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
           />
-          {/* <input
-            type="text"
-            placeholder="State"
-            value={checkoutData.state}
-            onChange={(e)=> setCheckoutData({...checkoutData, state: e.target.value})}
-            onBlur={validateCustomer}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B86B]"
-          /> */}
           <select
             value={checkoutData.state}
             onChange={(e) =>
