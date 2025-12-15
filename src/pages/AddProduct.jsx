@@ -15,6 +15,7 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
+  const [inStock, setInStock] = useState(true)
   // const [loadingDescription, setLoadingDescription] = useState(false);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -65,6 +66,8 @@ const AddProduct = () => {
     formData.append("price", price);
     formData.append("category", category);
     formData.append("description", description);
+
+    formData.append("inStock", inStock)
 
     formData.append("shipping_category", shippingCategory)
     formData.append("shipping_category_id", shippingCategoryId);
@@ -226,6 +229,35 @@ const AddProduct = () => {
                 ))}
               </select>
             </div>
+
+            {/* In stock */}
+
+                <div className="flex items-center justify-between bg-gray-50 border rounded-lg px-4 py-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-700">Product Availability</p>
+                    <p className="text-xs text-gray-500">
+                      Mark product as available or out of stock
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setInStock(!inStock)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                      inStock ? "bg-[#00B86B]" : "bg-gray-300"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                        inStock ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+                {!inStock && (
+                  <p className="text-xs text-red-500">
+                    This product will show as “Out of Stock” to buyers.
+                  </p>
+                )}
 
               {/* Description */}
               {/* <div> */}

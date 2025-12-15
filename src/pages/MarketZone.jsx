@@ -230,6 +230,18 @@ const MarketZone = () => {
                   <div className="absolute left-2 top-2 bg-[#00B86B] text-white px-2 py-1 rounded text-xs font-semibold shadow">
                     ₦{Number(item.price || 0).toLocaleString()}
                   </div>
+                  {/* stock badge */}
+                  <div
+                    className={`absolute right-2 top-2 px-2 py-1 rounded text-xs font-semibold shadow
+                      ${
+                        item.inStock
+                          ? "bg-green-600 text-white"
+                          : "bg-red-600 text-white"
+                      }
+                    `}
+                  >
+                    {item.inStock ? "In stock" : "Out of stock"}
+                  </div>
                 </div>
                 <div className="p-3 flex-1 flex flex-col">
                   <h3 className="text-[#0046A5] font-semibold text-sm truncate">{item.name}</h3>

@@ -56,6 +56,7 @@ const handleUpdateProduct = async () => {
     formData.append("category", editProductData.category);
     formData.append("shipping_category", editProductData.shipping_category);
     formData.append("shipping_category_id", editProductData.shipping_category_id);
+    formData.append("inStock", editProductData.inStock)
     if (editProductData.image instanceof File) {
       formData.append("image", editProductData.image);
     }
@@ -470,6 +471,40 @@ const updatePickupAddress = async () => {
         placeholder="Price"
         className="w-full border rounded px-3 py-2 mb-3"
       />
+
+      {/* In Stock Toggle */}
+      <div className="flex items-center justify-between bg-gray-50 border rounded-lg px-4 py-3 mb-3">
+        <div>
+          <p className="text-sm font-semibold text-gray-700">Product Availability</p>
+          <p className="text-xs text-gray-500">
+            Control whether buyers can order this product
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() =>
+            setEditProductData({
+              ...editProductData,
+              inStock: !editProductData.inStock,
+            })
+          }
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+            editProductData.inStock ? "bg-[#00B86B]" : "bg-gray-300"
+          }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+              editProductData.inStock ? "translate-x-6" : "translate-x-1"
+            }`}
+          />
+        </button>
+      </div>
+      {!editProductData.inStock && (
+        <p className="text-xs text-red-500 mb-2">
+          Buyers will see this product as “Out of Stock”.
+        </p>
+      )}
+
       <textarea
         value={editProductData.description}
         onChange={(e) =>
