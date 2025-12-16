@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CreditCard, CheckCircle, Loader2, Clock } from "lucide-react";
+import { CreditCard, CheckCircle,  Clock } from "lucide-react";
 // import api from "../utils/api";
 
 // const API = process.env.REACT_APP_API_URL || "http://localhost:4000";
@@ -96,16 +96,33 @@ export default function Billing() {
   };
 
   // Loading & error UI
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+  //       <div className="text-center">
+  //         <Loader2 className="mx-auto animate-spin text-[#0046A5]" />
+  //         <p className="mt-3 text-[#0046A5] font-semibold">Loading billing...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
-        <div className="text-center">
-          <Loader2 className="mx-auto animate-spin text-[#0046A5]" />
-          <p className="mt-3 text-[#0046A5] font-semibold">Loading billing...</p>
-        </div>
-      </div>
-    );
-  }
+          return (
+            <div className="flex items-center justify-center h-[70vh]">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col items-center"
+              >
+                <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
+                <p className="mt-4 text-[#0046A5] font-semibold">
+                  Loading billing...
+                </p>
+              </motion.div>
+            </div>
+          );
+        }
 
   if (error) {
     return (

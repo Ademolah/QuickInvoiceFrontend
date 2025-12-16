@@ -20,7 +20,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import {
-  Loader2,
+  // Loader2,
   FileText,
   DollarSign,
   CheckCircle,
@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../context/CurrencyContext";
+import { motion } from "framer-motion";
 
 // const API =  "http://localhost:4000";
 
@@ -126,13 +127,30 @@ const Reports = () => {
       }, []);
   }, [invoices]);
 
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[80vh]">
+  //       <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+  //     </div>
+  //   );
+  // }
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[80vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-      </div>
-    );
-  }
+          return (
+            <div className="flex items-center justify-center h-[70vh]">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col items-center"
+              >
+                <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
+                <p className="mt-4 text-[#0046A5] font-semibold">
+                  Fetching your Invoices...
+                </p>
+              </motion.div>
+            </div>
+          );
+        }
 
   if (!stats) {
     return (
