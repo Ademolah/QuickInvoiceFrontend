@@ -211,7 +211,64 @@ export default function Inventory() {
     setOpen(true);
   };
 
-  const categories = ["Phones","Laptops","Accessories","Gadgets", "Fashion", "Medicine", "Furniture", "Restaurant", "Stationery"];
+  const categories = [ // Electronics & Tech
+  "Phones",
+  "Laptops",
+  "Tablets",
+  "Accessories",
+  "Computer Peripherals",
+  "Gadgets",
+  "Smart Home Devices",
+  "Gaming Consoles",
+  "Gaming Accessories",
+  // Fashion & Lifestyle
+  "Men's Clothing",
+  "Women's Clothing",
+  "Children's Clothing",
+  "Footwear",
+  "Bags & Wallets",
+  "Watches",
+  "Jewelry",
+  "Beauty & Cosmetics",
+  "Fragrances",
+  // Health & Medicine
+  "Medicine",
+  "Medical Equipment",
+  "Health Supplements",
+  "Personal Care",
+  // Home & Furniture
+  "Furniture",
+  "Home Decor",
+  "Kitchen Appliances",
+  "Household Items",
+  "Lighting & Fixtures",
+  // Food & Restaurant
+  "Restaurant",
+  "Fast Food",
+  "Groceries",
+  "Beverages",
+  "Bakery Items",
+  "Frozen Foods",
+  // Office & Stationery
+  "Stationery",
+  "Office Supplies",
+  "Printing & Packaging",
+  "School Supplies",
+  // Auto & Industrial
+  "Automobile Parts",
+  "Car Accessories",
+  "Motorcycles & Parts",
+  "Industrial Equipment",
+  // Services & Digital
+  "Digital Products",
+  "Services",
+  "Subscriptions",
+  // Others
+  "Sports & Fitness",
+  "Toys & Games",
+  "Books & Educational Materials",
+  "Agricultural Products",
+  "Other"];
 
   const openEdit = (item) => {
     setMode("edit");
