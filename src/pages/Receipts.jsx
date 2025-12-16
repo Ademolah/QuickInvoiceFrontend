@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FileText, Search, ReceiptText } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
-import LoadingState from "../components/LoadingState";
+// import LoadingState from "../components/LoadingState";
+import { motion } from "framer-motion";
 // import api from "../utils/api";
 
 // const brandBlue = "#0046A5";
@@ -61,9 +62,26 @@ export default function Receipts() {
   }, [invoices, query]);
 
   
-  if(loading){
-    return <LoadingState title="Fetching your receipts..."/>
-  }
+  // if(loading){
+  //   return <LoadingState title="Fetching your receipts..."/>
+  // }
+  if (loading) {
+      return (
+        <div className="flex items-center justify-center h-[70vh]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center"
+          >
+            <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
+            <p className="mt-4 text-[#0046A5] font-semibold">
+              Fetching your receipts...
+            </p>
+          </motion.div>
+        </div>
+      );
+    }
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto">
