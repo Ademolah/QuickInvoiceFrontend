@@ -180,7 +180,7 @@ export default function Billing() {
                     disabled={upgradeLoading}
                     className="w-full bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white py-3 rounded-xl font-semibold shadow hover:opacity-95 disabled:opacity-60"
                   >
-                    {upgradeLoading ? "Redirecting..." : "Upgrade to Pro (₦3,000 / month)"}
+                    {upgradeLoading ? "Redirecting..." : "Upgrade to Pro (₦1,500 / month)"}
                   </button>
                 ) : (
                   <div className="flex items-center gap-2 text-green-600 font-medium">
