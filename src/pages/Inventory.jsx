@@ -124,15 +124,8 @@ api.interceptors.request.use((config) => {
    ========================= */
 export default function Inventory() {
 
-  // const { code, } = useCurrency(); // 👈 get currency settings
   const { formatCurrency } = useCurrency()
   
-    // helper to format currency
-    // const formatCurrency = (amount) =>
-    //   new Intl.NumberFormat('en', {
-    //     style: 'currency',
-    //     currency: code,
-    //   }).format(amount);
     
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -401,7 +394,7 @@ const saveItem = async () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} color="#4B5563" />
                 <input
@@ -415,7 +408,31 @@ const saveItem = async () => {
                 <Plus size={18} /> Add Product
               </Button>
             </div>
-          </div>
+          </div> */}
+          <div className="flex flex-wrap items-center gap-3 w-full">
+  <div className="relative w-full sm:w-auto">
+    <Search
+      className="absolute left-3 top-1/2 -translate-y-1/2"
+      size={18}
+      color="#4B5563"
+    />
+    <input
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="Search by name, SKU, category…"
+      className="pl-10 pr-4 py-2 rounded-xl bg-white/90 backdrop-blur text-gray-800 placeholder:text-gray-500 shadow-md
+                 w-full sm:w-[260px] md:w-[320px]
+                 focus:outline-none focus:ring-2 focus:ring-white/60"
+    />
+  </div>
+  <Button
+    onClick={openCreate}
+    className="whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
+  >
+    <Plus size={18} />
+    <span>Add Product</span>
+  </Button>
+</div>
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
