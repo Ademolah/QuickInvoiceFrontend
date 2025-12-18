@@ -124,14 +124,15 @@ api.interceptors.request.use((config) => {
    ========================= */
 export default function Inventory() {
 
-  const { code, } = useCurrency(); // 👈 get currency settings
+  // const { code, } = useCurrency(); // 👈 get currency settings
+  const { formatCurrency } = useCurrency()
   
     // helper to format currency
-    const formatCurrency = (amount) =>
-      new Intl.NumberFormat('en', {
-        style: 'currency',
-        currency: code,
-      }).format(amount);
+    // const formatCurrency = (amount) =>
+    //   new Intl.NumberFormat('en', {
+    //     style: 'currency',
+    //     currency: code,
+    //   }).format(amount);
     
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
