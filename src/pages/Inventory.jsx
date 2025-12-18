@@ -394,45 +394,30 @@ const saveItem = async () => {
               </p>
             </div>
 
-            {/* <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} color="#4B5563" />
+            <div className="flex flex-wrap items-center gap-3 w-full">
+              <div className="relative w-full sm:w-auto">
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2"
+                  size={18}
+                  color="#4B5563"
+                />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search by name, SKU, category…"
-                  className="pl-10 pr-4 py-2 rounded-xl bg-white/90 backdrop-blur text-gray-800 placeholder:text-gray-500 shadow-md w-[260px] md:w-[320px] focus:outline-none focus:ring-2 focus:ring-white/60"
+                  className="pl-10 pr-4 py-2 rounded-xl bg-white/90 backdrop-blur text-gray-800 placeholder:text-gray-500 shadow-md
+                            w-full sm:w-[260px] md:w-[320px]
+                            focus:outline-none focus:ring-2 focus:ring-white/60"
                 />
               </div>
-              <Button onClick={openCreate} className="whitespace-nowrap">
-                <Plus size={18} /> Add Product
+              <Button
+                onClick={openCreate}
+                className="whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                <Plus size={18} />
+                <span>Add Product</span>
               </Button>
-            </div> */}
-
-            <div className="flex flex-wrap items-center gap-3 w-full">
-  <div className="relative w-full sm:w-auto">
-    <Search
-      className="absolute left-3 top-1/2 -translate-y-1/2"
-      size={18}
-      color="#4B5563"
-    />
-    <input
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-      placeholder="Search by name, SKU, category…"
-      className="pl-10 pr-4 py-2 rounded-xl bg-white/90 backdrop-blur text-gray-800 placeholder:text-gray-500 shadow-md
-                 w-full sm:w-[260px] md:w-[320px]
-                 focus:outline-none focus:ring-2 focus:ring-white/60"
-    />
-  </div>
-  <Button
-    onClick={openCreate}
-    className="whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
-  >
-    <Plus size={18} />
-    <span>Add Product</span>
-  </Button>
-</div>
+            </div>
           </div>
 
           {/* Stats */}
