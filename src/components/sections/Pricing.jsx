@@ -39,7 +39,7 @@ export default function ExtraSections() {
               <CreditCard className="w-10 h-10 text-[#00B86B] mb-4" />
               <h3 className="text-xl font-semibold mb-2">Pro</h3>
               <p className="mb-4 text-sm">Unlimited invoices & receipts, payment tracking.</p>
-              <p className="text-2xl font-bold">₦1,500/mo</p>
+              <p className="text-2xl font-bold">₦3,000/mo</p>
             </div>
           </motion.div>
         </div>

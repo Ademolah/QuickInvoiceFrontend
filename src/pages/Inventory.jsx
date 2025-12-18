@@ -353,7 +353,11 @@ const saveItem = async () => {
     setOpen(false);
   } catch (e) {
     console.error(e);
-    setError(e.response?.data?.message || "Save failed");
+    if(e.response?.data?.code === "UPGRADE_REQUIRED"){
+      setError(e.response.data.message)
+    } else {
+      setError(e.response?.data?.message || "Save failed");
+    }
   } finally {
     setSaving(false);
   }
