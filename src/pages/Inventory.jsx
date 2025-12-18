@@ -407,9 +407,9 @@ const saveItem = async () => {
               <Button onClick={openCreate} className="whitespace-nowrap">
                 <Plus size={18} /> Add Product
               </Button>
-            </div>
-          </div> */}
-          <div className="flex flex-wrap items-center gap-3 w-full">
+            </div> */}
+
+            <div className="flex flex-wrap items-center gap-3 w-full">
   <div className="relative w-full sm:w-auto">
     <Search
       className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -433,6 +433,7 @@ const saveItem = async () => {
     <span>Add Product</span>
   </Button>
 </div>
+          </div>
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
