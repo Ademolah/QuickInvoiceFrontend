@@ -473,7 +473,7 @@ const saveItem = async () => {
               className="flex items-center justify-center gap-2
                           w-full sm:w-auto whitespace-nowrap"
             >
-              {exporting ? "Preparing PDF..." : "📄Print Inventory"}
+              📄{exporting ? " Preparing PDF..." : " Print Inventory"}
             </Button>
           </div>
 
