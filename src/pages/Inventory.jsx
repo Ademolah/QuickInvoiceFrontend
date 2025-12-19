@@ -458,26 +458,26 @@ const saveItem = async () => {
                 />
               </div>
                <Button
-      onClick={openCreate}
-      className="flex items-center justify-center gap-2
-                 w-full sm:w-auto whitespace-nowrap"
-    >
-      <Plus size={18} />
-      <span>Add Product</span>
-    </Button>
-  </div>
-  {/* Right: Export / Print */}
-  <button
-    onClick={exportInventoryPDF}
-    disabled={exporting}
-    className="flex items-center justify-center gap-2
-               w-full sm:w-auto
-               px-4 py-2 rounded-xl
-               bg-[#0046A5] text-white font-medium shadow
-               hover:opacity-90 disabled:opacity-50"
-  >
-    {exporting ? "Preparing PDF..." : "Print"}
-  </button>
+                onClick={openCreate}
+                className="flex items-center justify-center gap-2
+                          w-full sm:w-auto whitespace-nowrap"
+              >
+                <Plus size={18} />
+                <span>Add Product</span>
+              </Button>
+            </div>
+            {/* Right: Export / Print */}
+            <button
+              onClick={exportInventoryPDF}
+              disabled={exporting}
+              className="flex items-center justify-center gap-2
+                        w-full sm:w-auto
+                        px-4 py-2 rounded-xl
+                        bg-[#0046A5] text-white font-medium shadow
+                        hover:opacity-90 disabled:opacity-50"
+            >
+              {exporting ? "Preparing PDF..." : "Print Inventory"}
+            </button>
           </div>
 
           {/* Stats */}
