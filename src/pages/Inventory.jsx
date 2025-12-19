@@ -476,7 +476,7 @@ const saveItem = async () => {
                          font-medium shadow
                         hover:opacity-90 disabled:opacity-50"
             >
-              {exporting ? "Preparing PDF..." : "Print Inventory"}
+              {exporting ? "Preparing PDF..." : "📄Print Inventory"}
             </Button>
           </div>
 
