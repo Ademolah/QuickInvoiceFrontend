@@ -18,6 +18,12 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { useRef } from "react";
+import PrintInventory from "../components/PrintInventory";
+import html2canvas from "html2canvas"
+import jsPDF from "jspdf"
+import {jwtDecode} from "jwt-decode"
+
 /* =========================
    Inline UI Primitives
    ========================= */
@@ -132,6 +138,44 @@ export default function Inventory() {
   const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate()
+
+
+  //printing inventory
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
+  
+  console.log(user);
+  
+  
+
+  const printRef = useRef(null);
+  const [exportItems, setExportItems] = useState([]);
+  const [exporting, setExporting] = useState(false);
+  const exportInventoryPDF = async () => {
+    try {
+      setExporting(true);
+      const res = await api.get("/inventory/export/all");
+      setExportItems(res.data.items);
+      // wait for render
+      setTimeout(async () => {
+        const canvas = await html2canvas(printRef.current, {
+          scale: 2,
+          useCORS: true,
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = 210;
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("QuickInvoice-Inventory.pdf");
+      }, 300);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to export inventory");
+    } finally {
+      setExporting(false);
+    }
+  };
   
 
   
@@ -414,14 +458,27 @@ const saveItem = async () => {
                             focus:outline-none focus:ring-2 focus:ring-white/60"
                 />
               </div>
-              <Button
-                onClick={openCreate}
-                className="whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
-              >
-                <Plus size={18} />
-                <span>Add Product</span>
-              </Button>
-            </div>
+               <Button
+      onClick={openCreate}
+      className="flex items-center justify-center gap-2
+                 w-full sm:w-auto whitespace-nowrap"
+    >
+      <Plus size={18} />
+      <span>Add Product</span>
+    </Button>
+  </div>
+  {/* Right: Export / Print */}
+  <button
+    onClick={exportInventoryPDF}
+    disabled={exporting}
+    className="flex items-center justify-center gap-2
+               w-full sm:w-auto
+               px-4 py-2 rounded-xl
+               bg-[#0046A5] text-white font-medium shadow
+               hover:opacity-90 disabled:opacity-50"
+  >
+    {exporting ? "Preparing PDF..." : "Print"}
+  </button>
           </div>
 
           {/* Stats */}
@@ -682,7 +739,18 @@ const saveItem = async () => {
         >
           Q
         </button>
+
+
+        <div className="absolute left-[-9999px] top-0">
+        <PrintInventory
+          ref={printRef}
+          items={exportItems}
+          businessName={user?.businessName || "My Business"}
+        />
+      </div>
     </div>
+
+    
   );
 }
 
