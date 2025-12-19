@@ -658,27 +658,21 @@ const saveItem = async () => {
               placeholder="e.g., 10"
               required
             />
-            {/* <Field
-              label="Category"
-              value={form.category}
-              onChange={(v) => setForm((f) => ({ ...f, category: v }))}
-              placeholder="e.g., Phones"
-            /> */}
-
+           
             <select
-    value={form.category}
-    onChange={(e) =>
-      setForm((f) => ({ ...f, category: e.target.value }))
-    }
-    className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="">-- Select Category --</option>
-    {categories.map((cat) => (
-      <option key={cat} value={cat}>
-        {cat}
-      </option>
-    ))}
-  </select>
+            value={form.category}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, category: e.target.value }))
+            }
+            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">-- Select Category --</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
 
     
 
