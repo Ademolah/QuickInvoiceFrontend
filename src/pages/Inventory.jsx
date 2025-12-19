@@ -144,7 +144,6 @@ export default function Inventory() {
   const token = localStorage.getItem("token");
   const user = token ? jwtDecode(token) : null;
   
-  console.log(user);
   
   
 
