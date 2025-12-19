@@ -471,10 +471,7 @@ const saveItem = async () => {
               onClick={exportInventoryPDF}
               disabled={exporting}
               className="flex items-center justify-center gap-2
-                        w-full sm:w-auto
-                        px-4 py-2 rounded-xl
-                         font-medium shadow
-                        hover:opacity-90 disabled:opacity-50"
+                          w-full sm:w-auto whitespace-nowrap"
             >
               {exporting ? "Preparing PDF..." : "📄Print Inventory"}
             </Button>
