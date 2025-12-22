@@ -73,12 +73,27 @@ const exportStatementPDF = async () => {
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
+    windowWidth: 794,        // :point_left: force desktop width
+    scrollX: 0,
+    scrollY: -window.scrollY,
   });
   const imgData = canvas.toDataURL("image/png");
   const pdf = new jsPDF("p", "mm", "a4");
-  const imgWidth = 210;
+  const pageWidth = 210;
+  const pageHeight = 297;
+  const imgWidth = pageWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  let heightLeft = imgHeight;
+  let position = 0;
+  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+  // Handle multi-page statements
+  while (heightLeft > 0) {
+    position -= pageHeight;
+    pdf.addPage();
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
   pdf.save(`Statement-${month}.pdf`);
 };
 
@@ -240,6 +255,7 @@ const totals = invoices.reduce(
 
 
       {/* Print Statement of Account Button */}
+      
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end mb-6">
           <div className="w-full sm:w-auto">
             <label className="text-sm text-gray-600">Select Month</label>
@@ -268,9 +284,13 @@ const totals = invoices.reduce(
         </div>
 
 
+<div className="overflow-x-auto">
         <div
   ref={printRef}
   className="bg-white p-8 rounded-xl shadow text-gray-800"
+    style={{
+      width: "794px", // A4 width in pixels (96dpi)
+    }}
 >
   {/* Header */}
   <div className="flex justify-between items-start mb-8">
@@ -378,6 +398,7 @@ const totals = invoices.reduce(
       Please mark invoices as paid in your dashboard to keep records accurate.
     </p>
   </div>
+</div>
 </div>
 
       {/* Stats Cards */}
