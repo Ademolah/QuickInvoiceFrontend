@@ -281,7 +281,7 @@ const totals = invoices.reduce(
             disabled={!month || loading}
             className="px-5 py-2 rounded-lg bg-[#0046A5] text-white font-medium w-full sm:w-auto disabled:opacity-50"
           >
-            {loadingStatement ? "Loading…" : "Generate Statement"}
+            {loadingStatement ? "Generating…" : "Generate Statement"}
           </button>
           {invoices.length > 0 && (
             <button
