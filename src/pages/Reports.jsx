@@ -50,12 +50,14 @@ const Reports = () => {
   const printRef = useRef(null);
   const token = localStorage.getItem("token");
   const decodedUser = token ? jwtDecode(token) : null;
+  const [loadingStatement, setLoadingStatement] = useState(false);
+  const [printStatment, setPrintStatement] = useState(false);
 
   const businessName = decodedUser?.businessName
 
   const fetchStatement = async () => {
   try {
-    setLoading(true);
+    setLoadingStatement(true);
     const res = await axios.get(`${API}/api/reports/statement?month=${month}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -64,37 +66,45 @@ const Reports = () => {
     console.error(err);
     alert("Failed to load statement");
   } finally {
-    setLoading(false);
+    setLoadingStatement(false);
   }
 };
 
 const exportStatementPDF = async () => {
-  const element = printRef.current;
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    windowWidth: 794,        // 👈 force desktop width
-    scrollX: 0,
-    scrollY: -window.scrollY,
-  });
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jsPDF("p", "mm", "a4");
-  const pageWidth = 210;
-  const pageHeight = 297;
-  const imgWidth = pageWidth;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  let heightLeft = imgHeight;
-  let position = 0;
-  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
-  // Handle multi-page statements
-  while (heightLeft > 0) {
-    position -= pageHeight;
-    pdf.addPage();
+  try {
+    setPrintStatement(true)
+    const element = printRef.current;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      windowWidth: 794,        // 👈 force desktop width
+      scrollX: 0,
+      scrollY: -window.scrollY,
+    });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
+    // Handle multi-page statements
+    while (heightLeft > 0) {
+      position -= pageHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    pdf.save(`Statement-${month}.pdf`);
+  } catch (error) {
+    console.log(error);
+    alert("Failed to print statement");
+  } finally {
+    setPrintStatement(false)
   }
-  pdf.save(`Statement-${month}.pdf`);
 };
 
 const totals = invoices.reduce(
@@ -271,14 +281,14 @@ const totals = invoices.reduce(
             disabled={!month || loading}
             className="px-5 py-2 rounded-lg bg-[#0046A5] text-white font-medium w-full sm:w-auto disabled:opacity-50"
           >
-            {loading ? "Loading…" : "Generate Statement"}
+            {loadingStatement ? "Loading…" : "Generate Statement"}
           </button>
           {invoices.length > 0 && (
             <button
               onClick={exportStatementPDF}
               className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 text-white font-medium w-full sm:w-auto"
             >
-              Print Statement
+              {printStatment ? "Printing..." : "Print Statement"}
             </button>
           )}
         </div>
