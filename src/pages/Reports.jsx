@@ -345,19 +345,19 @@ const totals = invoices.reduce(
                     </div>
                   </td>
                   <td className="p-2 text-right">
-                    ₦{inv.subtotal?.toLocaleString()}
+                    ₦{inv.subtotal?.toLocaleString() || 0}
                   </td>
                   <td className="p-2 text-right">
-                    ₦{inv.tax?.toLocaleString()}
+                    ₦{inv.tax?.toLocaleString() || 0}
                   </td>
                   <td className="p-2 text-right">
-                    ₦{inv.discount?.toLocaleString()}
+                    ₦{inv.discount?.toLocaleString() || 0}
                   </td>
                   <td className="p-2 text-right font-semibold">
-                    ₦{inv.total?.toLocaleString()}
+                    ₦{inv.total?.toLocaleString() || 0}
                   </td>
                   <td className="p-2 text-right text-red-600">
-                    ₦{inv.outstandingBalance?.toLocaleString()}
+                    ₦{inv.outstandingBalance?.toLocaleString() || 0}
                   </td>
                   <td className="p-2 text-center">
                     <span
