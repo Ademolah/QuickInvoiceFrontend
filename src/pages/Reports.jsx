@@ -73,7 +73,7 @@ const exportStatementPDF = async () => {
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
-    windowWidth: 794,        // :point_left: force desktop width
+    windowWidth: 794,        // 👈 force desktop width
     scrollX: 0,
     scrollY: -window.scrollY,
   });
@@ -284,122 +284,122 @@ const totals = invoices.reduce(
         </div>
 
 
-<div className="overflow-x-auto">
-        <div
-  ref={printRef}
-  className="bg-white p-8 rounded-xl shadow text-gray-800"
-    style={{
-      width: "794px", // A4 width in pixels (96dpi)
-    }}
->
-  {/* Header */}
-  <div className="flex justify-between items-start mb-8">
-    <div>
-      <h1 className="text-2xl font-bold text-[#0046A5]">
-        Statement of Account
-      </h1>
-      <p className="text-sm text-gray-500 mt-1">
-        Period: {month}
-      </p>
-    </div>
-    <div className="text-right">
-      <h2 className="text-lg font-semibold">
-        {businessName}
-      </h2>
-      <p className="text-xs text-gray-500">
-        QuickInvoice Systems
-      </p>
-    </div>
-  </div>
-  {/* Table */}
-  <div className="overflow-x-auto">
-    <table className="w-full border-collapse text-sm">
-      <thead className="bg-gray-100">
-        <tr>
-          <th className="p-2 text-left">Client</th>
-          <th className="p-2 text-right">Subtotal</th>
-          <th className="p-2 text-right">Tax</th>
-          <th className="p-2 text-right">Discount</th>
-          <th className="p-2 text-right">Total</th>
-          <th className="p-2 text-right">Outstanding</th>
-          <th className="p-2 text-center">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {invoices.map((inv) => (
-          <tr key={inv._id} className="border-b">
-            <td className="p-2 text-left">
-              <div className="font-medium">{inv.clientName}</div>
-              <div className="text-xs text-gray-500">
-                {inv.clientPhone}
-              </div>
-            </td>
-            <td className="p-2 text-right">
-              ₦{inv.subtotal?.toLocaleString()}
-            </td>
-            <td className="p-2 text-right">
-              ₦{inv.tax?.toLocaleString()}
-            </td>
-            <td className="p-2 text-right">
-              ₦{inv.discount?.toLocaleString()}
-            </td>
-            <td className="p-2 text-right font-semibold">
-              ₦{inv.total?.toLocaleString()}
-            </td>
-            <td className="p-2 text-right text-red-600">
-              ₦{inv.outstandingBalance?.toLocaleString()}
-            </td>
-            <td className="p-2 text-center">
-              <span
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  inv.status === "paid"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
-              >
-                {inv.status === "paid" ? "Paid" : "Unpaid"}
+      <div className="overflow-x-auto">
+              <div
+        ref={printRef}
+        className="bg-white p-8 rounded-xl shadow text-gray-800"
+          style={{
+            width: "794px", // A4 width in pixels (96dpi)
+          }}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-[#0046A5]">
+              Statement of Account
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Period: {month}
+            </p>
+          </div>
+          <div className="text-right">
+            <h2 className="text-lg font-semibold">
+              {businessName}
+            </h2>
+            <p className="text-xs text-gray-500">
+              QuickInvoice Systems
+            </p>
+          </div>
+        </div>
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-2 text-left">Client</th>
+                <th className="p-2 text-right">Subtotal</th>
+                <th className="p-2 text-right">VAT</th>
+                <th className="p-2 text-right">Discount</th>
+                <th className="p-2 text-right">Total</th>
+                <th className="p-2 text-right">Outstanding</th>
+                <th className="p-2 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map((inv) => (
+                <tr key={inv._id} className="border-b">
+                  <td className="p-2 text-left">
+                    <div className="font-medium">{inv.clientName}</div>
+                    <div className="text-xs text-gray-500">
+                      {inv.clientPhone}
+                    </div>
+                  </td>
+                  <td className="p-2 text-right">
+                    ₦{inv.subtotal?.toLocaleString()}
+                  </td>
+                  <td className="p-2 text-right">
+                    ₦{inv.tax?.toLocaleString()}
+                  </td>
+                  <td className="p-2 text-right">
+                    ₦{inv.discount?.toLocaleString()}
+                  </td>
+                  <td className="p-2 text-right font-semibold">
+                    ₦{inv.total?.toLocaleString()}
+                  </td>
+                  <td className="p-2 text-right text-red-600">
+                    ₦{inv.outstandingBalance?.toLocaleString()}
+                  </td>
+                  <td className="p-2 text-center">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        inv.status === "paid"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {inv.status === "paid" ? "Paid" : "Unpaid"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Summary */}
+        <div className="mt-8 flex justify-end">
+          <div className="w-full sm:w-1/2 border rounded-lg p-4 bg-gray-50">
+            <h3 className="font-semibold mb-3 text-[#0046A5]">
+              Statement Summary
+            </h3>
+            <div className="flex justify-between text-sm mb-1">
+              <span>Total Invoiced</span>
+              <span>₦{totals.total.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-sm mb-1">
+              <span>Total Outstanding</span>
+              <span className="text-red-600">
+                ₦{totals.outstanding.toLocaleString()}
               </span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  {/* Summary */}
-  <div className="mt-8 flex justify-end">
-    <div className="w-full sm:w-1/2 border rounded-lg p-4 bg-gray-50">
-      <h3 className="font-semibold mb-3 text-[#0046A5]">
-        Statement Summary
-      </h3>
-      <div className="flex justify-between text-sm mb-1">
-        <span>Total Invoiced</span>
-        <span>₦{totals.total.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
+              <span>Total Paid</span>
+              <span className="text-green-600">
+                ₦{(totals.total - totals.outstanding).toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
+        {/* Footer */}
+        <div className="mt-10 pt-4 border-t text-center text-xs text-gray-500">
+          <p>
+            This statement was generated electronically via QuickInvoice.
+          </p>
+          <p>
+            Please mark invoices as paid in your dashboard to keep records accurate.
+          </p>
+        </div>
       </div>
-      <div className="flex justify-between text-sm mb-1">
-        <span>Total Outstanding</span>
-        <span className="text-red-600">
-          ₦{totals.outstanding.toLocaleString()}
-        </span>
       </div>
-      <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
-        <span>Total Paid</span>
-        <span className="text-green-600">
-          ₦{(totals.total - totals.outstanding).toLocaleString()}
-        </span>
-      </div>
-    </div>
-  </div>
-  {/* Footer */}
-  <div className="mt-10 pt-4 border-t text-center text-xs text-gray-500">
-    <p>
-      This statement was generated electronically via QuickInvoice.
-    </p>
-    <p>
-      Please mark invoices as paid in your dashboard to keep records accurate.
-    </p>
-  </div>
-</div>
-</div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
