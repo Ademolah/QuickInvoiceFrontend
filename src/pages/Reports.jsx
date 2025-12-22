@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   Card,
@@ -29,6 +29,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../context/CurrencyContext";
 import { motion } from "framer-motion";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import {jwtDecode} from "jwt-decode"
 
 // const API =  "http://localhost:4000";
 
@@ -40,6 +43,56 @@ const Reports = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState("");
   const navigate = useNavigate();
+
+  //printing statement of account
+
+  const [month, setMonth] = useState("");
+  const printRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const decodedUser = token ? jwtDecode(token) : null;
+
+  const businessName = decodedUser?.businessName
+
+  const fetchStatement = async () => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`${API}/api/reports/statement?month=${month}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setInvoices(res.data.invoices);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load statement");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const exportStatementPDF = async () => {
+  const element = printRef.current;
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+  });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+  const imgWidth = 210;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  pdf.save(`Statement-${month}.pdf`);
+};
+
+const totals = invoices.reduce(
+  (acc, inv) => {
+    acc.subtotal += inv.subtotal || 0;
+    acc.tax += inv.tax || 0;
+    acc.discount += inv.discount || 0;
+    acc.total += inv.total || 0;
+    acc.outstanding += inv.outstandingBalance || 0;
+    return acc;
+  },
+  { subtotal: 0, tax: 0, discount: 0, total: 0, outstanding: 0 }
+);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -184,6 +237,148 @@ const Reports = () => {
           className="border rounded-lg px-3 py-2 text-gray-600 mt-4 md:mt-0"
         />
       </div>
+
+
+      {/* Print Statement of Account Button */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end mb-6">
+          <div className="w-full sm:w-auto">
+            <label className="text-sm text-gray-600">Select Month</label>
+            <input
+              type="month"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+              className="mt-1 px-3 py-2 border rounded-lg w-full sm:w-[220px]"
+            />
+          </div>
+          <button
+            onClick={fetchStatement}
+            disabled={!month || loading}
+            className="px-5 py-2 rounded-lg bg-[#0046A5] text-white font-medium w-full sm:w-auto disabled:opacity-50"
+          >
+            {loading ? "Loading…" : "Generate Statement"}
+          </button>
+          {invoices.length > 0 && (
+            <button
+              onClick={exportStatementPDF}
+              className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 text-white font-medium w-full sm:w-auto"
+            >
+              Print Statement
+            </button>
+          )}
+        </div>
+
+
+        <div
+  ref={printRef}
+  className="bg-white p-8 rounded-xl shadow text-gray-800"
+>
+  {/* Header */}
+  <div className="flex justify-between items-start mb-8">
+    <div>
+      <h1 className="text-2xl font-bold text-[#0046A5]">
+        Statement of Account
+      </h1>
+      <p className="text-sm text-gray-500 mt-1">
+        Period: {month}
+      </p>
+    </div>
+    <div className="text-right">
+      <h2 className="text-lg font-semibold">
+        {businessName}
+      </h2>
+      <p className="text-xs text-gray-500">
+        QuickInvoice Systems
+      </p>
+    </div>
+  </div>
+  {/* Table */}
+  <div className="overflow-x-auto">
+    <table className="w-full border-collapse text-sm">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="p-2 text-left">Client</th>
+          <th className="p-2 text-right">Subtotal</th>
+          <th className="p-2 text-right">Tax</th>
+          <th className="p-2 text-right">Discount</th>
+          <th className="p-2 text-right">Total</th>
+          <th className="p-2 text-right">Outstanding</th>
+          <th className="p-2 text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {invoices.map((inv) => (
+          <tr key={inv._id} className="border-b">
+            <td className="p-2 text-left">
+              <div className="font-medium">{inv.clientName}</div>
+              <div className="text-xs text-gray-500">
+                {inv.clientPhone}
+              </div>
+            </td>
+            <td className="p-2 text-right">
+              ₦{inv.subtotal?.toLocaleString()}
+            </td>
+            <td className="p-2 text-right">
+              ₦{inv.tax?.toLocaleString()}
+            </td>
+            <td className="p-2 text-right">
+              ₦{inv.discount?.toLocaleString()}
+            </td>
+            <td className="p-2 text-right font-semibold">
+              ₦{inv.total?.toLocaleString()}
+            </td>
+            <td className="p-2 text-right text-red-600">
+              ₦{inv.outstandingBalance?.toLocaleString()}
+            </td>
+            <td className="p-2 text-center">
+              <span
+                className={`px-2 py-1 rounded text-xs font-medium ${
+                  inv.status === "paid"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {inv.status === "paid" ? "Paid" : "Unpaid"}
+              </span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {/* Summary */}
+  <div className="mt-8 flex justify-end">
+    <div className="w-full sm:w-1/2 border rounded-lg p-4 bg-gray-50">
+      <h3 className="font-semibold mb-3 text-[#0046A5]">
+        Statement Summary
+      </h3>
+      <div className="flex justify-between text-sm mb-1">
+        <span>Total Invoiced</span>
+        <span>₦{totals.total.toLocaleString()}</span>
+      </div>
+      <div className="flex justify-between text-sm mb-1">
+        <span>Total Outstanding</span>
+        <span className="text-red-600">
+          ₦{totals.outstanding.toLocaleString()}
+        </span>
+      </div>
+      <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
+        <span>Total Paid</span>
+        <span className="text-green-600">
+          ₦{(totals.total - totals.outstanding).toLocaleString()}
+        </span>
+      </div>
+    </div>
+  </div>
+  {/* Footer */}
+  <div className="mt-10 pt-4 border-t text-center text-xs text-gray-500">
+    <p>
+      This statement was generated electronically via QuickInvoice.
+    </p>
+    <p>
+      Please mark invoices as paid in your dashboard to keep records accurate.
+    </p>
+  </div>
+</div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
