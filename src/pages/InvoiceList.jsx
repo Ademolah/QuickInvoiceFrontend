@@ -76,7 +76,7 @@ const InvoiceList = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(invoices.map(inv => (inv._id === id ? res.data : inv)));
-      toast.success("✅ Receipt generated successfully!");
+      toast.success("Receipt generated successfully!");
     } catch (err) {
       alert("Failed to mark as paid");
     }

@@ -381,7 +381,7 @@ const downloadPDF = async () => {
         res.data.lowStockWarnings.join("\n")
       );
       } else {
-      toast.success("✅ Receipt generated successfully!");
+      toast.success("Receipt generated successfully!");
     }
     } catch (err) {
       console.error(err);
