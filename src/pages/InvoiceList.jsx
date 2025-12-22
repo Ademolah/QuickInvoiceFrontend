@@ -5,6 +5,7 @@ import { Trash2,  Eye, CheckCircle } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from "../context/CurrencyContext";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 // import LoadingState from "../components/LoadingState";
 // import api from "../utils/api";
 
@@ -75,6 +76,7 @@ const InvoiceList = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(invoices.map(inv => (inv._id === id ? res.data : inv)));
+      toast.success("✅ Receipt generated successfully!");
     } catch (err) {
       alert("Failed to mark as paid");
     }

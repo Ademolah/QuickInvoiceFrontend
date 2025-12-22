@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+import toast from "react-hot-toast"
 // import api from "../utils/api";
 
 
@@ -380,7 +381,7 @@ const downloadPDF = async () => {
         res.data.lowStockWarnings.join("\n")
       );
       } else {
-      alert("✅ Invoice marked as paid successfully!");
+      toast.success("✅ Receipt generated successfully!");
     }
     } catch (err) {
       console.error(err);
