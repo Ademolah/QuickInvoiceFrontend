@@ -107,6 +107,14 @@ const exportStatementPDF = async () => {
   }
 };
 
+const ROWS_PER_PAGE = 5;
+const [currentPage, setCurrentPage] = useState(1);
+const totalPages = Math.ceil(invoices.length / ROWS_PER_PAGE);
+const paginatedInvoices = invoices.slice(
+  (currentPage - 1) * ROWS_PER_PAGE,
+  currentPage * ROWS_PER_PAGE
+);
+
 const totals = invoices.reduce(
   (acc, inv) => {
     acc.subtotal += inv.subtotal || 0;
@@ -336,7 +344,7 @@ const totals = invoices.reduce(
               </tr>
             </thead>
             <tbody>
-              {invoices.map((inv) => (
+              {paginatedInvoices.map((inv) => (
                 <tr key={inv._id} className="border-b">
                   <td className="p-2 text-left">
                     <div className="font-medium">{inv.clientName}</div>
@@ -375,6 +383,31 @@ const totals = invoices.reduce(
             </tbody>
           </table>
         </div>
+        {!printStatment && totalPages > 1 && (
+          <div className="mt-4 flex justify-between items-center text-sm">
+            <span className="text-gray-500">
+              Showing {(currentPage - 1) * ROWS_PER_PAGE + 1}–
+              {Math.min(currentPage * ROWS_PER_PAGE, invoices.length)} of{" "}
+              {invoices.length} invoices
+            </span>
+            <div className="flex gap-2">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className="px-3 py-1 rounded border text-gray-700 disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className="px-3 py-1 rounded border text-gray-700 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
         {/* Summary */}
         <div className="mt-8 flex justify-end">
           <div className="w-full sm:w-1/2 border rounded-lg p-4 bg-gray-50">
