@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 
 import React, { useEffect, useState, useRef } from "react";
@@ -50,14 +51,13 @@ const Reports = () => {
   const printRef = useRef(null);
   const token = localStorage.getItem("token");
   const decodedUser = token ? jwtDecode(token) : null;
-  const [loadingStatement, setLoadingStatement] = useState(false);
+  // const [loadingStatement, setLoadingStatement] = useState(false);
   const [printStatment, setPrintStatement] = useState(false);
 
   const businessName = decodedUser?.businessName
 
   const fetchStatement = async () => {
   try {
-    setLoadingStatement(true);
     const res = await axios.get(`${API}/api/reports/statement?month=${month}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -65,9 +65,7 @@ const Reports = () => {
   } catch (err) {
     console.error(err);
     alert("Failed to load statement");
-  } finally {
-    setLoadingStatement(false);
-  }
+  } 
 };
 
 const exportStatementPDF = async () => {
@@ -106,6 +104,11 @@ const exportStatementPDF = async () => {
     setPrintStatement(false)
   }
 };
+
+useEffect(() => {
+  if (!month || printStatment) return;
+  fetchStatement();
+}, [month]);
 
 const ROWS_PER_PAGE = 5;
 const [currentPage, setCurrentPage] = useState(1);
@@ -231,7 +234,7 @@ const totals = invoices.reduce(
               >
                 <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
                 <p className="mt-4 text-[#0046A5] font-semibold">
-                  Fetching your Invoices...
+                  Fetching your Reports...
                 </p>
               </motion.div>
             </div>
@@ -284,13 +287,13 @@ const totals = invoices.reduce(
               className="mt-1 px-3 py-2 border rounded-lg w-full sm:w-[220px]"
             />
           </div>
-          <button
+          {/* <button
             onClick={fetchStatement}
             disabled={!month || loading}
             className="px-5 py-2 rounded-lg bg-[#0046A5] text-white font-medium w-full sm:w-auto disabled:opacity-50"
           >
             {loadingStatement ? "Generating…" : "Generate Statement"}
-          </button>
+          </button> */}
           {invoices.length > 0 && (
             <button
               onClick={exportStatementPDF}
