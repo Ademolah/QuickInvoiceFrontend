@@ -198,7 +198,7 @@ export default function Blog() {
     <div className="min-h-screen bg-[#F9FAFB]">
         <Navbar/>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-[#0046A5] via-[#0046A5] to-[#00B86B] text-white py-20 px-6 text-center overflow-hidden">
+      <section className="relative bg-gradient-to-r from-[#0028AE] via-[#00A6FA] to-[#0028AE] text-white py-20 px-6 text-center overflow-hidden">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}

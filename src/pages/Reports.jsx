@@ -385,7 +385,7 @@ const totals = invoices.reduce(
             <span className="text-gray-500">
               Showing {(currentPage - 1) * ROWS_PER_PAGE + 1}–
               {Math.min(currentPage * ROWS_PER_PAGE, invoices.length)} of{" "}
-              {invoices.length} invoices
+              {invoices.length} transactions
             </span>
             <div className="flex gap-2">
               <button
