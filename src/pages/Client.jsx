@@ -76,7 +76,7 @@ export default function Client() {
       <div className="flex justify-center mt-6">
         <button
           onClick={() => navigate("/dashboard")}
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+          className="px-6 py-3 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           Q
         </button>

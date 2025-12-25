@@ -34,7 +34,7 @@ const Button = ({ className = "", children, ...props }) => (
   <button
     className={
       "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-all " +
-      "bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white shadow hover:shadow-md hover:opacity-95 active:scale-[0.98] " +
+      "bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white shadow hover:shadow-md hover:opacity-95 active:scale-[0.98] " +
       className
     }
     {...props}
@@ -427,7 +427,7 @@ const saveItem = async () => {
     <div className="min-h-screen bg-[#F5F7FB]">
       {/* Header */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0046A5] via-[#00B86B] to-[#0046A5] opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0028AE] via-[#00A6FA] to-[#0028AE] opacity-90" />
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

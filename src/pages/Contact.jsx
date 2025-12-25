@@ -70,7 +70,7 @@ export default function Contact() {
     <div className="bg-gray-50 min-h-screen flex flex-col">
         <Navbar/>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white py-20 text-center">
+      <section className="bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white py-20 text-center">
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ export default function Contact() {
 
             <button
               type="submit"
-              className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition w-full md:w-auto"
+              className="bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white px-6 py-3 rounded-lg shadow-md hover:opacity-90 transition w-full md:w-auto"
             >
               Send Message
             </button>
