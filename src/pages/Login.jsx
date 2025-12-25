@@ -58,14 +58,16 @@ export default function Login() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#0046A5] to-[#00B86B] p-4">
+    <div className="flex items-center justify-center min-h-screen bg-[#00A6FA] p-4">
       <div className="bg-white shadow-lg rounded-2xl p-8 max-w-md w-full">
         
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div className="w-14 h-14 bg-gradient-to-r from-[#0046A5] to-[#00B86B] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-md">
-            Q
-          </div>
+          <img
+            src="/quickauth.svg"   // image in public/
+            alt="QuickInvoice"
+            className="h-14 w-auto object-contain"
+          />
         </div>
 
         {/* Title */}
@@ -143,7 +145,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white font-semibold hover:opacity-90 transition duration-200 shadow-md"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white font-semibold hover:opacity-90 transition duration-200 shadow-md"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>

@@ -246,7 +246,7 @@ const [user, setUser] = useState(null);
             </p>
             <button
               onClick={() => setShowFormModal(true)}
-              className="bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white w-full py-2 rounded-lg mt-4"
+              className="bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-full py-2 rounded-lg mt-4"
             >
               Continue
             </button>
@@ -301,7 +301,7 @@ const [user, setUser] = useState(null);
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className={`bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white w-full py-2 rounded-lg mt-4 ${
+              className={`bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-full py-2 rounded-lg mt-4 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
@@ -360,7 +360,7 @@ const [user, setUser] = useState(null);
 
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white p-6 rounded-xl shadow-lg">
+          <div className="bg-[#0028AE] text-white p-6 rounded-xl shadow-lg">
             <h2 className="text-lg font-semibold mb-2">Invoices This Month</h2>
             <p className="text-2xl font-bold">{stats.totalInvoicesThisMonth}</p>
           </div>
@@ -370,7 +370,7 @@ const [user, setUser] = useState(null);
             <p className="text-2xl font-bold">{formatCurrency(stats.totalRevenue).toLocaleString()}</p>
           </div>
 
-          <div className="bg-gradient-to-r from-[#00B86B] to-[#0046A5] text-white p-6 rounded-xl shadow-lg">
+          <div className="bg-[#00A6FA] text-white p-6 rounded-xl shadow-lg">
             <h2 className="text-lg font-semibold mb-2">Unpaid Invoices</h2>
             <p className="text-2xl font-bold">{stats.totalUnpaid}</p>
           </div>

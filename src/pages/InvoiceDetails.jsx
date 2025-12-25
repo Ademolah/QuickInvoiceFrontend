@@ -509,7 +509,7 @@ const downloadPDF = async () => {
             )}
 
             <button onClick={sharePDF} disabled={actionLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0028AE] to-[#00A6FA] hover:opacity-90 transition"
             variant="secondary">
               {actionLoading ? "Preparing..." : "Share"}
               </button>
@@ -517,7 +517,7 @@ const downloadPDF = async () => {
             <button
               onClick={downloadPDF}
               disabled={actionLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white hover:opacity-95 disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white hover:opacity-95 disabled:opacity-60"
             >
               <Download size={18} />
               {actionLoading ? "Preparing..." : "Download PDF"}
@@ -554,7 +554,7 @@ const downloadPDF = async () => {
           }}
         >
           {/* Premium gradient header */}
-          <div className="p-6 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white">
+          <div className="p-6 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-4">
 
@@ -569,9 +569,13 @@ const downloadPDF = async () => {
                             className="w-10 h-10 rounded-md object-cover border border-gray-200"
                           />
                         ) : (
-                          <div className="bg-white/20 p-2 rounded-md font-bold w-10 h-10 flex items-center justify-center text-lg">
-                            Q
-                          </div>
+                          <div className="flex justify-center mb-6">
+                          <img
+                            src="/quickauth.svg"   // image in public/
+                            alt="QuickInvoice"
+                            className="h-14 w-auto object-contain"
+                          />
+                        </div>
                         )}
                         <h2 className="text-2xl md:text-3xl font-extrabold">Invoice</h2>
                       </div>
@@ -703,7 +707,7 @@ const downloadPDF = async () => {
       {/* Floating Q Button at Bottom */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
         >
           Q
         </button>

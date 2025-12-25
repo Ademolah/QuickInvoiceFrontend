@@ -112,7 +112,7 @@ export default function HowToUse() {
             className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow"
           >
             <div className="flex items-start gap-4">
-              <div className="text-white bg-gradient-to-br from-[#0046A5] to-[#00B86B] p-3 rounded-xl text-xl">
+              <div className="text-white bg-gradient-to-br from-[#0028AE] to-[#00A6FA] p-3 rounded-xl text-xl">
                 {step.icon}
               </div>
               <div>

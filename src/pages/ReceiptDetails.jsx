@@ -9,7 +9,7 @@ import jsPDF from "jspdf";
 import { ArrowLeft, Download, CheckCircle2 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 
-const API = "https://quickinvoice-backend-1.onrender.com"; // adjust as needed
+const API = "https://quickinvoice-backend-1.onrender.com"; 
 
 export default function ReceiptDetails() {
   const { invoiceId } = useParams();
@@ -189,7 +189,7 @@ export default function ReceiptDetails() {
             <button
               onClick={sharePDF}
               disabled={actionLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0028AE] to-[#00A6FA] hover:opacity-90 transition"
             >
               {actionLoading ? "Preparing..." : "Share"}
             </button>

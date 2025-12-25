@@ -86,7 +86,7 @@ export default function Features() {
               <div
                 className="
                 w-14 h-14 flex items-center justify-center rounded-2xl
-                bg-gradient-to-br from-[#0046A5] to-[#00B86B]
+                bg-gradient-to-br from-[#00A6FA] to-[#0028AE]
                 text-white text-3xl shadow-md mb-6 group-hover:scale-110 transition
                 "
               >

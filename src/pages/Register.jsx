@@ -80,10 +80,18 @@ export default function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#0046A5] to-[#00B86B] p-4">
+    <div className="flex items-center justify-center min-h-screen bg-[#00A6FA] p-4">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl p-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/quickauth.svg"   
+            alt="QuickInvoice"
+            className="h-14 w-auto object-contain"
+          />
+        </div>
         <h1 className="text-3xl font-bold text-center text-[#0046A5] mb-6">
-          Create Your QuickInvoice Account
+          Create Your Account
         </h1>
 
         {error && (

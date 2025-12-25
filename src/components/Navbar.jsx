@@ -20,11 +20,13 @@ export default function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-2"
         >
-          <div className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white font-bold text-lg px-3 py-1 rounded-lg shadow-sm">
-            <Link to="/">
-            Q
-            </Link>
-          </div>
+          <Link to="/" className="flex items-center">
+            <img
+              src="/quicknav.svg"   // your image in public/
+              alt="QuickInvoice"
+              className="h-8 w-auto sm:h-9 object-contain"
+            />
+          </Link>
           <h1 className="font-poppins font-bold text-xl text-gray-800">
             <Link to="/">
             QuickInvoice
@@ -75,7 +77,7 @@ export default function Navbar() {
           </Link>
           <Link
             to="/register"
-            className="px-5 py-2 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+            className="px-5 py-2 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
           >
             Register
           </Link>
@@ -98,13 +100,14 @@ export default function Navbar() {
       >
         <div className="flex justify-between items-center px-4 py-4 border-b">
           <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white font-bold text-lg px-3 py-1 rounded-lg shadow-sm">
-              Q
-            </div>
-            <h1 className="font-poppins font-bold text-xl text-gray-800">
-              QuickInvoice
-              <span className="text-[#00B86B]"></span>
-            </h1>
+            <Link to="/" className="flex items-center">
+            <img
+              src="/quicknav.svg"   // your image in public/
+              alt="QuickInvoice"
+              className="h-8 w-auto sm:h-9 object-contain"
+            />
+          </Link>
+            
           </div>
           <button
             onClick={toggleDrawer}
@@ -152,7 +155,7 @@ export default function Navbar() {
           </Link>
           <Link
             to="/register"
-            className="px-5 py-2 bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+            className="px-5 py-2 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
             onClick={toggleDrawer}
           >
             Register

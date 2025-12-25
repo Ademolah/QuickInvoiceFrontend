@@ -62,16 +62,23 @@ const Sidebar = () => {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 bg-gradient-to-r from-blue-600 to-green-500 p-2 rounded-lg shadow-lg text-white"
+        className="md:hidden fixed top-4 left-4 z-50 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] p-2 rounded-lg shadow-lg text-white"
       >
         <Menu size={24} />
       </button>
 
       {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex flex-col w-64 h-screen bg-gradient-to-b from-[#0046A5] to-[#00B86B] text-white p-4 shadow-xl justify-between">
+      <aside className="hidden md:flex flex-col w-64 h-screen bg-gradient-to-b from-[#0028AE] to-[#00A6FA] text-white p-4 shadow-xl justify-between">
         {/* Top Section */}
         <div>
-          <h2 className="text-2xl font-bold mb-6">QuickInvoice <span className="text-green-300"></span></h2>
+          {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <img
+                src="/quicknav.svg"   // image in public/
+                alt="QuickInvoice"
+                className="h-14 w-auto object-contain"
+              />
+            </div>
           {/* <nav className="flex flex-col gap-2">
             {links.map((link) => (
               <Link key={link.name} to={link.path} className={linkClass(link.path)}>
@@ -143,7 +150,7 @@ const Sidebar = () => {
           ></div>
 
           {/* Drawer Content */}
-          <div className="relative bg-gradient-to-b from-[#0046A5] to-[#00B86B] w-64 p-4 shadow-lg flex flex-col justify-between">
+          <div className="relative bg-gradient-to-b from-[#0028AE] to-[#00A6FA] w-64 p-4 shadow-lg flex flex-col justify-between">
             
             
             {/* Close Button */}
@@ -156,9 +163,14 @@ const Sidebar = () => {
 
             {/* Top Section */}
             <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-6 text-white">
-                QuickInvoice <span className="text-green-300"></span>
-              </h2>
+              {/* Logo */}
+              <div className="flex justify-center mb-6">
+                <img
+                  src="/quicknav.svg"   // image in public/
+                  alt="QuickInvoice"
+                  className="h-14 w-auto object-contain"
+                />
+              </div>
               {/* <nav className="flex flex-col gap-2">
                 {links.map((link) => (
                   <Link

@@ -216,13 +216,7 @@ const totals = invoices.reduce(
       }, []);
   }, [invoices]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center h-[80vh]">
-  //       <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-  //     </div>
-  //   );
-  // }
+  
   if (loading) {
           return (
             <div className="flex items-center justify-center h-[70vh]">
@@ -297,7 +291,7 @@ const totals = invoices.reduce(
           {invoices.length > 0 && (
             <button
               onClick={exportStatementPDF}
-              className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-green-500 text-white font-medium w-full sm:w-auto"
+              className="px-5 py-2 rounded-lg bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white font-medium w-full sm:w-auto"
             >
               {printStatment ? "Printing..." : "Print Statement"}
             </button>
@@ -559,7 +553,7 @@ const totals = invoices.reduce(
       {/* Floating Q Button at Bottom */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-[#00A6FA] transition"
         >
           Q
         </button>

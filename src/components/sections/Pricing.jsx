@@ -5,7 +5,7 @@ export default function ExtraSections() {
   return (
     <div className="w-full flex flex-col gap-24">
       {/* Billing Section */}
-      <section className="relative bg-gradient-to-r from-[#0046A5] to-[#00B86B] py-20 px-6 text-white rounded-2xl shadow-xl">
+      <section className="relative bg-gradient-to-r from-[#00A6FA] to-[#0028AE] py-20 px-6 text-white rounded-2xl shadow-xl">
         <div className="max-w-6xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}

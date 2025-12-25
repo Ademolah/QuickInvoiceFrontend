@@ -88,7 +88,7 @@ export default function Receipts() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white px-3 py-2 rounded-lg">
+          <div className="bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white px-3 py-2 rounded-lg">
             <ReceiptText size={20} />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-[#0046A5]">
@@ -150,7 +150,7 @@ export default function Receipts() {
                   <td className="px-4 py-3">
                     <button
                       onClick={() => navigate(`/receipts/${inv._id}`)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0046A5] to-[#00B86B] hover:opacity-90 transition"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0028AE] to-[#00A6FA] hover:opacity-90 transition"
                     >
                       <FileText size={16} />
                       View Receipt
@@ -180,7 +180,7 @@ export default function Receipts() {
       {/* Floating Q Button at Bottom */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-[#00A6FA] transition"
         >
           Q
         </button>
