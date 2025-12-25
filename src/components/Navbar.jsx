@@ -27,12 +27,7 @@ export default function Navbar() {
               className="h-8 w-auto sm:h-9 object-contain"
             />
           </Link>
-          <h1 className="font-poppins font-bold text-xl text-gray-800">
-            <Link to="/">
-            QuickInvoice
-            </Link>
-            {/* <span className="text-[#00B86B]"> NG</span> */}
-          </h1>
+         
         </motion.div>
 
         {/* Desktop Links */}
