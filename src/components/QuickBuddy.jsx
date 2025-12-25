@@ -82,7 +82,7 @@ export default function QuickBuddy() {
         <button
           onClick={() => setOpen(v => !v)}
           aria-label="Quick Buddy"
-          className="w-14 h-14 rounded-full bg-gradient-to-br from-[#0046A5] to-[#00B86B] shadow-lg flex items-center justify-center text-white hover:scale-105 transition-transform"
+          className="w-14 h-14 rounded-full bg-gradient-to-br from-[#0028AE] to-[#00A6FA] shadow-lg flex items-center justify-center text-white hover:scale-105 transition-transform"
         >
           <Bot size={20} />
         </button>
@@ -93,7 +93,7 @@ export default function QuickBuddy() {
           {/* header */}
           <div className="flex items-center justify-between px-4 py-3 bg-white border-b">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-[#00B86B] to-[#0046A5] flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-[#0028AE] to-[#00A6FA] flex items-center justify-center text-white font-bold">
                 Q
               </div>
               <div>

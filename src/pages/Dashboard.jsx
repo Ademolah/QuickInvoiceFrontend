@@ -192,7 +192,7 @@ const [user, setUser] = useState(null);
         <div className="flex flex-col items-center justify-center h-full">
           {/* Animated Logo Loader */}
           <div className="flex items-center gap-3 mb-6 animate-fadeIn">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0046A5] to-[#00B86B] animate-pulse" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0028AE] to-[#00A6FA] animate-pulse" />
             <p className="text-xl font-semibold text-[#0046A5]">
               Preparing your dashboard…
             </p>

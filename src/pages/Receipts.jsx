@@ -74,7 +74,7 @@ export default function Receipts() {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
+            <div className="w-14 h-14 border-4 border-[#0028AE] border-t-[#00A6FA] rounded-full animate-spin" />
             <p className="mt-4 text-[#0046A5] font-semibold">
               Fetching your receipts...
             </p>
