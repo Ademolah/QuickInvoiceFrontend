@@ -1,30 +1,5 @@
 export const blogPosts = [
-//   {
-//     id: "mastering-invoicing",
-//     title: "Mastering Invoicing: 5 tips to get paid faster",
-//     excerpt: "Discover strategies to improve your invoicing and get payments faster...",
-//     content: `
-//       <p>Invoicing can make or break your cashflow...</p>
-//       <h2>1. Send invoices promptly</h2>
-//       <p>Always send invoices immediately...</p>
-//       <h2>2. Use professional templates</h2>
-//       <p>Clients respond better to clean, professional invoices...</p>
-//       <p>...</p>
-//     `,
-//     date: "September 10, 2025",
-//     author: "QuickInvoice NG Team",
-//   },
-//   {
-//     id: "business-automation",
-//     title: "Why Automation is the Future of Business Management",
-//     excerpt: "Automation is not just a buzzword...",
-//     content: `
-//       <p>Automation saves time and eliminates repetitive work...</p>
-//       <p>...</p>
-//     `,
-//     date: "September 1, 2025",
-//     author: "QuickInvoice NG Team",
-//   },
+
 
 
     {
@@ -43,7 +18,7 @@ export const blogPosts = [
 </p>
 
 <p class="mb-6 text-gray-700 leading-8">
-  At <span class="font-semibold text-[#0046A5]">QuickInvoice NG</span>, we’ve seen how businesses thrive when they streamline their billing process. 
+  At <span class="font-semibold text-[#0046A5]">QuickInvoice</span>, we’ve seen how businesses thrive when they streamline their billing process. 
   In this article, we’ll share <strong class="text-[#00B86B]">5 proven tips</strong> to master invoicing and speed up your payments.
 </p>
 
@@ -204,7 +179,7 @@ export const blogPosts = [
       excerpt:
         "Nigeria's Big Tax Shake-Up: What the 2025 TaxReform Means for SMEs & Digital Businesses",
       date: "Sept 20, 2025",
-      author: "QuickInvoice NG",
+      author: "QuickInvoice",
       image:
         "/tax.jpg",
       content: `

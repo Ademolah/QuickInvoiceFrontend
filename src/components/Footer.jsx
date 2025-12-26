@@ -48,7 +48,7 @@ export default function Footer() {
   </div>
   {/* Bottom bar */}
   <div className="border-t border-white/10 py-4 text-center text-xs text-gray-400">
-    © {new Date().getFullYear()} QuickInvoice NG. All rights reserved.
+    © {new Date().getFullYear()} QuickInvoice. All rights reserved.
     <span className="block mt-1">
       Built & Powered by <span className="text-white font-medium">QuickInvoice Technologies</span>
     </span>

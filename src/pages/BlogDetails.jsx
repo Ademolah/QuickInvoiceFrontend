@@ -1,33 +1,3 @@
-// import { useParams, Link } from "react-router-dom";
-// import { ArrowLeft } from "lucide-react";
-
-// export default function BlogDetail({ posts }) {
-//   const { id } = useParams();
-//   const post = posts.find((p) => p.id === id);
-
-//   if (!post) {
-//     return <div className="p-6 text-center text-gray-500">Post not found.</div>;
-//   }
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-6">
-//       <Link to="/blog" className="flex items-center text-[#0046A5] mb-6">
-//         <ArrowLeft className="mr-2" /> Back to Blog
-//       </Link>
-//       <h1 className="text-3xl font-bold text-gray-800 mb-4">{post.title}</h1>
-//       <p className="text-gray-500 text-sm mb-6">
-//         {post.date} • By {post.author}
-//       </p>
-//       <div
-//         className="prose prose-lg max-w-none text-gray-700"
-//         dangerouslySetInnerHTML={{ __html: post.content }}
-//       />
-//     </div>
-//   );
-// }
-
-
-
 
 
 import { useParams, Link } from "react-router-dom";
@@ -37,9 +7,7 @@ import { blogPosts } from "./data/blogPosts";
 export default function BlogDetail({ posts }) {
   const { id } = useParams();
 
-  // Ensure posts is always an array
-//   const safePosts = Array.isArray(posts) ? posts : [];
-//   const post = safePosts.find((p) => String(p.id) === String(id));
+  
 
     const post = blogPosts.find((p)=> String(p.id)===id)
 
@@ -67,40 +35,10 @@ export default function BlogDetail({ posts }) {
   }
 
   return (
-    // <div className="max-w-4xl mx-auto p-6">
-    //   {/* Back link */}
-    //   <Link to="/blog" className="flex items-center text-[#0046A5] mb-6">
-    //     <ArrowLeft className="mr-2" /> Back to Blog
-    //   </Link>
-
-    //   {/* Post details */}
-    //   <h1 className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white rounded-2xl p-6 md:p-8 mb-8 shadow-xl text-4xl font-extrabold ">{post.title}</h1>
-    //   <p className="text-gray-500 text-sm mb-6">
-    //     {post.date} • By {post.author}
-    //   </p>
-    //   <div
-    //     className="prose prose-lg max-w-none text-gray-700"
-    //     dangerouslySetInnerHTML={{ __html: post.content }}
-    //   />
-
-    //   {/* Back button at the bottom */}
-    //   <div className="mt-8">
-    //     <Link to="/blog">
-    //       <Button className="bg-[#0046A5] text-white hover:bg-[#003a8c]">
-    //         Back to Blog
-    //       </Button>
-    //     </Link>
-    //   </div>
-    // </div>
+    
 
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-sm">
-  {/* Back link */}
-  {/* <Link
-    to="/blog"
-    className="flex items-center text-[#0046A5] mb-6 hover:underline"
-  >
-    <ArrowLeft className="mr-2" /> Back to Blog
-  </Link> */}
+  
 
   {/* Post header */}
   <h1 className="bg-gradient-to-r from-[#0046A5] to-[#00B86B] text-white rounded-2xl p-6 md:p-8 mb-8 shadow-xl text-4xl font-extrabold ">
