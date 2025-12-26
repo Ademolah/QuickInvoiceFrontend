@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FaCog,
@@ -10,6 +11,7 @@ import {
   FaStore,
   FaCreditCard,
 } from "react-icons/fa";
+
 const steps = [
   {
     title: "Update Your Bank Details",
@@ -62,6 +64,7 @@ const steps = [
 ];
 export default function HowToUse() {
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
@@ -127,6 +130,13 @@ export default function HowToUse() {
           </motion.div>
         ))}
       </div>
+
+      <button
+          onClick={() => navigate("/dashboard")}
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-[#00A6FA] transition"
+        >
+          Q
+        </button>
     </div>
   );
 }

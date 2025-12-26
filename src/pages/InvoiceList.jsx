@@ -197,7 +197,7 @@ const InvoiceList = () => {
       {/* Floating Q Button at Bottom */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-green-500 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-green-700 transition"
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg hover:bg-[#00A6FA] transition"
         >
           Q
         </button>
