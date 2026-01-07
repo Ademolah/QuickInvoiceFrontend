@@ -571,7 +571,7 @@ const downloadPDF = async () => {
                         ) : (
                           <div className="flex justify-center mb-6">
                           <img
-                            src="/quickauth.svg"   // image in public/
+                            src="/quicksocial.jpg"   // image in public/
                             alt="QuickInvoice"
                             className="h-14 w-auto object-contain"
                           />
@@ -618,27 +618,45 @@ const downloadPDF = async () => {
 
             {/* Items table */}
             <div className="overflow-x-auto rounded-xl border">
-              {/* <table className="w-full min-w-[600px]"> */}
-              <table className="min-w-full text-left">
+              <table className="min-w-full text-sm border-collapse">
                 <thead>
                   <tr className="bg-gray-50">
-                    <th className="text-left px-4 py-3 text-sm text-gray-600">Description</th>
-                    <th className="text-right px-4 py-3 text-sm text-gray-600">Qty</th>
-                    <th className="text-right px-4 py-3 text-sm text-gray-600">Unit Price</th>
-                    <th className="text-right px-4 py-3 text-sm text-gray-600">Total</th>
+                    <th className="px-4 py-3 text-left font-medium text-gray-600 w-[45%]">
+                      Description
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-600 w-[15%]">
+                      Qty
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-600 w-[20%]">
+                      Unit Price
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-gray-600 w-[20%]">
+                      Total
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.map((it, idx) => (
-                    <tr key={idx} className="border-b last:border-b-0 hover:bg-gray-50">
-                      {/* <td className="px-4 py-4 text-sm text-gray-800">{it.description}</td>
-                      <td className="px-4 py-4 text-right text-sm">{it.quantity}</td>
-                      <td className="px-4 py-4 text-right text-sm">{formatCurrency(it.unitPrice)}</td>
-                      <td className="px-4 py-4 text-right font-semibold">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td> */}
-                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{it.description}</td>
-                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{it.quantity}</td>
-                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{formatCurrency(it.unitPrice)}</td>
-                      <td className="px-4 py-4 text-sm text-gray-800 break-words whitespace-normal">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
+                    <tr
+                      key={idx}
+                      className="border-b last:border-b-0 hover:bg-gray-50"
+                    >
+                      {/* Description */}
+                      <td className="px-4 py-4 text-gray-800 break-words whitespace-normal">
+                        {it.description}
+                      </td>
+                      {/* Quantity */}
+                      <td className="px-4 py-4 text-right text-gray-800 tabular-nums">
+                        {it.quantity}
+                      </td>
+                      {/* Unit Price */}
+                      <td className="px-4 py-4 text-right text-gray-800 tabular-nums">
+                        {formatCurrency(it.unitPrice)}
+                      </td>
+                      {/* Total */}
+                      <td className="px-4 py-4 text-right font-medium text-gray-900 tabular-nums">
+                        {formatCurrency(it.total ?? it.quantity * it.unitPrice)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
