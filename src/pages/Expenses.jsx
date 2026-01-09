@@ -124,7 +124,7 @@ export default function Expenses() {
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center"
           >
-            <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00B86B] rounded-full animate-spin" />
+            <div className="w-14 h-14 border-4 border-[#0046A5] border-t-[#00A6FA] rounded-full animate-spin" />
             <p className="mt-4 text-[#0046A5] font-semibold">
               Preparing your Expenses…
             </p>
@@ -144,13 +144,16 @@ export default function Expenses() {
       </div>
 
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <input
-          type="month"
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          className="border rounded-lg px-3 py-2 w-full sm:w-[220px]"
-        />
+     <div className="flex flex-col gap-1 w-full sm:w-auto mb-6">
+        <label className="text-sm font-medium text-gray-700">
+          Expense Month
+        </label>
+        <input
+          type="month"
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="border rounded-lg px-3 py-2 w-full sm:w-[220px]"
+        />
       </div>
 
       <div className="flex gap-3">
@@ -208,13 +211,23 @@ export default function Expenses() {
           <option value="transfer">Transfer</option>
           <option value="card">Card</option>
         </select>
-        <input
-          type="date"
-          value={form.expenseDate}
-          onChange={(e) => setForm({ ...form, expenseDate: e.target.value })}
-          className="border rounded-lg px-3 py-2"
-          required
-        />
+
+
+        {/* date */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">
+            Expense Date
+          </label>
+          <input
+            type="date"
+            value={form.expenseDate}
+            onChange={(e) => setForm({ ...form, expenseDate: e.target.value })}
+            className="border rounded-lg px-3 py-2"
+            required
+          />
+        </div>
+
+        
         <button
           type="submit"
           className="bg-[#0028AE] hover:bg-[#00A6FA] text-white rounded-lg px-4 py-2 font-medium"
