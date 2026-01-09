@@ -25,6 +25,7 @@ import { blogPosts } from "./pages/data/blogPosts";
 import BlogDetail from "./pages/BlogDetails";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HowToInstall from "./pages/HowToInstall";
+import Expenses from "./pages/Expenses";
 
 //QuickPay
 import QuickPay from "./pages/QuickPay";
@@ -86,6 +87,7 @@ export default function App() {
           <Route path="/invoices/new" element={ <NewInvoice /> }/>
           <Route path="/settings" element={ <Settings /> }/>
           <Route path="/billing" element={ <Billing /> }/>
+          <Route path="/expenses" element={ <Expenses /> }/>
 
           <Route path="/market" element={ <MarketSquare /> }/>
           <Route path="/marketzone" element={ <MarketZone /> }/>

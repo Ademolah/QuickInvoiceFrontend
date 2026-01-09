@@ -17,7 +17,8 @@ import {
   HelpCircleIcon,
   // MonitorPlay,
   ShoppingCart,
-  Building
+  Building,
+  CreditCardIcon
 } from "lucide-react";
 import toast from "react-hot-toast"
 
@@ -31,6 +32,7 @@ const Sidebar = () => {
     { name: "Invoices", icon: <FileText size={20} />, path: "/invoices" },
     { name: "Receipts", icon: <ReceiptIcon size={20} />, path: "/receipts" },
     { name: "Inventory", icon: <Building size={20} />, path: "/inventory" },
+    { name: "Expenses", icon: <CreditCardIcon size={20} />, path: "/expenses" },
     { name: "Clients", icon: <Users size={20} />, path: "/clients" },
     { name: "MarketZone", icon: <ShoppingCart size={20} />, path: "/market" },
     // { name: "QuickDelivery", icon: <Bike size={20} />, comingSoon: true },

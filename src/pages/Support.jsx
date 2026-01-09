@@ -84,7 +84,7 @@ const Support = () => {
       "https://chat.whatsapp.com/HPrlbf20lOxDiLlMe44rDQ",
        "_blank"
        ),
-        },
+    },
   ];
 
   return (
