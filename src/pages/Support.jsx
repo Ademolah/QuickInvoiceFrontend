@@ -1,9 +1,10 @@
 import React from "react";
-import { Mail, MessageSquare, HelpCircle } from "lucide-react";
+import { Mail, } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
+import { FaWhatsapp } from "react-icons/fa"
 
 const Support = () => {
   const navigate = useNavigate();
@@ -73,18 +74,17 @@ const Support = () => {
       description: "Get in touch with our team via email for assistance.",
       action: () => window.location.href = "mailto:info@hqbinary.com",
     },
+    
     {
-      icon: <MessageSquare className="w-8 h-8 text-green-500" />,
-      title: "Live Chat",
-      description: "Chat with our support agents in real-time.",
-      action: () => alert("Live chat coming soon!"),
-    },
-    {
-      icon: <HelpCircle className="w-8 h-8 text-yellow-500" />,
-      title: "FAQ",
-      description: "Browse our frequently asked questions.",
-      action: () => navigate("/faq"),
-    },
+      icon: <FaWhatsapp className="w-8 h-8 text-green-500" />,
+      title: "Join Our Community",
+      description: "Connect with other QuickInvoice users, get support, tips, and updates.",
+      action: () =>
+      window.open(
+      "https://chat.whatsapp.com/HPrlbf20lOxDiLlMe44rDQ",
+       "_blank"
+       ),
+        },
   ];
 
   return (
