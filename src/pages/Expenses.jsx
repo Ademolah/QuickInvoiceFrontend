@@ -13,6 +13,7 @@ export default function Expenses() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [month, setMonth] = useState("");
+  const [addExpense, setAddExpense] = useState(false)
   const navigate = useNavigate()
 
   const printRef = useRef(null)
@@ -85,6 +86,7 @@ export default function Expenses() {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
+    setAddExpense(true)
     await axios.post(
       `${API}/api/expenses`,
       {
@@ -109,6 +111,8 @@ export default function Expenses() {
   } catch (error) {
     console.error(error);
     alert("Failed to add expense");
+  } finally {
+    setAddExpense(false)
   }
 };
 
@@ -232,7 +236,7 @@ export default function Expenses() {
           type="submit"
           className="bg-[#0028AE] hover:bg-[#00A6FA] text-white rounded-lg px-4 py-2 font-medium"
         >
-          Add Expense
+          {addExpense ? "Adding...": "Add Expense"}
         </button>
       </form>
 
