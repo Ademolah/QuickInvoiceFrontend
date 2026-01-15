@@ -587,7 +587,7 @@ const downloadPDF = async () => {
               </div>
 
               <div className="text-right">
-                <p className="text-sm opacity-90">Invoice</p>
+                <p className="text-sm opacity-90">Invoice ID</p>
                 <p className="text-xl font-semibold">{String(id).slice(-8).toUpperCase()}</p>
                 <p className="text-sm mt-1">{new Date(createdAt).toLocaleDateString()}</p>
               </div>
