@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 // src/components/Hero.jsx
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 const phrasesDefault = [
   "Send invoices in seconds",
@@ -71,6 +71,41 @@ export default function Hero({
       transition: { duration: 12, repeat: Infinity, ease: "easeInOut" },
     },
   };
+
+
+  const invoiceAmount = useMotionValue(0);
+const formattedAmount = useTransform(invoiceAmount, (v) =>
+  `₦ ${Math.floor(v).toLocaleString()}`
+);
+const [invoiceCount, setInvoiceCount] = useState(1248);
+
+useEffect(() => {
+  // Animate invoice amount
+  animate(invoiceAmount, 120500, {
+    duration: 1.8,
+    ease: "easeOut",
+  });
+  // Auto-increment invoices issued
+  const interval = setInterval(() => {
+    setInvoiceCount((prev) => prev + Math.floor(Math.random() * 3 + 1));
+  }, 2500);
+  return () => clearInterval(interval);
+}, []);
+
+
+const statuses = ["Draft", "Sent", "Paid"];
+const [status, setStatus] = useState("Draft");
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setStatus(prev => {
+      const nextIndex = (statuses.indexOf(prev) + 1) % statuses.length;
+      return statuses[nextIndex];
+    });
+  }, 2500);
+  return () => clearInterval(interval);
+}, []);
+
 
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
@@ -188,48 +223,115 @@ export default function Hero({
           </div>
 
           {/* Right - illustrative card */}
-          <motion.div
-            initial={{ scale: 0.98, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.45, duration: 0.6 }}
-            className="flex items-center justify-center"
-          >
-            <div className="w-full max-w-md bg-white/95 rounded-2xl shadow-2xl p-6 md:p-8">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700">Invoice preview</h3>
-                  <p className="text-xs text-gray-500 mt-1">Professional template ready to send</p>
-                </div>
-                <div className="text-sm font-semibold text-[#0046A5]">Quick • Simple</div>
-              </div>
+<motion.div
+  initial={{ scale: 0.98, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  transition={{ delay: 0.45, duration: 0.6 }}
+  className="flex items-center justify-center"
+>
+  <div className="relative w-full max-w-md bg-white/95 rounded-2xl shadow-2xl p-6 md:p-8">
+    {/* Soft ambient glow */}
+    <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-[#0028AE]/5 to-[#00A6FA]/10 rounded-2xl" />
+    
+    {/* Top stats row (NO overlap, NO clipping) */}
+    <div className="relative flex items-center justify-between mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: -6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="text-xs font-semibold text-[#0028AE] bg-blue-50 px-3 py-1 rounded-full"
+      >
+        {invoiceCount.toLocaleString()} invoices issued
+      </motion.div>
+      <div className="text-sm font-semibold text-[#0046A5] whitespace-nowrap">
+        Quick • Simple
+      </div>
+    </div>
 
-              <div className="mt-4 space-y-3">
-                <div className="rounded-lg p-3 bg-gray-50 border">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-semibold text-gray-800">Acme Store</div>
-                      <div className="text-xs text-gray-500">Invoice • 2025-09-01</div>
-                    </div>
-                    <div className="text-sm font-bold text-[#00B86B]">₦ 120,500</div>
-                  </div>
-                </div>
+    {/* Header */}
+    <div className="relative">
+      <h3 className="text-sm font-semibold text-gray-700">
+        Invoice preview
+      </h3>
+      <p className="text-xs text-gray-500 mt-1">
+        Professional template ready to send
+      </p>
+    </div>
 
-                <div className="rounded-lg p-3 bg-gray-50 border">
-                  <div className="text-sm text-gray-700">1 x Website design — ₦ 120,500</div>
-                </div>
-
-                <div className="mt-3 flex justify-between items-center">
-                  <div className="text-xs text-gray-500">Status</div>
-                  <div className="text-sm font-semibold text-green-600">Paid</div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                <button className="flex-1 px-3 py-2 rounded-md bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white font-semibold">Send</button>
-                <button className="px-3 py-2 rounded-md border">Preview</button>
-              </div>
+    {/* Body */}
+    <div className="relative mt-4 space-y-3">
+      <div className="rounded-lg p-3 bg-gray-50 border">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-gray-800">
+              Acme Store
             </div>
+            <div className="text-xs text-gray-500">
+              Invoice • 2025-09-01
+            </div>
+          </div>
+          <motion.div className="text-sm font-bold text-[#00B86B]">
+            ₦ 120,500
           </motion.div>
+        </div>
+      </div>
+
+      <div className="rounded-lg p-3 bg-gray-50 border">
+        <div className="text-sm text-gray-700">
+          1 × Website design — ₦ 120,500
+        </div>
+      </div>
+
+      {/* Realistic Status Transition */}
+      <div className="mt-3 flex justify-between items-center">
+        <div className="text-xs text-gray-500">Status</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-2 text-sm font-semibold"
+        >
+          <motion.span
+            key={status}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className={
+              status === "Draft"
+                ? "text-gray-500"
+                : status === "Sent"
+                ? "text-yellow-600"
+                : "text-green-600"
+            }
+          >
+            {status}
+          </motion.span>
+        </motion.div>
+      </div>
+    </div>
+
+    {/* Actions */}
+    <div className="relative mt-6 flex gap-3">
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
+        className="flex-1 px-3 py-2 rounded-md bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white font-semibold"
+      >
+        Send
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
+        className="px-3 py-2 rounded-md border"
+      >
+        Preview
+      </motion.button>
+    </div>
+  </div>
+</motion.div>
+
         </motion.div>
       </div>
     </section>
