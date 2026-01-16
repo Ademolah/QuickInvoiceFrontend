@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 // import React from "react";
 import { Link } from "react-router-dom";
 
@@ -73,7 +75,7 @@ export default function Hero({
   };
 
 
-  const invoiceAmount = useMotionValue(0);
+const invoiceAmount = useMotionValue(0);
 const formattedAmount = useTransform(invoiceAmount, (v) =>
   `₦ ${Math.floor(v).toLocaleString()}`
 );
