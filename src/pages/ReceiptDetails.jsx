@@ -249,7 +249,7 @@ export default function ReceiptDetails() {
                 <tr>
                   <th style={{ textAlign: "left", padding: "10px 8px", color: "#6b7280", fontWeight: 700 }}>Description</th>
                   <th style={{ textAlign: "right", padding: "10px 8px", color: "#6b7280", fontWeight: 700 }}>Qty</th>
-                  <th style={{ textAlign: "right", padding: "10px 8px", color: "#6b7280", fontWeight: 700 }}>Unit</th>
+                  <th style={{ textAlign: "right", padding: "10px 8px", color: "#6b7280", fontWeight: 700 }}>Price</th>
                   <th style={{ textAlign: "right", padding: "10px 8px", color: "#6b7280", fontWeight: 700 }}>Total</th>
                 </tr>
               </thead>
