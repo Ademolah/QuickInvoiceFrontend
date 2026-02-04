@@ -1,6 +1,4 @@
 
-
-
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -42,6 +40,25 @@ export default function ReceiptDetails() {
     };
     load();
   }, [invoiceId]);
+
+
+  //fetch user for avatar
+    const [userData, setUserData] = useState(null);
+      useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            const userRes = await axios.get(`${API}/api/users/me`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setUserData(userRes.data);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+        fetchUserData();
+      }, []);
 
  
 
@@ -207,7 +224,7 @@ export default function ReceiptDetails() {
 
         {/* Capture area: fixed width */}
         <div ref={captureRef} style={captureStyle} className="mx-auto shadow-none">
-          {/* Top header row */}
+          {/* Top header row
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: 18, color: "#0f172a" }}>{businessName || "QuickInvoice NG"}</div>
@@ -222,7 +239,55 @@ export default function ReceiptDetails() {
                 {new Date(createdAt).toLocaleDateString()}
               </div>
             </div>
-          </div>
+          </div> */}
+
+          {/* Top header row */}
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    {/* Avatar Section */}
+    <div 
+      style={{ 
+        width: 48, 
+        height: 48, 
+        borderRadius: 8, 
+        overflow: "hidden", 
+        backgroundColor: "#f1f5f9", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        border: "1px solid #e2e8f0",
+        flexShrink: 0
+      }}
+    >
+      {userData?.avatar ? (
+        <img 
+          src={userData.avatar} 
+          alt="User Avatar" 
+          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+        />
+      ) : (
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#64748b" }}>
+          {(businessName || "Q").charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
+
+    {/* Business Info */}
+    <div>
+      <div style={{ fontWeight: 700, fontSize: 18, color: "#0f172a" }}>{businessName || "QuickInvoice NG"}</div>
+      {email && <div style={{ color: "#6b7280", fontSize: 12 }}>{email}</div>}
+      {phone && <div style={{ color: "#6b7280", fontSize: 12 }}>{phone}</div>}
+    </div>
+  </div>
+
+  <div style={{ textAlign: "right" }}>
+    <div style={{ fontSize: 12, color: "#6b7280" }}>Receipt</div>
+    <div style={{ fontSize: 16, fontWeight: 700, marginTop: 6 }}>{invoice._id.slice(-8).toUpperCase()}</div>
+    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+      {new Date(createdAt).toLocaleDateString()}
+    </div>
+  </div>
+</div>
 
           <hr style={{ border: "none", borderTop: "1px solid #EEF2F7", margin: "18px 0" }} />
 
