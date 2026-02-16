@@ -166,8 +166,71 @@ export default function ReceiptDetails() {
     }
   };
 
-  const sharePDF = () => captureAndMakeSinglePagePDF({ share: true });
+  // const sharePDF = () => captureAndMakeSinglePagePDF({ share: true });
   const downloadPDF = () => captureAndMakeSinglePagePDF({ share: false });
+
+  // ---------- PNG / SHARE helpers ----------
+const sharePNG = async () => {
+  if (!captureRef.current) return;
+  setActionLoading(true);
+
+  try {
+    // usage logging
+    const logRes = await fetch(`${API}/api/invoices/log`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ type: "receipt" }),
+    });
+    
+    const logData = await logRes.json();
+    if (!logRes.ok) {
+      alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+      setActionLoading(false);
+      return;
+    }
+
+    // Capture the node. Scale 2 is good for crispness on mobile without massive file size.
+    const canvas = await html2canvas(captureRef.current, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      scrollY: -window.scrollY,
+      backgroundColor: "#ffffff",
+    });
+
+    // Convert Canvas to Blob
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.95));
+    
+    const fileName = `Receipt-${invoice._id.slice(-6).toUpperCase()}.png`;
+    const file = new File([blob], fileName, { type: "image/png" });
+
+    // Use Native Share API
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: "QuickInvoice Receipt",
+        text: `Receipt #${invoice._id.slice(-6).toUpperCase()}`,
+      });
+    } else {
+      // Fallback: Download the PNG
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(url); // Clean up
+      alert("Sharing not supported on this browser. Receipt downloaded as PNG instead.");
+    }
+  } catch (err) {
+    console.error("PNG generation failed:", err);
+    alert("Failed to generate PNG. Try again.");
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   // ---------- Render: Stripe-style, ultra-clean single-page layout ----------
   // We force the capture container to a fixed width close to A4 proportions in px so html2canvas output is predictable.
@@ -204,7 +267,7 @@ export default function ReceiptDetails() {
             </button>
 
             <button
-              onClick={sharePDF}
+              onClick={sharePNG}
               disabled={actionLoading}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0028AE] to-[#00A6FA] hover:opacity-90 transition"
             >

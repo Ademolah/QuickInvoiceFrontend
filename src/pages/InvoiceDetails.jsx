@@ -302,7 +302,7 @@ const sharePNG = async () => {
       await navigator.share({
         files: [file],
         title: `Invoice #${id}`,
-        text: `QuickInvoice NG - Invoice #${id}`,
+        text: `QuickInvoice - Invoice #${id}`,
       });
     } else {
       // Fallback: Download the PNG
