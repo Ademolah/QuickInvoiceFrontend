@@ -194,11 +194,74 @@ export default function InvoiceDetails() {
 //   }
 // };
 
-const sharePDF = async () => {
+// const sharePDF = async () => {
+//   if (!invoiceRef.current) return;
+//   setActionLoading(true);
+//   try {
+//     // LOG USAGE
+//     const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${localStorage.getItem("token")}`,
+//       },
+//       body: JSON.stringify({ type: "invoice" }),
+//     });
+//     const logData = await logRes.json();
+//     if (!logRes.ok) {
+//       alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
+//       setActionLoading(false);
+//       return;
+//     }
+//     const width = invoiceRef.current.scrollWidth;
+//     const canvas = await html2canvas(invoiceRef.current, {
+//       scale: 3,
+//       useCORS: true,
+//       scrollY: 0,
+//       width: width,
+//       windowWidth: width,
+//     });
+//     const imgData = canvas.toDataURL("image/png");
+//     const pdf = new jsPDF("p", "mm", "a4");
+//     const pageWidth = pdf.internal.pageSize.getWidth();
+//     const imgProps = pdf.getImageProperties(imgData);
+//     const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
+//     pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pdfHeight);
+//     const pdfBlob = pdf.output("blob");
+//     const file = new File([pdfBlob], `Invoice-${id}.pdf`, {
+//       type: "application/pdf",
+//     });
+//     if (navigator.canShare && navigator.canShare({ files: [file] })) {
+//       await navigator.share({
+//         title: "QuickInvoice NG",
+//         text: `Invoice #${id}`,
+//         files: [file],
+//       });
+//     } else {
+//       const url = URL.createObjectURL(pdfBlob);
+//       const link = document.createElement("a");
+//       link.href = url;
+//       link.download = `Invoice-${id}.pdf`;
+//       link.click();
+//       alert("Sharing not supported. PDF downloaded instead.");
+//     }
+//   } catch (err) {
+//     console.error("Share error:", err);
+//     alert("Failed to share PDF.");
+//   } finally {
+//     setActionLoading(false);
+//   }
+// };
+  
+//share as PNG
+
+const sharePNG = async () => {
   if (!invoiceRef.current) return;
+
   setActionLoading(true);
+
   try {
-    // LOG USAGE
+    // 1. LOG USAGE
     const logRes = await fetch(`${API_BASE}/api/invoices/log`, {
       method: "POST",
       headers: {
@@ -207,52 +270,59 @@ const sharePDF = async () => {
       },
       body: JSON.stringify({ type: "invoice" }),
     });
+    
     const logData = await logRes.json();
     if (!logRes.ok) {
       alert(logData.message || "You have exceeded your limit. Upgrade to Pro.");
       setActionLoading(false);
       return;
     }
+
+    // 2. Generate Canvas from HTML
     const width = invoiceRef.current.scrollWidth;
     const canvas = await html2canvas(invoiceRef.current, {
-      scale: 3,
+      scale: 2, // 2 is usually sufficient for mobile quality and smaller size
       useCORS: true,
       scrollY: 0,
       width: width,
       windowWidth: width,
+      backgroundColor: "#ffffff", // Ensure white background
     });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pdfHeight);
-    const pdfBlob = pdf.output("blob");
-    const file = new File([pdfBlob], `Invoice-${id}.pdf`, {
-      type: "application/pdf",
+
+    // 3. Convert Canvas to Blob
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.95));
+    
+    // 4. Create File Object
+    const file = new File([blob], `Invoice-${id}.png`, {
+      type: "image/png",
     });
+
+    // 5. Use Native Share API
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
-        title: "QuickInvoice NG",
-        text: `Invoice #${id}`,
         files: [file],
+        title: `Invoice #${id}`,
+        text: `QuickInvoice NG - Invoice #${id}`,
       });
     } else {
-      const url = URL.createObjectURL(pdfBlob);
+      // Fallback: Download the PNG
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Invoice-${id}.pdf`;
+      link.download = `Invoice-${id}.png`;
       link.click();
-      alert("Sharing not supported. PDF downloaded instead.");
+      URL.revokeObjectURL(url); // Clean up
+      alert("Sharing not supported on this browser. Invoice downloaded as PNG instead.");
     }
   } catch (err) {
     console.error("Share error:", err);
-    alert("Failed to share PDF.");
+    alert("Failed to share invoice.");
   } finally {
     setActionLoading(false);
   }
 };
-  
+
+
 // const downloadPDF = async () => {
 
 //     if (!invoiceRef.current) return;
@@ -508,7 +578,7 @@ const downloadPDF = async () => {
               </button>
             )}
 
-            <button onClick={sharePDF} disabled={actionLoading}
+            <button onClick={sharePNG} disabled={actionLoading}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-gradient-to-r from-[#0028AE] to-[#00A6FA] hover:opacity-90 transition"
             variant="secondary">
               {actionLoading ? "Preparing..." : "Share"}
