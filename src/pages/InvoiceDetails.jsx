@@ -998,7 +998,8 @@ const {
   subtotal, 
   tax, 
   discount, 
-  total, 
+  total,
+  outstandingBalance, 
   status, 
   createdAt, 
   dueDate, 
@@ -1137,6 +1138,10 @@ const {
                 <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
                   <span>Discount</span>
                   <span className="text-emerald-500">-{formatCurrency(discount)}</span>
+                </div>
+                <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
+                  <span>Balance</span>
+                  <span className="text-red-500">-{formatCurrency(outstandingBalance)}</span>
                 </div>
                 <div className="flex justify-between items-center pt-2">
                   <span className="text-xs font-black uppercase text-[#0028AE]">Total</span>
