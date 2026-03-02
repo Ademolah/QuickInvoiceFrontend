@@ -6,7 +6,11 @@ import { useNavigate } from 'react-router-dom';
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  // const unreadCount = notifications.filter(n => !n.isRead).length;
+  
+  const unreadCount = Array.isArray(notifications) 
+    ? notifications.filter(n => !n.isRead).length 
+    : 0;
   const navigate = useNavigate();
 
   const fetchNotifications = async () => {
