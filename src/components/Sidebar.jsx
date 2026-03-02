@@ -272,10 +272,39 @@ import {
   Building2, Wallet, GraduationCap, LifeBuoy, 
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+
+const API = "https://quickinvoice-backend-1.onrender.com";
 
 const Sidebar = ({ closeMenu }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+
+  
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const { data } = await axios.get(`${API}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUser(data);
+      } catch (err) {
+        console.error("Error fetching user for sidebar", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const menuGroups = [
     {
@@ -376,12 +405,53 @@ const Sidebar = ({ closeMenu }) => {
 
       {/* Footer / Logout */}
       <div className="p-4 mt-auto">
-        <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100">
+        {/* <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100">
            <p className="text-[10px] font-black uppercase text-slate-400 mb-2 px-1">Plan: Premium</p>
            <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
               <div className="h-full w-2/3 bg-[#0028AE] rounded-full" />
            </div>
-        </div>
+        </div> */}
+
+        {/* Footer / Plan Status */}
+<div className="p-4 mt-auto">
+  <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100 transition-all">
+    <div className="flex justify-between items-center mb-2 px-1">
+      <p className="text-[10px] font-black uppercase text-slate-400">
+        Plan: <span className={user?.plan === 'pro' ? 'text-emerald-600' : 'text-blue-600'}>
+          {user?.plan === 'pro' ? 'Pro' : 'Free'}
+        </span>
+      </p>
+      {user?.plan === 'free' && (
+        <p className="text-[9px] font-black text-slate-400">
+          {((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0))}/15
+        </p>
+      )}
+    </div>
+
+    {/* Dynamic Progress Bar */}
+    <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+      <div 
+        className={`h-full transition-all duration-1000 ease-out rounded-full ${
+          user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
+        }`}
+        style={{ 
+          width: user?.plan === 'pro' 
+            ? '100%' 
+            : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 15) * 100, 100)}%` 
+        }} 
+      />
+    </div>
+    
+    {user?.plan === 'free' && (
+      <button 
+        onClick={() => navigate('/billing')}
+        className="w-full mt-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-600 hover:bg-[#0028AE] hover:text-white hover:border-[#0028AE] transition-all shadow-sm"
+      >
+        Upgrade Now
+      </button>
+    )}
+  </div>
+</div>
         
         <button
           onClick={handleLogout}
