@@ -449,6 +449,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { fetchUser } from '../utils/getUser';
 import { toast } from 'react-hot-toast';
 import QuickBuddy from '../components/QuickBuddy';
+import NotificationCenter from '../components/NotificationCenter';
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -585,10 +586,11 @@ const Dashboard = ({ children }) => {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="relative p-2 text-slate-400 hover:text-[#0028AE] transition-colors">
+              {/* <button className="relative p-2 text-slate-400 hover:text-[#0028AE] transition-colors">
                 <Bell size={20} />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-              </button>
+              </button> */}
+              <NotificationCenter />
               <div className="h-10 w-10 rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm bg-slate-200">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
