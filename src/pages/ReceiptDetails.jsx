@@ -690,6 +690,7 @@ export default function ReceiptDetails() {
               </div>
               <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] mb-1">Payment Verified</p>
               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Thank you for your business</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">www.quickinvoiceng.com</p>
             </div>
           </div>
         </div>
