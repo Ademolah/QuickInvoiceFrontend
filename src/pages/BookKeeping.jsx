@@ -43,41 +43,54 @@ const handleExport = async () => {
   const element = reportRef.current;
   if (!element) return;
 
-  // 2. SURGICAL TRIGGER: Show the "Print Only" elements
   setIsExporting(true);
   toast.loading("Polishing your financial report...");
 
-  // We use a tiny timeout to ensure React has rendered the new state 
-  // before the "camera" (html2canvas) takes the picture
   setTimeout(async () => {
     try {
+      // THE FIX: We force html2canvas to render at a desktop-scale width
+      // even if the user is on a small phone screen.
       const canvas = await html2canvas(element, { 
-        scale: 3, // Increased to 3 for "Ultra-HD" text sharpness
+        scale: 2, 
         useCORS: true,
         backgroundColor: "#F8FAFC",
-        // Avoid capturing the scrollbar if the table is long
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
+        // These properties force the "virtual" window size
+        windowWidth: 1200, 
+        width: 1200,
+        onclone: (clonedDoc) => {
+          // This ensures the cloned element in the virtual window 
+          // doesn't have mobile padding/constraints
+          const clonedElement = clonedDoc.querySelector('[ref="reportRef"]') || clonedDoc.body.querySelector('.p-8');
+          if (clonedElement) {
+            clonedElement.style.width = "1200px";
+          }
+        }
       });
       
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
+      
       const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
       const imgProps = pdf.getImageProperties(imgData);
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const ratio = imgProps.height / imgProps.width;
+      const finalImgHeight = pdfWidth * ratio;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Center the image if it's smaller than the page, or fit to width
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalImgHeight);
+      
       pdf.save(`QuickInvoice_Report_${new Date().toISOString().split('T')[0]}.pdf`);
       
       toast.dismiss();
       toast.success("Executive Report Downloaded");
     } catch (error) {
+      console.error(error);
       toast.error("Export failed");
     } finally {
-      // 3. Hide the print elements again
       setIsExporting(false);
     }
-  }, 100); 
+  }, 500); // Increased timeout slightly to allow the virtual render to settle
 };
 
   const fetchData = async () => {
