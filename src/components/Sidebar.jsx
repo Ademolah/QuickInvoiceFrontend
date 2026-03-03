@@ -334,7 +334,7 @@ const Sidebar = ({ closeMenu }) => {
     {
       group: "Settings",
       items: [
-        { name: "How To Use", icon: <GraduationCap size={18} />, path: "/how-to-use" },
+        // { name: "How To Use", icon: <GraduationCap size={18} />, path: "/how-to-use" },
         { name: "Settings", icon: <Settings size={18} />, path: "/settings" },
         { name: "Support", icon: <LifeBuoy size={18} />, path: "/support" },
       ]
