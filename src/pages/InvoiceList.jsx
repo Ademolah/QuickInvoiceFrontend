@@ -299,6 +299,7 @@ const InvoiceList = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-20">
       {/* Header Section */}
+
       <div className="bg-white border-b border-slate-100 sticky top-0 z-30 px-6 py-6 md:px-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

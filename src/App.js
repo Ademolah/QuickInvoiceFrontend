@@ -41,6 +41,7 @@ import MarketZone from "./pages/MarketZone";
 
 import HowToUse from "./pages/HowToUse";
 import Solutions from "./components/Solutions";
+import Bookkeeping from "./pages/BookKeeping";
 
 export default function App() {
   return (
@@ -90,6 +91,7 @@ export default function App() {
           <Route path="/settings" element={ <Settings /> }/>
           <Route path="/billing" element={ <Billing /> }/>
           <Route path="/expenses" element={ <Expenses /> }/>
+          <Route path="/bookkeeping" element={ <Bookkeeping /> }/>
 
           <Route path="/market" element={ <MarketSquare /> }/>
           <Route path="/marketzone" element={ <MarketZone /> }/>
