@@ -602,24 +602,49 @@ const Reports = () => {
   const decodedUser = useMemo(() => token ? jwtDecode(token) : null, [token]);
   const businessName = decodedUser?.businessName || "QuickInvoice User";
 
-  // --- LOGIC: USAGE LOGGING ---
-  const logUsage = async () => {
+  const [user, setUser] = useState(null);
+
+useEffect(() => {
+  const fetchUser = async () => {
     try {
-      const res = await fetch(`${API}/api/invoices/log`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ type: "report" }), // Tracking report generation
+      const token = localStorage.getItem('token');
+      const { data } = await axios.get(`${API}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) {
-        toast.error("Report limit reached. Please upgrade to Pro.");
-        return false;
-      }
-      return true;
-    } catch (e) { return true; } // Fallback to allow if log fails
+      setUser(data);
+    } catch (err) {
+      console.error("Error fetching user for report usage", err);
+    }
   };
+  fetchUser();
+}, []);
+
+
+const canExportReport = () => {
+  // 1. If user is Pro, they have unlimited power.
+  if (user?.plan === 'pro') return true;
+
+  // 2. For Free users, check their monthly report usage
+  // Adjust 'reportsThisMonth' based on your actual user schema keys
+  const reportUsage = user?.usage?.reportsThisMonth || 0;
+  const REPORT_LIMIT = 3; // Or whatever limit you want for free users
+
+  if (reportUsage >= REPORT_LIMIT) {
+    toast.error("Monthly Report Limit Reached", {
+      icon: '🔒',
+      style: {
+        borderRadius: '12px',
+        background: '#0F172A',
+        color: '#fff',
+        fontSize: '12px',
+        fontWeight: 'bold'
+      }
+    });
+    return false;
+  }
+
+  return true;
+};
 
   // --- LOGIC: DATA FETCHING ---
   const fetchReports = async () => {
@@ -655,33 +680,77 @@ const Reports = () => {
 
   // --- LOGIC: EXPORT ---
   const exportStatementPDF = async () => {
-    if (!printRef.current) return;
-    const canProceed = await logUsage();
-    if (!canProceed) return;
+  const element = printRef.current;
+  if (!element) return;
+  if (!canExportReport()) return;
 
-    try {
-      setPrintStatement(true);
-      const element = printRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 3, // Premium Crisp Quality
-        useCORS: true,
-        windowWidth: 794,
-      });
+  try {
+    setPrintStatement(true);
+    const toastId = toast.loading("Generating Executive Report...");
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save(`Statement-${businessName.replace(/\s+/g, '-')}-${month}.pdf`);
-      toast.success("Statement exported successfully!");
-    } catch (error) {
-      toast.error("Export failed");
-    } finally {
-      setPrintStatement(false);
+    // 1. Force the hidden element to be 'block' temporarily for the capture
+    element.parentElement.style.display = 'block';
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#FFFFFF",
+      width: 794, // Standard A4 width in pixels at 96 DPI
+      onclone: (clonedDoc) => {
+        // This ensures the cloned version is visible to the canvas engine
+        const clonedArea = clonedDoc.querySelector('[ref="printRef"]') || clonedDoc.body.querySelector('div[style*="794px"]');
+        if (clonedArea) {
+           clonedArea.style.display = 'block';
+           // Flatten gradients to solid colors to prevent 'non-finite' errors
+           const gradients = clonedArea.querySelectorAll('*');
+           gradients.forEach(el => {
+             if (window.getComputedStyle(el).backgroundImage.includes('gradient')) {
+               el.style.background = "#0028AE";
+             }
+           });
+        }
+      }
+    });
+
+    // 2. Hide it again immediately
+    element.parentElement.style.display = 'none';
+
+    // 3. Convert to Data URL and verify it exists
+    const imgData = canvas.toDataURL("image/jpeg", 0.95); // Using JPEG is more memory efficient
+    if (imgData === "data:,") {
+      throw new Error("Canvas captured an empty image.");
     }
-  };
+
+    // 4. Initialize PDF
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    
+    // 5. Calculate dimensions manually to avoid getImageProperties crash
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    const finalImgHeight = (canvasHeight * pdfWidth) / canvasWidth;
+
+    // 6. Add Image with explicit format and coordinates
+    // Using JPEG/JPG here matches the toDataURL above
+    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, finalImgHeight);
+    
+    pdf.save(`Statement-${businessName.replace(/\s+/g, '-')}.pdf`);
+    
+    toast.dismiss(toastId);
+    toast.success("Statement Exported Successfully");
+  } catch (error) {
+    toast.dismiss();
+    console.error("Critical Export Error:", error);
+    toast.error("Export failed. Please try again.");
+  } finally {
+    setPrintStatement(false);
+    // Ensure the hidden container stays hidden
+    if (printRef.current) printRef.current.parentElement.style.display = 'none';
+  }
+};
+
 
   // --- DATA PROCESSING ---
   const dynamicStats = useMemo(() => {
