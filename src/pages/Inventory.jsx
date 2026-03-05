@@ -808,6 +808,7 @@ import PrintInventory from "../components/PrintInventory";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
 
 /* =========================
    WORLD-CLASS UI COMPONENTS
@@ -961,18 +962,70 @@ export default function Inventory() {
     totalValue: filtered.reduce((s, it) => s + Number(it.stock || 0) * Number(it.price || 0), 0)
   }), [filtered]);
 
-  const saveItem = async () => {
-    if (!form.name || !form.price || !form.stock) return setError("Required fields missing");
-    setSaving(true);
-    try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
-      const res = mode === "create" ? await api.post("/inventory", payload) : await api.put(`/inventory/${form._id}`, payload);
-      setItems(prev => mode === "create" ? [res.data, ...prev] : prev.map(it => it._id === form._id ? res.data : it));
-      setOpen(false);
-    } catch (e) {
-      setError(e.response?.data?.message || "Save failed");
-    } finally { setSaving(false); }
-  };
+  // const saveItem = async () => {
+  //   if (!form.name || !form.price || !form.stock) return setError("Required fields missing");
+  //   setSaving(true);
+  //   try {
+  //     const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
+  //     const res = mode === "create" ? await api.post("/inventory", payload) : await api.put(`/inventory/${form._id}`, payload);
+  //     setItems(prev => mode === "create" ? [res.data, ...prev] : prev.map(it => it._id === form._id ? res.data : it));
+  //     setOpen(false);
+  //   } catch (e) {
+  //     setError(e.response?.data?.message || "Save failed");
+  //   } finally { setSaving(false); }
+  // };
+
+
+
+const saveItem = async () => {
+  // 1. Premium validation feedback
+  if (!form.name || !form.price || !form.stock) {
+    toast.error("Please fill all required fields", {
+      style: { borderRadius: '15px', background: '#0F172A', color: '#fff', fontSize: '12px', fontWeight: 'bold' }
+    });
+    return setError("Required fields missing");
+  }
+
+  setSaving(true);
+  
+  // Create a loading toast instance to show "work in progress"
+  const loadingToast = toast.loading(mode === "create" ? "Creating item..." : "Updating item...", {
+    style: { borderRadius: '15px', background: '#0F172A', color: '#fff', fontSize: '12px' }
+  });
+
+  try {
+    const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
+    const res = mode === "create" 
+      ? await api.post("/inventory", payload) 
+      : await api.put(`/inventory/${form._id}`, payload);
+
+    setItems(prev => mode === "create" 
+      ? [res.data, ...prev] 
+      : prev.map(it => it._id === form._id ? res.data : it)
+    );
+
+    // 2. Success Feedback (replaces loading toast)
+    toast.success(`${form.name} saved successfully!`, {
+      id: loadingToast,
+      icon: '✅',
+      style: { borderRadius: '15px', background: '#0F172A', color: '#fff', fontSize: '12px', fontWeight: 'bold' }
+    });
+
+    setOpen(false);
+  } catch (e) {
+    const errorMsg = e.response?.data?.message || "Save failed";
+    
+    // 3. Error Feedback (replaces loading toast)
+    toast.error(errorMsg, {
+      id: loadingToast,
+      style: { borderRadius: '15px', background: '#BE123C', color: '#fff', fontSize: '12px', fontWeight: 'bold' }
+    });
+
+    setError(errorMsg);
+  } finally {
+    setSaving(false);
+  }
+};
 
   const deleteItem = async (id) => {
     if (!window.confirm("Delete product?")) return;
