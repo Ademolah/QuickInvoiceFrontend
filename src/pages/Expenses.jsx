@@ -363,6 +363,7 @@
 
 
 
+
 import { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import html2canvas from "html2canvas";
@@ -374,6 +375,8 @@ import {
   ArrowLeft, X, TrendingDown, MoreHorizontal, Trash2
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+
+import toast from "react-hot-toast"; // Add this for premium feedback
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -391,12 +394,42 @@ export default function Expenses() {
   const [exporting, setExporting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [form, setForm] = useState({
-    title: "", category: "Others", amount: "", paymentMethod: "transfer", expenseDate: new Date().toISOString().split('T')[0], note: "",
-  });
+  // const [form, setForm] = useState({
+  //   title: "", category: "Others", amount: "", paymentMethod: "transfer", expenseDate: new Date().toISOString().split('T')[0], note: "",
+  // });
 
   const categories = ["Rent", "Utilities", "Internet", "Transport", "Supplies", "Salary", "Marketing", "Maintenance", "Others"];
 
+  //new intelligence feature 
+
+  const [user, setUser] = useState(null); // Added for Pro check
+
+  const [form, setForm] = useState({
+    title: "", 
+    category: "Others", 
+    amount: "", 
+    paymentMethod: "transfer", 
+    expenseDate: new Date().toISOString().split('T')[0], 
+    note: "",
+    isRecurring: false, // NEW: Recurring Logic
+    isTaxDeductible: false // NEW: Tax Logic
+  });
+
+  // NEW: Fetch user for Pro validation
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get(`${API}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUser(data);
+      } catch (err) { console.error(err); }
+    };
+    fetchUser();
+  }, []);
+  
+  
+  
   const fetchExpenses = async (selectedMonth = "") => {
     try {
       setLoading(true);
@@ -437,6 +470,18 @@ export default function Expenses() {
 const exportExpensesPDF = async () => {
   setExporting(true);
   try {
+
+    // PRO GUARD: Only Pro users can export the Expenditure Statement
+    if (user?.plan !== 'pro') {
+      toast.error("Pro Feature: Monthly Statements require a Pro Plan", {
+        icon: '🔒',
+        style: { borderRadius: '12px', background: '#0F172A', color: '#fff' }
+      });
+      return;
+    }
+
+    setExporting(true);
+    
     const element = printRef.current;
     const canvas = await html2canvas(element, { 
       scale: 3, 
@@ -514,7 +559,10 @@ const exportExpensesPDF = async () => {
                     disabled={exporting || expenses.length === 0}
                     className="mt-8 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold py-3 px-6 rounded-2xl w-fit hover:bg-white/30 transition-all flex items-center gap-2"
                 >
-                    <FileText size={16} /> {exporting ? "Generating..." : "Download Report"}
+                    <FileText size={16} /> 
+                    {exporting ? "Generating..." : "Download Report"}
+                    {/* Add this small indicator if you have user state */}
+                    {user?.plan !== 'pro' && <span className="ml-1 text-[8px] bg-white text-[#0028AE] px-1.5 py-0.5 rounded-full font-black">PRO</span>}
                 </button>
             </div>
 
@@ -564,9 +612,12 @@ const exportExpensesPDF = async () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-right">
+                            <div className="text-right flex flex-col items-end">
                                 <p className="text-lg font-black text-slate-900">{formatCurrency(e.amount)}</p>
-                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{e.paymentMethod}</p>
+                                <div className="flex items-center gap-2">
+                                    {e.isTaxDeductible && <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded uppercase">Taxable</span>}
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{e.paymentMethod}</p>
+                                </div>
                             </div>
                         </motion.div>
                     ))}
@@ -611,12 +662,34 @@ const exportExpensesPDF = async () => {
                                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
                              </select>
                         </div>
+
+                        {/* PREMIUM TOGGLES Row */}
+                        <div className="md:col-span-2 grid grid-cols-2 gap-3 mt-2">
+                           <button 
+                            type="button"
+                            onClick={() => setForm({...form, isRecurring: !form.isRecurring})}
+                            className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${form.isRecurring ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-slate-50 border-transparent text-slate-400'}`}
+                           >
+                             <span className="text-[10px] font-black uppercase tracking-widest">Monthly</span>
+                             <Calendar size={16} className={form.isRecurring ? 'text-blue-600' : 'text-slate-300'} />
+                           </button>
+
+                           <button 
+                            type="button"
+                            onClick={() => setForm({...form, isTaxDeductible: !form.isTaxDeductible})}
+                            className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${form.isTaxDeductible ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-slate-50 border-transparent text-slate-400'}`}
+                           >
+                             <span className="text-[10px] font-black uppercase tracking-widest">Taxable</span>
+                             <PieChart size={16} className={form.isTaxDeductible ? 'text-emerald-600' : 'text-slate-300'} />
+                           </button>
+                        </div>
+
                         <div>
-                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Payment Method</label>
+                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Method</label>
                              <select value={form.paymentMethod} onChange={e => setForm({...form, paymentMethod: e.target.value})} className="w-full bg-slate-50 border-none rounded-2xl py-4 px-5 font-bold text-slate-800 focus:ring-2 focus:ring-[#0028AE]">
                                 <option value="transfer">Bank Transfer</option>
                                 <option value="cash">Cash</option>
-                                <option value="card">Credit/Debit Card</option>
+                                <option value="card">Card</option>
                              </select>
                         </div>
                         <div>
@@ -704,5 +777,3 @@ const exportExpensesPDF = async () => {
     </div>
   );
 }
-
-
