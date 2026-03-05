@@ -616,6 +616,11 @@ const exportExpensesPDF = async () => {
                                 <p className="text-lg font-black text-slate-900">{formatCurrency(e.amount)}</p>
                                 <div className="flex items-center gap-2">
                                     {e.isTaxDeductible && <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded uppercase">Taxable</span>}
+                                    {e.isRecurring && (
+                                        <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded uppercase">
+                                            Monthly
+                                        </span>
+                                    )}
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{e.paymentMethod}</p>
                                 </div>
                             </div>
@@ -739,6 +744,7 @@ const exportExpensesPDF = async () => {
           <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[30%]">Title</th>
           <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[20%]">Category</th>
           <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[15%]">Method</th>
+          <th className="p-4 text-right text-[11px] font-black uppercase tracking-wider w-[20%]">Status</th>
           <th className="p-4 text-right text-[11px] font-black uppercase tracking-wider w-[20%]">Amount</th>
           <th className="p-4 text-right text-[11px] font-black uppercase tracking-wider w-[15%]">Date</th>
         </tr>
@@ -749,6 +755,11 @@ const exportExpensesPDF = async () => {
             <td className="p-4 font-bold text-sm truncate">{e.title}</td>
             <td className="p-4 text-xs font-semibold text-slate-500 uppercase">{e.category}</td>
             <td className="p-4 text-[10px] uppercase font-black text-slate-400 tracking-tighter">{e.paymentMethod}</td>
+            {/* NEW COLUMN CONTENT */}
+            <td className="p-4 text-[9px] font-bold">
+                {e.isTaxDeductible ? <span className="text-emerald-600">TAXABLE</span> : "-"}
+                {e.isRecurring && <span className="text-blue-600 ml-1">• RECURRING</span>}
+            </td>
             <td className="p-4 text-right font-black text-sm">{formatCurrency(e.amount)}</td>
             <td className="p-4 text-right text-[11px] font-medium text-slate-500">
                 {new Date(e.expenseDate).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })}
