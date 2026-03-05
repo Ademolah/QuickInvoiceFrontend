@@ -727,6 +727,10 @@ const exportExpensesPDF = async () => {
         <h1 className="text-5xl font-black uppercase tracking-tighter leading-none mb-3">
           Expenditure<br/>Statement
         </h1>
+        {/* NEW: Business Name Insertion */}
+        <p className="text-xl font-black text-[#0028AE] uppercase tracking-tight mb-3">
+           {user?.businessName || "Your Business"}
+        </p>
         <p className="text-slate-500 font-bold text-sm uppercase tracking-[0.2em]">
           Period: {new Date(month + "-02").toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
         </p>
