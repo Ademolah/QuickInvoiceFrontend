@@ -444,7 +444,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import Sidebar from "../components/Sidebar"; 
-import { X, User, Bell, TrendingUp, CreditCard, Package, Clock, Menu, CheckCircle2 } from 'lucide-react';
+import { X, User, Bell, TrendingUp, CreditCard, Package, Clock, Menu, CheckCircle2, Check, ShieldCheck } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { fetchUser } from '../utils/getUser';
 import { toast } from 'react-hot-toast';
@@ -586,17 +586,24 @@ const Dashboard = ({ children }) => {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* <button className="relative p-2 text-slate-400 hover:text-[#0028AE] transition-colors">
-                <Bell size={20} />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-              </button> */}
+             
               <NotificationCenter />
-              <div className="h-10 w-10 rounded-2xl overflow-hidden border-2 border-slate-100 shadow-sm bg-slate-200">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#0028AE]/5 text-[#0028AE]">
-                    <User size={20} />
+              <div className="relative w-12 h-12 rounded-full overflow-visible"> 
+                {/* The Avatar Frame */}
+                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white shadow-sm">
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[#0028AE]/5 text-[#0028AE]">
+                      <User size={20} />
+                    </div>
+                  )}
+                </div>
+
+                {/* THE PRO VERIFIED BADGE */}
+                {user?.plan === "pro" && (
+                  <div className="absolute -bottom-1 -right-1 bg-[#0028AE] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
+                    <ShieldCheck size={12} strokeWidth={3} />
                   </div>
                 )}
               </div>
