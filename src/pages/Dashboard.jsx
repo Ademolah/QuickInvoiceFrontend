@@ -444,7 +444,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import Sidebar from "../components/Sidebar"; 
-import { X, User, Bell, TrendingUp, CreditCard, Package, Clock, Menu, CheckCircle2, Check, ShieldCheck } from 'lucide-react';
+import { X, User, Bell, TrendingUp, CreditCard, Package, Clock, Menu, CheckCircle2, Check, ShieldCheck, Zap } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { fetchUser } from '../utils/getUser';
 import { toast } from 'react-hot-toast';
@@ -482,7 +482,11 @@ const Dashboard = ({ children }) => {
     occupation: "",
   });
 
+  const [expenseStats, setExpenseStats] = useState({ totalAmount: 0, taxableAmount: 0 });
+
   const token = localStorage.getItem("token");
+
+
 
   useEffect(() => {
     const initializeDashboard = async () => {
@@ -532,11 +536,51 @@ const Dashboard = ({ children }) => {
     if (token) initializeDashboard();
   }, [token]);
 
+  useEffect(() => {
+  const fetchProStats = async () => {
+    if (!token || user?.plan !== 'pro') return;
+
+    try {
+      const res = await axios.get(`${API}/api/expenses/stats/summary`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (res.data.success) {
+        setExpenseStats(res.data.data);
+      }
+    } catch (err) {
+      console.error("Pro Stats Load Error:", err);
+      // Fallback to prevent UI break
+      setExpenseStats({ totalAmount: 0, taxableAmount: 0 });
+    }
+  };
+
+  fetchProStats();
+}, [token, user?.plan]); // Only runs if token exists or plan status changes
+
   const chartData = invoices.map(inv => ({
     date: new Date(inv.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
     amount: inv.total,
     status: inv.status
   }));
+
+  // NEW UPDATED RUNWAY LOGIC
+  // 1. Get total from the new expenseStats state (populated via our new endpoint)
+  const totalExpenses = expenseStats.totalAmount || 0; 
+const netCash = (stats.totalRevenue || 0) - (expenseStats.totalAmount || 0);
+
+// 2. We calculate monthly burn based on current expenses. 
+// For a high-level estimate, we assume the total represents the year's spend so far.
+// If you want a more precise "Last 30 Days" burn, you can use a separate month-filtered stat.
+const monthlyBurn = totalExpenses > 0 ? (totalExpenses / 12) : 1; 
+
+// 3. Calculate Runway (Net Cash divided by Monthly Burn)
+const runwayMonths = (netCash > 0 && monthlyBurn > 0) 
+    ? (netCash / monthlyBurn).toFixed(1) 
+    : "0.0";
+
+// (Runway color logic remains untouched as requested)
+const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "text-amber-500" : "text-rose-500";
 
   if (loading) return <DashboardSkeleton />;
 
@@ -643,6 +687,68 @@ const Dashboard = ({ children }) => {
               color="bg-[#001325]" 
             />
           </div>
+
+          {/* PRO ONLY: Runway Intelligence Section */}
+          {user?.plan === "pro" && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 bg-[#001325] rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl border border-white/5"
+            >
+              {/* Decorative background glow - adjusted for better depth */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#0028AE]/20 blur-[120px] -mr-40 -mt-40" />
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#00A6FA]/10 blur-[80px] -ml-20 -mb-20" />
+              
+              <div className="flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
+                
+                {/* 1. Main Runway Stats */}
+                <div className="flex items-center gap-5 w-full lg:w-auto">
+                  <div className="w-16 h-16 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl flex items-center justify-center border border-white/10 backdrop-blur-xl shadow-inner">
+                    <Zap className="text-[#00A6FA] drop-shadow-[0_0_8px_rgba(0,166,250,0.5)]" size={30} />
+                  </div>
+                  <div>
+                    <p className="text-white/40 text-[9px] font-black uppercase spacing tracking-[0.3em] mb-1">Liquidity Runway</p>
+                    <h3 className="text-white text-3xl font-black tracking-tighter">
+                      {runwayMonths} <span className="text-white/30 text-xs font-bold uppercase ml-1">Months</span>
+                    </h3>
+                  </div>
+                </div>
+
+                {/* 2. Visual Divider (Hidden on mobile) */}
+                <div className="h-10 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent hidden lg:block" />
+
+                {/* 3. Tax Intelligence (New Value Add) */}
+                <div className="flex flex-col items-center lg:items-start w-full lg:w-auto">
+                  <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Taxable Offset</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-white text-lg font-black tracking-tight">
+                      {formatCurrency(expenseStats.taxableAmount || 0)}
+                    </p>
+                    <span className="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-black uppercase">Deductible</span>
+                  </div>
+                </div>
+
+                {/* 4. Net Cash Position */}
+                <div className="flex flex-col items-center lg:items-end w-full lg:w-auto">
+                  <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Net Position</p>
+                  <p className={`text-2xl font-black tracking-tighter ${netCash >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {formatCurrency(netCash)}
+                  </p>
+                </div>
+
+                {/* 5. Status Badge */}
+                <div className="w-full lg:w-auto">
+                  <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-[1.5rem] border border-white/10 flex flex-col items-center lg:items-end group hover:bg-white/10 transition-all cursor-default">
+                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${runwayColor}`}>
+                      {runwayMonths > 3 ? "Operations Stable" : "Liquidity Warning"}
+                    </span>
+                    <p className="text-white/30 text-[8px] font-bold mt-1 uppercase tracking-widest">Based on current burn</p>
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          )}
 
           {/* Secondary Stats & Chart */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
