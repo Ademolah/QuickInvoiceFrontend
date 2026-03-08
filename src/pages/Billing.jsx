@@ -429,7 +429,7 @@ export default function Billing() {
                    <div className="bg-slate-50 rounded-3xl p-6 mb-8 border border-slate-100">
                      <p className="text-slate-700 font-bold text-sm mb-4">Why upgrade to Pro?</p>
                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                       {[ "Unlimited Invoices", "Unlimited Receipts", "Expense Analytics", "Premium PDF Templates", "Priority Support", "Custom Branding" ].map((feature) => (
+                       {[ "Unlimited Invoices", "Unlimited Receipts", "Expense Analytics", "Premium PDF Templates", "Priority Support", "Custom Branding","Verification Badge", "Runway Calculation" ].map((feature) => (
                          <li key={feature} className="flex items-center gap-2 text-xs font-bold text-slate-500">
                            <CheckCircle size={14} className="text-[#0028AE]" /> {feature}
                          </li>
