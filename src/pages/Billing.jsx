@@ -537,7 +537,7 @@ export default function Billing() {
                 </div>
                 
                 <p className="mt-6 text-[11px] text-slate-400 font-medium leading-relaxed">
-                  Resetting in <span className="text-slate-900 font-bold">12 days</span>. Upgrade for unlimited access.
+                  Resetting by <span className="text-slate-900 font-bold">month end</span>. Upgrade for unlimited access.
                 </p>
               </div>
             )}
