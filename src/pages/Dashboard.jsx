@@ -444,12 +444,13 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import Sidebar from "../components/Sidebar"; 
-import { X, User, Bell, TrendingUp, CreditCard, Package, Clock, Menu, CheckCircle2, Check, ShieldCheck, Zap } from 'lucide-react';
+import { X, User, Bell, TrendingUp, CreditCard,Lock, Package, Clock, Menu, CheckCircle2, Check, ShieldCheck, Zap } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { fetchUser } from '../utils/getUser';
 import { toast } from 'react-hot-toast';
 import QuickBuddy from '../components/QuickBuddy';
 import NotificationCenter from '../components/NotificationCenter';
+import { useNavigate } from "react-router-dom";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -470,6 +471,8 @@ const Dashboard = ({ children }) => {
     totalSales: 0,
     totalQuantity: 0,
   });
+
+  const navigate = useNavigate();
 
   // Modals state
   const [showPromptModal, setShowPromptModal] = useState(false);
@@ -688,67 +691,96 @@ const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "
             />
           </div>
 
-          {/* PRO ONLY: Runway Intelligence Section */}
-          {user?.plan === "pro" && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8 bg-[#001325] rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl border border-white/5"
-            >
-              {/* Decorative background glow - adjusted for better depth */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#0028AE]/20 blur-[120px] -mr-40 -mt-40" />
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#00A6FA]/10 blur-[80px] -ml-20 -mb-20" />
-              
-              <div className="flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
-                
-                {/* 1. Main Runway Stats */}
-                <div className="flex items-center gap-5 w-full lg:w-auto">
-                  <div className="w-16 h-16 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl flex items-center justify-center border border-white/10 backdrop-blur-xl shadow-inner">
-                    <Zap className="text-[#00A6FA] drop-shadow-[0_0_8px_rgba(0,166,250,0.5)]" size={30} />
-                  </div>
-                  <div>
-                    <p className="text-white/40 text-[9px] font-black uppercase spacing tracking-[0.3em] mb-1">Liquidity Runway</p>
-                    <h3 className="text-white text-3xl font-black tracking-tighter">
-                      {runwayMonths} <span className="text-white/30 text-xs font-bold uppercase ml-1">Months</span>
-                    </h3>
-                  </div>
-                </div>
+          {/* Runway Intelligence Section */}
+<motion.div 
+  initial={{ opacity: 0, y: 20 }} 
+  animate={{ opacity: 1, y: 0 }}
+  className="mb-8 bg-[#001325] rounded-[2.5rem] p-6 lg:p-10 relative overflow-hidden shadow-2xl border border-white/5 min-h-[180px] flex items-center"
+>
+  {/* Decorative background glow */}
+  <div className="absolute top-0 right-0 w-80 h-80 bg-[#0028AE]/20 blur-[120px] -mr-40 -mt-40 pointer-events-none" />
+  
+  {/* BLUR OVERLAY FOR NON-PRO USERS */}
+  {user?.plan !== "pro" && (
+    <div className="absolute inset-0 z-[60] flex items-center justify-center backdrop-blur-xl bg-[#001325]/60 px-4">
+      <div className="text-center w-full max-w-lg animate-in fade-in zoom-in duration-500 flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-12">
+        
+        {/* Left Side: Text Content */}
+        <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+          <div className="inline-flex items-center gap-2 bg-[#0028AE] text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-full mb-2">
+            <Lock size={10} strokeWidth={3} /> Pro Intelligence
+          </div>
+          <h4 className="text-white text-lg lg:text-xl font-black tracking-tight mb-1">
+            Unlock Runway Data
+          </h4>
+          <p className="text-white/60 text-[10px] lg:text-xs font-medium max-w-[250px] leading-tight">
+            See exactly how many months your cash flow will sustain operations.
+          </p>
+        </div>
 
-                {/* 2. Visual Divider (Hidden on mobile) */}
-                <div className="h-10 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent hidden lg:block" />
+        {/* Right Side: Action */}
+        <div className="flex flex-col items-center">
+          <button 
+            onClick={() => navigate('/settings/billing')}
+            className="bg-white text-[#001325] px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#00A6FA] hover:text-white transition-all shadow-2xl active:scale-95 whitespace-nowrap"
+          >
+            Upgrade Now
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
 
-                {/* 3. Tax Intelligence (New Value Add) */}
-                <div className="flex flex-col items-center lg:items-start w-full lg:w-auto">
-                  <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Taxable Offset</p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-white text-lg font-black tracking-tight">
-                      {formatCurrency(expenseStats.taxableAmount || 0)}
-                    </p>
-                    <span className="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-black uppercase">Deductible</span>
-                  </div>
-                </div>
+  {/* THE MAIN CONTENT (Blurred if not pro) */}
+  <div className={`w-full flex flex-col lg:flex-row justify-between items-center gap-6 relative z-10 transition-all duration-1000 ${user?.plan !== 'pro' ? 'blur-2xl grayscale opacity-50 select-none pointer-events-none' : ''}`}>
+    
+    {/* 1. Main Runway Stats */}
+    <div className="flex items-center gap-4">
+      <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-xl">
+        <Zap className="text-[#00A6FA]" size={24} />
+      </div>
+      <div>
+        <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Liquidity Runway</p>
+        <h3 className="text-white text-2xl font-black tracking-tighter">
+          {user?.plan === 'pro' ? runwayMonths : "12.4"} <span className="text-white/30 text-[10px] font-bold uppercase ml-1">Months</span>
+        </h3>
+      </div>
+    </div>
 
-                {/* 4. Net Cash Position */}
-                <div className="flex flex-col items-center lg:items-end w-full lg:w-auto">
-                  <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Net Position</p>
-                  <p className={`text-2xl font-black tracking-tighter ${netCash >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {formatCurrency(netCash)}
-                  </p>
-                </div>
+    {/* 2. Visual Divider */}
+    <div className="h-8 w-px bg-white/10 hidden lg:block" />
 
-                {/* 5. Status Badge */}
-                <div className="w-full lg:w-auto">
-                  <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-[1.5rem] border border-white/10 flex flex-col items-center lg:items-end group hover:bg-white/10 transition-all cursor-default">
-                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${runwayColor}`}>
-                      {runwayMonths > 3 ? "Operations Stable" : "Liquidity Warning"}
-                    </span>
-                    <p className="text-white/30 text-[8px] font-bold mt-1 uppercase tracking-widest">Based on current burn</p>
-                  </div>
-                </div>
+    {/* 3. Tax Intelligence */}
+    <div className="flex flex-col items-center lg:items-start">
+      <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Taxable Offset</p>
+      <div className="flex items-center gap-2">
+        <p className="text-white text-lg font-black tracking-tight">
+          {user?.plan === 'pro' ? formatCurrency(expenseStats.taxableAmount || 0) : "$2,450.00"}
+        </p>
+        <span className="text-[7px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-black uppercase">Deductible</span>
+      </div>
+    </div>
 
-              </div>
-            </motion.div>
-          )}
+    {/* 4. Net Position */}
+    <div className="flex flex-col items-center lg:items-end">
+      <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Net Position</p>
+      <p className={`text-xl font-black tracking-tighter ${user?.plan === 'pro' && netCash < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+        {user?.plan === 'pro' ? formatCurrency(netCash) : "$18,200.00"}
+      </p>
+    </div>
+
+    {/* 5. Badge */}
+    <div className="hidden xl:block">
+      <div className="bg-white/5 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 flex flex-col items-end">
+        <span className={`text-[9px] font-black uppercase tracking-widest ${user?.plan === 'pro' ? runwayColor : 'text-emerald-400'}`}>
+          {user?.plan === 'pro' ? (runwayMonths > 3 ? "Operations Stable" : "Liquidity Warning") : "Intelligence Active"}
+        </span>
+        <p className="text-white/20 text-[7px] font-bold mt-0.5 uppercase tracking-widest text-right">Verified Analysis</p>
+      </div>
+    </div>
+
+  </div>
+</motion.div>
 
           {/* Secondary Stats & Chart */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
