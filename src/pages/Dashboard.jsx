@@ -765,7 +765,7 @@ const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "
     <div className="flex flex-col items-center lg:items-end">
       <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Net Position</p>
       <p className={`text-xl font-black tracking-tighter ${user?.plan === 'pro' && netCash < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-        {user?.plan === 'pro' ? formatCurrency(netCash) : "$18,200.00"}
+        {user?.plan === 'pro' ? formatCurrency(netCash) : "₦18,200.00"}
       </p>
     </div>
 
