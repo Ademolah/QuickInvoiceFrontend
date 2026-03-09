@@ -721,7 +721,7 @@ const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "
         {/* Right Side: Action */}
         <div className="flex flex-col items-center">
           <button 
-            onClick={() => navigate('/settings/billing')}
+            onClick={() => navigate('/billing')}
             className="bg-white text-[#001325] px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#00A6FA] hover:text-white transition-all shadow-2xl active:scale-95 whitespace-nowrap"
           >
             Upgrade Now
