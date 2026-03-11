@@ -203,7 +203,7 @@ export default function Pricing() {
           <PlanCard 
             index={2}
             title="Enterprise"
-            price={15000}
+            price={10000}
             icon={ShieldCheck}
             description="Full-suite fiscal compliance and multi-user controls for larger firms."
             features={["Everything in Pro", "Multi-user Access", "Bulk Invoicing", "Dedicated Manager", "API Access"]}
