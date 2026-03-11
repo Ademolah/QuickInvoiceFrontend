@@ -842,31 +842,56 @@ export default function InvoiceDetails() {
 
   // 1. DATA LOADING
   useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        if (!token) { setError("Authentication required"); return; }
+  const load = async () => {
+    try {
+      setLoading(true);
+      if (!token) { setError("Authentication required"); return; }
 
-        const [invRes, userRes, accRes] = await Promise.all([
-          axios.get(`${API_BASE}/api/invoices/${id}`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API_BASE}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API_BASE}/api/users/account-details`, { headers: { Authorization: `Bearer ${token}` } }),
-        ]);
+      const [invRes, userRes, accRes] = await Promise.all([
+        axios.get(`${API_BASE}/api/invoices/${id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE}/api/users/account-details`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
 
-        setInvoice(invRes.data);
-        setUser(userRes.data);
-        setUserData(userRes.data); // For avatar
-        setBankName(accRes.data.accountDetails?.bankName || '');
-        setAccountNumber(accRes.data.accountDetails?.accountNumber || '');
-        setAccountName(accRes.data.accountDetails?.accountName || '');
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to load invoice.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [id, token]);
+      const rawUser = userRes.data;
+      const invoiceData = invRes.data;
+
+      // 1. Identify which business this specific invoice belongs to
+      const activeBusiness = rawUser.enterpriseBusinesses?.find(
+        (b) => b._id === invoiceData.businessId
+      );
+
+      // 2. Build the Contextual User
+      const contextualUser = {
+        ...rawUser,
+        // This line ensures your JSX {user?.businessName} works perfectly
+        businessName: activeBusiness ? activeBusiness.businessName : (rawUser.businessName || rawUser.name || "QuickInvoice NG"),
+        
+        // Update avatar to use the business logo URL
+        avatar: activeBusiness?.logo?.url ? activeBusiness.logo.url : rawUser.avatar,
+        
+        // Use business address if available
+        address: activeBusiness?.address ? activeBusiness.address : rawUser.address
+      };
+
+      setInvoice(invoiceData);
+      setUser(contextualUser); 
+      setUserData(contextualUser); // Updates the logo/avatar in the UI
+      
+      // 3. Set Bank Details (Backend already handles the business/main switch)
+      setBankName(accRes.data.accountDetails?.bankName || '');
+      setAccountNumber(accRes.data.accountDetails?.accountNumber || '');
+      setAccountName(accRes.data.accountDetails?.accountName || '');
+
+    } catch (err) {
+      console.error("Load error:", err);
+      setError(err.response?.data?.message || "Failed to load invoice.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  load();
+}, [id, token]);
 
   // 2. USAGE LOGGING LOGIC
   const logUsage = async () => {

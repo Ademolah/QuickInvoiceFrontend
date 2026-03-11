@@ -42,6 +42,7 @@ import MarketZone from "./pages/MarketZone";
 import HowToUse from "./pages/HowToUse";
 import Solutions from "./components/Solutions";
 import Bookkeeping from "./pages/BookKeeping";
+import AppLayout from "./components/AppLayout";
 
 export default function App() {
   return (
@@ -50,67 +51,55 @@ export default function App() {
       <Toaster position="top-right" reverseOrder={false} />
 
       <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/contact" element={<Contact />}/>
-          <Route path="/how" element={<HowToInstall />}/>
-          <Route path="/solutions" element={<Solutions />}/>
-          <Route path="/privacy" element={<PrivacyPolicy />}/>
-          <Route path="/blog" element={<Blog posts={blogPosts}/>}/> 
-          <Route path="/blog/:id" element={<BlogDetail posts={blogPosts} />} />
-          {/* <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          /> */}
-          <Route
-            path="/dashboard"
-            element={
-                <Dashboard />
-            }
-          />
-          {/* <Route path="/invoices" element={<ProtectedRoute> <InvoiceList /> </ProtectedRoute>}/>
-          <Route path="/invoices/:id" element={<ProtectedRoute> <InvoiceDetails /> </ProtectedRoute>}/>
-          <Route path="/invoices/new" element={<ProtectedRoute> <NewInvoice /> </ProtectedRoute>}/>
-          <Route path="/settings" element={<ProtectedRoute> <Settings /> </ProtectedRoute>}/>
-          <Route path="/billing" element={<ProtectedRoute> <Billing /> </ProtectedRoute>}/>
-          <Route path="/inventory" element={<ProtectedRoute> <Inventory /> </ProtectedRoute>}/>
-          <Route path="/clients" element={<ProtectedRoute> <Client /> </ProtectedRoute>}/>
-          <Route path="/reports" element={<ProtectedRoute> <Reports /> </ProtectedRoute>}/>
-          <Route path="/support" element={<ProtectedRoute> <Support /> </ProtectedRoute>}/>
-          <Route path="/receipts" element={ <ProtectedRoute> <Receipts /> </ProtectedRoute>} />
-          <Route path="/receipts/:invoiceId" element={ <ProtectedRoute> <ReceiptDetails /> </ProtectedRoute>} /> */}
-          <Route path="/invoices" element={ <InvoiceList /> }/>
-          <Route path="/invoices/:id" element={ <InvoiceDetails /> }/>
-          <Route path="/invoices/new" element={ <NewInvoice /> }/>
-          <Route path="/settings" element={ <Settings /> }/>
-          <Route path="/billing" element={ <Billing /> }/>
-          <Route path="/expenses" element={ <Expenses /> }/>
-          <Route path="/bookkeeping" element={ <Bookkeeping /> }/>
+  <Routes>
+    {/* --- EXTERNAL ROUTES (Full Width, No Sidebar) --- */}
+    <Route path="/" element={<Landing />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/contact" element={<Contact />} />
+    <Route path="/how" element={<HowToInstall />} />
+    <Route path="/solutions" element={<Solutions />} />
+    <Route path="/privacy" element={<PrivacyPolicy />} />
+    <Route path="/blog" element={<Blog posts={blogPosts} />} /> 
+    <Route path="/blog/:id" element={<BlogDetail posts={blogPosts} />} />
 
-          <Route path="/market" element={ <MarketSquare /> }/>
-          <Route path="/marketzone" element={ <MarketZone /> }/>
-          <Route path="/how-to-use" element={ <HowToUse /> }/>
-          <Route path="/market/add-product" element={ <AddProduct /> }/>
-          <Route path="/product" element={ <Products /> }/>
-          <Route path="/market/:slug" element={<Market />} />
+    {/* --- INTERNAL ROUTES (Protected by AppLayout) --- */}
+    {/* If you want to use ProtectedRoute, wrap it here: element={<ProtectedRoute><AppLayout /></ProtectedRoute>} */}
+    <Route element={<AppLayout />}>
+      <Route path="/dashboard" element={<Dashboard />} />
+      
+      {/* Invoices & Finance */}
+      <Route path="/invoices" element={<InvoiceList />} />
+      <Route path="/invoices/:id" element={<InvoiceDetails />} />
+      <Route path="/invoices/new" element={<NewInvoice />} />
+      <Route path="/expenses" element={<Expenses />} />
+      <Route path="/bookkeeping" element={<Bookkeeping />} />
+      <Route path="/receipts" element={<Receipts />} />
+      <Route path="/receipts/:invoiceId" element={<ReceiptDetails />} />
+      
+      {/* Settings & Business */}
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/billing" element={<Billing />} />
+      <Route path="/clients" element={<Client />} />
+      <Route path="/inventory" element={<Inventory />} />
+      <Route path="/reports" element={<Reports />} />
+      <Route path="/support" element={<Support />} />
 
-          <Route path="/inventory" element={ <Inventory /> }/>
-          <Route path="/quickpay" element={ <QuickPay /> }/>
-          <Route path="/transfer" element={ <TransferTransaction /> }/>
-          <Route path="/quickpay/dashboard" element={ <QuickPayDashboard /> }/>
-          <Route path="/clients" element={ <Client />}/>
-          <Route path="/reports" element={ <Reports />}/>
-          <Route path="/support" element={<Support /> }/>
-          <Route path="/receipts" element={ <Receipts /> } />
-          <Route path="/receipts/:invoiceId" element={ <ReceiptDetails /> } />
-        </Routes>
-      </Router>
+      {/* Market & Products */}
+      <Route path="/market" element={<MarketSquare />} />
+      <Route path="/marketzone" element={<MarketZone />} />
+      <Route path="/how-to-use" element={<HowToUse />} />
+      <Route path="/market/add-product" element={<AddProduct />} />
+      <Route path="/product" element={<Products />} />
+      <Route path="/market/:slug" element={<Market />} />
+
+      {/* Payments */}
+      <Route path="/quickpay" element={<QuickPay />} />
+      <Route path="/transfer" element={<TransferTransaction />} />
+      <Route path="/quickpay/dashboard" element={<QuickPayDashboard />} />
+    </Route>
+  </Routes>
+</Router>
     </AuthProvider>
   );
 }

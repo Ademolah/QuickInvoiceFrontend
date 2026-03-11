@@ -449,23 +449,44 @@ export default function ReceiptDetails() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const [invRes, userRes] = await Promise.all([
-          axios.get(`${API}/api/invoices/${invoiceId}`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
-        ]);
-        setInvoice(invRes.data);
-        setUser(userRes.data);
-      } catch (e) {
-        toast.error("Failed to load receipt details");
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [invoiceId]);
+  const load = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const [invRes, userRes] = await Promise.all([
+        axios.get(`${API}/api/invoices/${invoiceId}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+
+      const rawUser = userRes.data;
+      const invoiceData = invRes.data;
+
+      // 1. Locate the business used for this specific transaction
+      const activeBusiness = rawUser.enterpriseBusinesses?.find(
+        (b) => b._id === invoiceData.businessId
+      );
+
+      // 2. Build the Contextual User for the Receipt
+      const contextualUser = {
+        ...rawUser,
+        // Match the businessName field your UI expects
+        businessName: activeBusiness ? activeBusiness.businessName : (rawUser.businessName || rawUser.name || "QuickInvoice NG"),
+        // Use the specific business logo for the receipt header
+        avatar: activeBusiness?.logo?.url ? activeBusiness.logo.url : rawUser.avatar,
+        // Ensure address matches the business entity
+        address: activeBusiness?.address ? activeBusiness.address : rawUser.address
+      };
+
+      setInvoice(invoiceData);
+      setUser(contextualUser);
+    } catch (e) {
+      console.error("Receipt load error:", e);
+      toast.error("Failed to load receipt details");
+    } finally {
+      setLoading(false);
+    }
+  };
+  load();
+}, [invoiceId]);
 
   const handleCapture = async (format = 'pdf') => {
     if (!captureRef.current) return;

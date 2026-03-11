@@ -451,6 +451,7 @@ import { toast } from 'react-hot-toast';
 import QuickBuddy from '../components/QuickBuddy';
 import NotificationCenter from '../components/NotificationCenter';
 import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -485,6 +486,8 @@ const Dashboard = ({ children }) => {
     occupation: "",
   });
 
+  const { setIsMobileMenuOpen } = useOutletContext();
+
   const [expenseStats, setExpenseStats] = useState({ totalAmount: 0, taxableAmount: 0 });
 
   const token = localStorage.getItem("token");
@@ -503,7 +506,8 @@ const Dashboard = ({ children }) => {
         const invoicesData = invoiceRes.data;
 
         setUser(userData);
-        setBusinessName(userData.businessName || '');
+        // setBusinessName(userData.businessName || '');
+        setBusinessName(userData.activeContext?.businessName || userData.businessName);
 
         // KYC Check
         if (!userData.nationality || !userData.date_of_birth || !userData.residential_address || !userData.occupation) {
@@ -541,7 +545,9 @@ const Dashboard = ({ children }) => {
 
   useEffect(() => {
   const fetchProStats = async () => {
-    if (!token || user?.plan !== 'pro') return;
+    const isPremium = user?.plan === 'pro' || user?.plan === 'enterprise';
+    
+    if (!token || !isPremium) return;
 
     try {
       const res = await axios.get(`${API}/api/expenses/stats/summary`, {
@@ -588,290 +594,267 @@ const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "
   if (loading) return <DashboardSkeleton />;
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      {/* Sidebar Desktop */}
-      <div className="hidden lg:block fixed h-screen w-[280px] border-r border-slate-200 bg-white z-20">
-        <Sidebar />
-      </div>
-
-      {/* Mobile Sidebar Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-[60] bg-[#001325]/40 backdrop-blur-sm lg:hidden" 
-            />
-            <motion.div 
-              initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 z-[70] h-full w-[280px] bg-white lg:hidden"
-            >
-              <Sidebar closeMenu={() => setIsOpen(false)} />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <main className="flex-1 lg:ml-[280px] min-h-screen">
-        {/* Top Navigation Bar */}
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <button onClick={() => setIsOpen(true)} className="lg:hidden p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                <Menu size={24} className="text-[#001325]" />
-              </button>
-              <div>
-                <h1 className="text-xl font-black text-[#001325] tracking-tight">
-                  Dashboard
-                </h1>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                  {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-             
-              <NotificationCenter />
-              <div className="relative w-12 h-12 rounded-full overflow-visible"> 
-                {/* The Avatar Frame */}
-                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white shadow-sm">
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#0028AE]/5 text-[#0028AE]">
-                      <User size={20} />
-                    </div>
-                  )}
-                </div>
-
-                {/* THE PRO VERIFIED BADGE */}
-                {user?.plan === "pro" && (
-                  <div className="absolute -bottom-1 -right-1 bg-[#0028AE] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
-                    <ShieldCheck size={12} strokeWidth={3} />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="p-6 lg:p-10 max-w-7xl mx-auto space-y-10">
-          {/* Welcome Section */}
-          <section>
-            <h2 className="text-3xl font-black text-[#001325] tracking-tighter">
-              Welcome back, <span className="text-[#0028AE]">{businessName}</span>
-            </h2>
-            <p className="text-slate-500 font-medium mt-1">Here is what's happening with your business today.</p>
-          </section>
-
-          {/* Primary Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatCard 
-              label="Revenue (Paid)" 
-              value={formatCurrency(stats.totalRevenue)} 
-              icon={TrendingUp} 
-              trend="+12.5%" 
-              color="bg-[#0028AE]" 
-            />
-            <StatCard 
-              label="Pending Invoices" 
-              value={stats.totalUnpaid} 
-              icon={Clock} 
-              trend="Attention" 
-              color="bg-[#00A6FA]" 
-            />
-            <StatCard 
-              label="Total Sales" 
-              value={formatCurrency(stats.totalSales)} 
-              icon={CreditCard} 
-              color="bg-[#001325]" 
-            />
-          </div>
-
-          {/* Runway Intelligence Section */}
-<motion.div 
-  initial={{ opacity: 0, y: 20 }} 
-  animate={{ opacity: 1, y: 0 }}
-  className="mb-8 bg-[#001325] rounded-[2.5rem] p-6 lg:p-10 relative overflow-hidden shadow-2xl border border-white/5 min-h-[180px] flex items-center"
->
-  {/* Decorative background glow */}
-  <div className="absolute top-0 right-0 w-80 h-80 bg-[#0028AE]/20 blur-[120px] -mr-40 -mt-40 pointer-events-none" />
-  
-  {/* BLUR OVERLAY FOR NON-PRO USERS */}
-  {user?.plan !== "pro" && (
-    <div className="absolute inset-0 z-[60] flex items-center justify-center backdrop-blur-xl bg-[#001325]/60 px-4">
-      <div className="text-center w-full max-w-lg animate-in fade-in zoom-in duration-500 flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-12">
-        
-        {/* Left Side: Text Content */}
-        <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 bg-[#0028AE] text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-full mb-2">
-            <Lock size={10} strokeWidth={3} /> Pro Intelligence
-          </div>
-          <h4 className="text-white text-lg lg:text-xl font-black tracking-tight mb-1">
-            Unlock Runway Data
-          </h4>
-          <p className="text-white/60 text-[10px] lg:text-xs font-medium max-w-[250px] leading-tight">
-            See exactly how many months your cash flow will sustain operations.
-          </p>
-        </div>
-
-        {/* Right Side: Action */}
-        <div className="flex flex-col items-center">
-          <button 
-            onClick={() => navigate('/billing')}
-            className="bg-white text-[#001325] px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#00A6FA] hover:text-white transition-all shadow-2xl active:scale-95 whitespace-nowrap"
-          >
-            Upgrade Now
-          </button>
-        </div>
-      </div>
-    </div>
-  )}
-
-  {/* THE MAIN CONTENT (Blurred if not pro) */}
-  <div className={`w-full flex flex-col lg:flex-row justify-between items-center gap-6 relative z-10 transition-all duration-1000 ${user?.plan !== 'pro' ? 'blur-2xl grayscale opacity-50 select-none pointer-events-none' : ''}`}>
+  /* 1. Removed 'flex' and 'ml-[280px]' to prevent the "gap" and duplicate sidebars */
+  <div className="min-h-full bg-[#F8FAFC]">
     
-    {/* 1. Main Runway Stats */}
+    {/* Top Navigation Bar - Now content-focused only */}
+    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4">
+  <div className="max-w-7xl mx-auto flex justify-between items-center">
     <div className="flex items-center gap-4">
-      <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-xl">
-        <Zap className="text-[#00A6FA]" size={24} />
-      </div>
+      {/* ADD THIS BUTTON BACK: It triggers the AppLayout sidebar */}
+      <button 
+        onClick={() => setIsMobileMenuOpen(true)} 
+        className="lg:hidden p-2.5 bg-slate-50 rounded-xl text-slate-600 active:scale-95 transition-transform"
+      >
+        <Menu size={20} />
+      </button>
+      
       <div>
-        <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Liquidity Runway</p>
-        <h3 className="text-white text-2xl font-black tracking-tighter">
-          {user?.plan === 'pro' ? runwayMonths : "12.4"} <span className="text-white/30 text-[10px] font-bold uppercase ml-1">Months</span>
-        </h3>
-      </div>
-    </div>
-
-    {/* 2. Visual Divider */}
-    <div className="h-8 w-px bg-white/10 hidden lg:block" />
-
-    {/* 3. Tax Intelligence */}
-    <div className="flex flex-col items-center lg:items-start">
-      <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Taxable Offset</p>
-      <div className="flex items-center gap-2">
-        <p className="text-white text-lg font-black tracking-tight">
-          {user?.plan === 'pro' ? formatCurrency(expenseStats.taxableAmount || 0) : "$2,450.00"}
+        <h1 className="text-xl font-black text-[#001325] tracking-tight">
+          Dashboard
+        </h1>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+          {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
         </p>
-        <span className="text-[7px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-black uppercase">Deductible</span>
       </div>
     </div>
-
-    {/* 4. Net Position */}
-    <div className="flex flex-col items-center lg:items-end">
-      <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Net Position</p>
-      <p className={`text-xl font-black tracking-tighter ${user?.plan === 'pro' && netCash < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-        {user?.plan === 'pro' ? formatCurrency(netCash) : "₦18,200.00"}
-      </p>
-    </div>
-
-    {/* 5. Badge */}
-    <div className="hidden xl:block">
-      <div className="bg-white/5 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 flex flex-col items-end">
-        <span className={`text-[9px] font-black uppercase tracking-widest ${user?.plan === 'pro' ? runwayColor : 'text-emerald-400'}`}>
-          {user?.plan === 'pro' ? (runwayMonths > 3 ? "Operations Stable" : "Liquidity Warning") : "Intelligence Active"}
-        </span>
-        <p className="text-white/20 text-[7px] font-bold mt-0.5 uppercase tracking-widest text-right">Verified Analysis</p>
-      </div>
-    </div>
+    
+    <div className="flex items-center gap-4">
+          <NotificationCenter />
+          <div className="relative w-12 h-12 rounded-full overflow-visible"> 
+            <div className="w-full h-full rounded-full overflow-hidden border-2 border-white shadow-sm">
+              {user?.activeContext?.logo ? (
+                <img src={user.activeContext.logo} alt="Profile" className="w-full h-full object-cover" />
+              ) : user?.avatar ? (
+                <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#0028AE]/5 text-[#0028AE]">
+                  <User size={20} />
+                </div>
+              )}
+            </div>
+            {['pro', 'enterprise'].includes(user?.plan) && (
+              <div className="absolute -bottom-1 -right-1 bg-[#0028AE] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
+                <ShieldCheck size={12} strokeWidth={3} />
+              </div>
+            )}
+          </div>
+        </div>
 
   </div>
-</motion.div>
+</header>
 
-          {/* Secondary Stats & Chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Chart Area */}
-            <div className="lg:col-span-8 bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-lg font-black text-[#001325] tracking-tight">Performance Flow</h3>
-                <div className="flex gap-2">
-                   <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#0028AE]" /> <span className="text-[10px] font-bold uppercase text-slate-400">Paid</span></div>
-                </div>
-              </div>
-              <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#94a3b8'}} dy={10} />
-                    <YAxis hide />
-                    <Tooltip 
-                      cursor={{fill: '#f8fafc'}}
-                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Bar dataKey="amount" radius={[6, 6, 0, 0]} barSize={30}>
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#0028AE' : '#CBD5E1'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+    {/* Main Content Area */}
+    <div className="p-6 lg:p-10 max-w-7xl mx-auto space-y-10">
+      {/* Welcome Section */}
+      <section>
+        <h2 className="text-3xl font-black text-[#001325] tracking-tighter">
+          Welcome back, <span className="text-[#0028AE]">{businessName}</span>
+        </h2>
+        <p className="text-slate-500 font-medium mt-1">Here is what's happening with your business today.</p>
+      </section>
 
-            {/* Micro Stats */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 flex items-center justify-between shadow-sm">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Volume</p>
-                  <p className="text-2xl font-black text-[#001325]">{stats.totalQuantity}</p>
-                  <p className="text-xs font-bold text-slate-400">Items Sold</p>
-                </div>
-                <div className="h-14 w-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <Package size={24} />
-                </div>
-              </div>
+      {/* Primary Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatCard 
+          label="Revenue (Paid)" 
+          value={formatCurrency(stats.totalRevenue)} 
+          icon={TrendingUp} 
+          trend="+12.5%" 
+          color="bg-[#0028AE]" 
+        />
+        <StatCard 
+          label="Pending Invoices" 
+          value={stats.totalUnpaid} 
+          icon={Clock} 
+          trend="Attention" 
+          color="bg-[#00A6FA]" 
+        />
+        <StatCard 
+          label="Total Sales" 
+          value={formatCurrency(stats.totalSales)} 
+          icon={CreditCard} 
+          color="bg-[#001325]" 
+        />
+      </div>
 
-              <div className="bg-gradient-to-br from-[#0028AE] to-[#00A6FA] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl shadow-blue-500/20">
-                <div className="relative z-10">
-                  <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Monthly Active</p>
-                  <p className="text-2xl font-black">{stats.totalInvoicesThisMonth}</p>
-                  <p className="text-xs font-bold opacity-80">Generated Invoices</p>
+      {/* Runway Intelligence Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8 bg-[#001325] rounded-[2.5rem] p-6 lg:p-10 relative overflow-hidden shadow-2xl border border-white/5 min-h-[180px] flex items-center"
+      >
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#0028AE]/20 blur-[120px] -mr-40 -mt-40 pointer-events-none" />
+        
+        {user?.plan !== "pro" && user?.plan !== "enterprise" && (
+          <div className="absolute inset-0 z-[60] flex items-center justify-center backdrop-blur-xl bg-[#001325]/60 px-4">
+            <div className="text-center w-full max-w-lg animate-in fade-in zoom-in duration-500 flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-12">
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 bg-[#0028AE] text-white text-[9px] font-black uppercase px-2.5 py-1 rounded-full mb-2">
+                  <Lock size={10} strokeWidth={3} /> Pro Intelligence
                 </div>
-                <div className="absolute top-[-10%] right-[-10%] opacity-10">
-                   <TrendingUp size={120} />
-                </div>
+                <h4 className="text-white text-lg lg:text-xl font-black tracking-tight mb-1">
+                  Unlock Runway Data
+                </h4>
+                <p className="text-white/60 text-[10px] lg:text-xs font-medium max-w-[250px] leading-tight">
+                  See exactly how many months your cash flow will sustain operations.
+                </p>
+              </div>
+              <div className="flex flex-col items-center">
+                <button 
+                  onClick={() => navigate('/settings/billing')}
+                  className="bg-white text-[#001325] px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#00A6FA] hover:text-white transition-all shadow-2xl active:scale-95 whitespace-nowrap"
+                >
+                  Upgrade Now
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-
-      {/* KYC & Welcome Modals (Refined) */}
-      <AnimatePresence>
-        {(showPromptModal || showFormModal || showWelcomeModal) && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-[#001325]/60 backdrop-blur-md flex items-center justify-center p-6"
-          >
-            {showWelcomeModal ? (
-              <WelcomeModal onClose={() => { localStorage.setItem("hasSeenWelcomeModal", "true"); setShowWelcomeModal(false); }} />
-            ) : showFormModal ? (
-              <KYCForm 
-                formData={formData} 
-                setFormData={setFormData} 
-                isSubmitting={isSubmitting} 
-                onSubmit={async () => {
-                  setIsSubmitting(true);
-                  await axios.put(`${API}/api/users/complete-profile`, formData, { headers: { Authorization: `Bearer ${token}` } });
-                  setShowFormModal(false);
-                  setShowPromptModal(false);
-                  toast.success("Profile Verified");
-                  setIsSubmitting(false);
-                }} 
-              />
-            ) : (
-              <PromptModal onContinue={() => setShowFormModal(true)} />
-            )}
-          </motion.div>
         )}
-      </AnimatePresence>
-      <QuickBuddy />
+
+        <div className={`w-full flex flex-col lg:flex-row justify-between items-center gap-6 relative z-10 transition-all duration-1000 ${user?.plan !== 'pro' && user?.plan !== 'enterprise' ? 'blur-2xl grayscale opacity-50 select-none pointer-events-none' : ''}`}>
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-xl">
+              <Zap className="text-[#00A6FA]" size={24} />
+            </div>
+            <div>
+              <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Liquidity Runway</p>
+              <h3 className="text-white text-2xl font-black tracking-tighter">
+                {user?.plan === 'pro' || user?.plan === 'enterprise' ? runwayMonths : "12.4"} 
+                <span className="text-white/30 text-[10px] font-bold uppercase ml-1">Months</span>
+              </h3>
+            </div>
+          </div>
+
+          <div className="h-8 w-px bg-white/10 hidden lg:block" />
+
+          <div className="flex flex-col items-center lg:items-start">
+            <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Taxable Offset</p>
+            <div className="flex items-center gap-2">
+              <p className="text-white text-lg font-black tracking-tight">
+                {user?.plan === 'pro' || user?.plan === 'enterprise' 
+                  ? formatCurrency(expenseStats.taxableAmount || 0) 
+                  : "$2,450.00"}
+              </p>
+              <span className="text-[7px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-black uppercase">Deductible</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center lg:items-end">
+            <p className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-0.5">Net Position</p>
+            <p className={`text-xl font-black tracking-tighter ${
+              (user?.plan === 'pro' || user?.plan === 'enterprise') && netCash < 0 
+                ? 'text-rose-400' 
+                : 'text-emerald-400'
+            }`}>
+              {user?.plan === 'pro' || user?.plan === 'enterprise' 
+                ? formatCurrency(netCash) 
+                : "$18,200.00"}
+            </p>
+          </div>
+
+          <div className="hidden xl:block">
+            <div className="bg-white/5 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 flex flex-col items-end">
+              <span className={`text-[9px] font-black uppercase tracking-widest ${
+                (user?.plan === 'pro' || user?.plan === 'enterprise') ? runwayColor : 'text-emerald-400'
+              }`}>
+                {(user?.plan === 'pro' || user?.plan === 'enterprise') 
+                  ? (runwayMonths > 3 ? "Operations Stable" : "Liquidity Warning") 
+                  : "Intelligence Active"}
+              </span>
+              <p className="text-white/20 text-[7px] font-bold mt-0.5 uppercase tracking-widest text-right">Verified Analysis</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Secondary Stats & Chart Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-lg font-black text-[#001325] tracking-tight">Performance Flow</h3>
+            <div className="flex gap-2">
+               <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#0028AE]" /> <span className="text-[10px] font-bold uppercase text-slate-400">Paid</span></div>
+            </div>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#94a3b8'}} dy={10} />
+                <YAxis hide />
+                <Tooltip 
+                  cursor={{fill: '#f8fafc'}}
+                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="amount" radius={[6, 6, 0, 0]} barSize={30}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#0028AE' : '#CBD5E1'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Volume</p>
+              <p className="text-2xl font-black text-[#001325]">{stats.totalQuantity}</p>
+              <p className="text-xs font-bold text-slate-400">Items Sold</p>
+            </div>
+            <div className="h-14 w-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <Package size={24} />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#0028AE] to-[#00A6FA] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl shadow-blue-500/20">
+            <div className="relative z-10">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Monthly Active</p>
+              <p className="text-2xl font-black">{stats.totalInvoicesThisMonth}</p>
+              <p className="text-xs font-bold opacity-80">Generated Invoices</p>
+            </div>
+            <div className="absolute top-[-10%] right-[-10%] opacity-10">
+               <TrendingUp size={120} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+
+    {/* Modals & QuickBuddy - Now positioned relative to the viewport correctly */}
+    <AnimatePresence>
+      {(showPromptModal || showFormModal || showWelcomeModal) && (
+        <motion.div 
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-[#001325]/60 backdrop-blur-md flex items-center justify-center p-6"
+        >
+          {showWelcomeModal ? (
+            <WelcomeModal onClose={() => { localStorage.setItem("hasSeenWelcomeModal", "true"); setShowWelcomeModal(false); }} />
+          ) : showFormModal ? (
+            <KYCForm 
+              formData={formData} 
+              setFormData={setFormData} 
+              isSubmitting={isSubmitting} 
+              onSubmit={async () => {
+                setIsSubmitting(true);
+                await axios.put(`${API}/api/users/complete-profile`, formData, { headers: { Authorization: `Bearer ${token}` } });
+                setShowFormModal(false);
+                setShowPromptModal(false);
+                toast.success("Profile Verified");
+                setIsSubmitting(false);
+              }} 
+            />
+          ) : (
+            <PromptModal onContinue={() => setShowFormModal(true)} />
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+    <QuickBuddy />
+  </div>
+);
 };
 
 // Sub-components for Cleanliness

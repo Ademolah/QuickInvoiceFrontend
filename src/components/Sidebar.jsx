@@ -266,17 +266,16 @@
 
 
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, FileText, Users, BarChart2, Settings, 
   LayoutDashboard, LogOut, Receipt, CreditCard, ShoppingCart,
-  Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock
+  Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock,
+  Plus, ChevronDown, Check, Building
 } from "lucide-react";
 import toast from "react-hot-toast";
-
-import { useState, useEffect } from "react";
 import axios from "axios";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
@@ -287,6 +286,7 @@ const Sidebar = ({ closeMenu }) => {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showBusinessDropdown, setShowBusinessDropdown] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -347,25 +347,64 @@ const Sidebar = ({ closeMenu }) => {
     navigate("/");
   };
 
-  // --- NEW: PREMIUM NAVIGATION GUARD ---
   const handleItemClick = (e, item) => {
-    if (item.isPro && user?.plan !== 'pro') {
-      e.preventDefault(); // Stop navigation
+    if (item.isPro && user?.plan === 'free') {
+      e.preventDefault();
       toast.error("Upgrade to Pro to access this feature", {
         icon: '🔒',
-        style: {
-          borderRadius: '12px',
-          background: '#001325',
-          color: '#fff',
-          fontSize: '12px',
-          fontWeight: '900',
-          textTransform: 'uppercase'
-        }
+        style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '11px', fontWeight: '900' }
       });
       return;
     }
     if (closeMenu) closeMenu();
   };
+
+  const handleAddAccount = () => {
+    if (user?.plan !== 'enterprise') {
+      // Trigger Enterprise Modal (we will build this next)
+      toast("Enterprise Plan Required", {
+        icon: '🏢',
+        style: { borderRadius: '12px', background: '#0028AE', color: '#fff', fontSize: '11px', fontWeight: '900' }
+      });
+      navigate('/billing'); // Or open your new modal
+      return;
+    }
+    // Logic for Enterprise users to add account
+    navigate('/settings/accounts/new');
+  };
+
+
+  //ENTERPRISE FUNCTIONS
+
+  const handleSwitchBusiness = async (businessId) => {
+  const token = localStorage.getItem('token');
+  try {
+    // 1. Tell the backend to switch the 'activeBusinessId'
+    const { data } = await axios.post(`${API}/api/enterprise/switch-context`, 
+      { businessId }, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (data.success) {
+      toast.success(`Switched to ${data.businessName || 'Main Account'}`, {
+        style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '11px', fontWeight: '900' }
+      });
+      
+      setShowBusinessDropdown(false);
+
+      // 2. THE AUTO-REFRESH LOGIC
+      // Using window.location.href to the dashboard forces a full page reload.
+      // This is the safest way to ensure all useEffects in all components 
+      // re-run with the NEW businessId context.
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 500); // Small delay so the user can see the success toast
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to switch business context");
+  }
+}
 
   const isActive = (path) => location.pathname === path;
 
@@ -386,8 +425,96 @@ const Sidebar = ({ closeMenu }) => {
         )}
       </div>
 
+      {/* --- ENTERPRISE BUSINESS SWITCHER --- */}
+<div className="px-6 mb-4 relative">
+  <button 
+    onClick={() => setShowBusinessDropdown(!showBusinessDropdown)}
+    className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all group border ${
+      showBusinessDropdown ? 'bg-white border-[#0028AE] shadow-lg' : 'bg-slate-50 border-slate-100 hover:border-[#0028AE]/30'
+    }`}
+  >
+    <div className="flex items-center gap-3">
+      <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
+        user?.activeBusinessId ? 'bg-purple-600 text-white' : 'bg-white border border-slate-200 text-[#0028AE]'
+      }`}>
+        {user?.activeBusinessId ? <Building2 size={16} /> : <Building size={16} />}
+      </div>
+      <div className="text-left">
+        <p className="text-[10px] font-black uppercase text-slate-400 leading-none mb-1 tracking-widest">
+          {user?.activeBusinessId ? "Enterprise Entity" : "Primary Account"}
+        </p>
+        <p className="text-xs font-black text-[#001325] truncate max-w-[100px]">
+          {/* Determine which name to show */}
+          {user?.activeBusinessId 
+            ? user.enterpriseBusinesses.find(b => b._id === user.activeBusinessId)?.businessName 
+            : user?.businessName}
+        </p>
+      </div>
+    </div>
+    <ChevronDown size={14} className={`text-slate-400 transition-transform ${showBusinessDropdown ? 'rotate-180' : ''}`} />
+  </button>
+
+  {/* Dropdown Menu */}
+  <AnimatePresence>
+    {showBusinessDropdown && (
+      <motion.div 
+        initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
+        className="absolute left-6 right-6 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden z-[100]"
+      >
+        <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto no-scrollbar">
+          
+          {/* 1. The Main Account Option */}
+          <button 
+            onClick={() => handleSwitchBusiness(null)}
+            className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+              !user?.activeBusinessId ? 'bg-blue-50/50 text-[#0028AE]' : 'hover:bg-slate-50 text-slate-600'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Building size={14} />
+              <span className="text-xs font-black">{user?.businessName}</span>
+            </div>
+            {!user?.activeBusinessId && <Check size={14} />}
+          </button>
+
+          <div className="h-px bg-slate-50 mx-2 my-1" />
+
+          {/* 2. List of Enterprise Sub-Businesses */}
+          {user?.enterpriseBusinesses?.map((biz) => (
+            <button 
+              key={biz._id}
+              onClick={() => handleSwitchBusiness(biz._id)}
+              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                user?.activeBusinessId === biz._id ? 'bg-purple-50 text-purple-600' : 'hover:bg-slate-50 text-slate-600'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-slate-200 overflow-hidden">
+                   {biz.logo?.url ? <img src={biz.logo.url} alt="" className="w-full h-full object-cover" /> : <Building2 size={10} />}
+                </div>
+                <span className="text-xs font-bold">{biz.businessName}</span>
+              </div>
+              {user?.activeBusinessId === biz._id && <Check size={14} />}
+            </button>
+          ))}
+
+          {/* 3. Add New Business Button */}
+          <button 
+            onClick={handleAddAccount}
+            className="w-full flex items-center gap-2 p-3 mt-1 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-[#0028AE] transition-all group border border-dashed border-slate-200 border-spacing-4"
+          >
+            <Plus size={14} />
+            <span className="text-xs font-black uppercase tracking-tighter">Add New Business</span>
+            {user?.plan !== 'enterprise' && <Lock size={10} className="ml-auto" />}
+          </button>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
+
       {/* Navigation Groups */}
-      <nav className="flex-1 px-4 py-6 space-y-8">
+      <nav className="flex-1 px-4 space-y-8">
         {menuGroups.map((group, idx) => (
           <div key={idx} className="space-y-1">
             <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">
@@ -397,7 +524,7 @@ const Sidebar = ({ closeMenu }) => {
               {group.items.map((item) => (
                 <Link
                   key={item.name}
-                  to={item.isPro && user?.plan !== 'pro' ? "#" : item.path}
+                  to={item.isPro && user?.plan === 'free' ? "#" : item.path}
                   onClick={(e) => handleItemClick(e, item)}
                   className={`
                     group flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300
@@ -413,8 +540,7 @@ const Sidebar = ({ closeMenu }) => {
                     <span className="text-sm font-bold tracking-tight">{item.name}</span>
                   </div>
 
-                  {/* PRO BADGE UI */}
-                  {item.isPro && user?.plan !== 'pro' && (
+                  {item.isPro && user?.plan === 'free' && (
                     <div className="flex items-center gap-1.5 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
                       <Lock size={10} className="text-amber-600" />
                       <span className="text-[8px] font-black uppercase text-amber-600 tracking-tighter">Pro</span>
@@ -433,49 +559,27 @@ const Sidebar = ({ closeMenu }) => {
 
       {/* Footer / Plan Status */}
       <div className="p-4 mt-auto">
-        <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100 transition-all">
+        <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100">
           <div className="flex justify-between items-center mb-2 px-1">
             <p className="text-[10px] font-black uppercase text-slate-400">
-              Plan: <span className={user?.plan === 'pro' ? 'text-emerald-600' : 'text-blue-600'}>
-                {user?.plan === 'pro' ? 'Pro' : 'Free'}
+              Plan: <span className={user?.plan === 'enterprise' ? 'text-purple-600' : user?.plan === 'pro' ? 'text-emerald-600' : 'text-blue-600'}>
+                {user?.plan}
               </span>
             </p>
-            {user?.plan === 'free' && (
-              <p className="text-[9px] font-black text-slate-400">
-                {((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0))}/15
-              </p>
-            )}
           </div>
-
+          {/* Progress bar logic remains same */}
           <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
             <div 
               className={`h-full transition-all duration-1000 ease-out rounded-full ${
-                user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
+                user?.plan === 'enterprise' ? 'w-full bg-purple-500' : user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
               }`}
-              style={{ 
-                width: user?.plan === 'pro' 
-                  ? '100%' 
-                  : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 15) * 100, 100)}%` 
-              }} 
+              style={{ width: user?.plan !== 'free' ? '100%' : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 15) * 100, 100)}%` }} 
             />
           </div>
-          
-          {user?.plan === 'free' && (
-            <button 
-              onClick={() => navigate('/billing')}
-              className="w-full mt-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-600 hover:bg-[#0028AE] hover:text-white hover:border-[#0028AE] transition-all shadow-sm"
-            >
-              Upgrade Now
-            </button>
-          )}
         </div>
         
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 font-bold text-sm hover:bg-red-50 hover:text-red-600 transition-all duration-300"
-        >
-          <LogOut size={18} />
-          Logout
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 font-bold text-sm hover:bg-red-50 hover:text-red-600 transition-all duration-300">
+          <LogOut size={18} /> Logout
         </button>
       </div>
     </div>
