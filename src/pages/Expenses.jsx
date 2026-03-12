@@ -567,15 +567,11 @@ const exportExpensesPDF = async () => {
                     <FileText size={16} /> 
                     {exporting ? "Generating..." : "Download Report"}
                     {/* Add this small indicator if you have user state */}
-                    {user?.plan === 'enterprise' ? (
-  <div className="absolute -bottom-1 -right-1 bg-[#001325] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
-    <ShieldCheck size={12} strokeWidth={3} className="text-[#00A6FA]" />
-  </div>
-) : user?.plan === 'pro' ? (
-  <div className="absolute -bottom-1 -right-1 bg-[#0028AE] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
-    <ShieldCheck size={12} strokeWidth={3} />
-  </div>
-) : null}
+                    {user?.plan !== 'pro' && user?.plan !== 'enterprise' && (
+                      <span className="ml-1 text-[8px] bg-[#0028AE]/10 text-[#0028AE] px-1.5 py-0.5 rounded-full font-black border border-[#0028AE]/20">
+                        PRO
+                      </span>
+                    )}
                 </button>
             </div>
 
