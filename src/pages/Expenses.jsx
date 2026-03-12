@@ -372,7 +372,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { 
   Plus, FileText, Calendar, Wallet, PieChart, 
-  ArrowLeft, X, TrendingDown, MoreHorizontal, Trash2
+  ArrowLeft, X, TrendingDown, MoreHorizontal, Trash2, ShieldCheck,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 
@@ -472,13 +472,18 @@ const exportExpensesPDF = async () => {
   try {
 
     // PRO GUARD: Only Pro users can export the Expenditure Statement
-    if (user?.plan !== 'pro') {
-      toast.error("Pro Feature: Monthly Statements require a Pro Plan", {
-        icon: '🔒',
-        style: { borderRadius: '12px', background: '#0F172A', color: '#fff' }
-      });
-      return;
+    if (user?.plan !== 'pro' && user?.plan !== 'enterprise') {
+  toast.error("Premium Feature: Monthly Statements require a Pro or Enterprise Plan", {
+    icon: '🔒',
+    style: { 
+      borderRadius: '16px', // Slightly rounder for that premium feel
+      background: '#001325', // Using your deep midnight color
+      color: '#fff',
+      border: '1px solid rgba(255,255,255,0.1)' 
     }
+  });
+  return;
+}
 
     setExporting(true);
     
@@ -562,7 +567,15 @@ const exportExpensesPDF = async () => {
                     <FileText size={16} /> 
                     {exporting ? "Generating..." : "Download Report"}
                     {/* Add this small indicator if you have user state */}
-                    {user?.plan !== 'pro' && <span className="ml-1 text-[8px] bg-white text-[#0028AE] px-1.5 py-0.5 rounded-full font-black">PRO</span>}
+                    {user?.plan === 'enterprise' ? (
+  <div className="absolute -bottom-1 -right-1 bg-[#001325] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
+    <ShieldCheck size={12} strokeWidth={3} className="text-[#00A6FA]" />
+  </div>
+) : user?.plan === 'pro' ? (
+  <div className="absolute -bottom-1 -right-1 bg-[#0028AE] text-white rounded-full p-0.5 border-2 border-white shadow-lg flex items-center justify-center animate-in zoom-in duration-300">
+    <ShieldCheck size={12} strokeWidth={3} />
+  </div>
+) : null}
                 </button>
             </div>
 
