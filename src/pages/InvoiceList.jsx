@@ -215,7 +215,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   Trash2, Eye, CheckCircle, Search, Filter, 
-  Plus, MoreVertical, Calendar, User, ArrowLeft , FileText, LayoutDashboard
+  Plus, MoreVertical, Calendar, User, ArrowLeft , FileText, LayoutDashboard, Pencil, X,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -293,6 +293,34 @@ const InvoiceList = () => {
       toast.error("Deletion failed");
     }
   };
+
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+  const handleUpdateInvoice = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(`${API}/api/invoices/${selectedInvoice._id}`, updatedData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Update the local list state so the UI reflects changes immediately
+      setInvoices(prev => prev.map(inv => inv._id === selectedInvoice._id ? response.data : inv));
+      
+      toast.success("Invoice Updated Successfully", {
+        style: { borderRadius: '12px', background: '#001325', color: '#fff' }
+      });
+      
+      setSelectedInvoice(null); // Close modal
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update invoice");
+    }
+  };
+
+  const calculateEditTotals = (invoice) => {
+  const subtotal = invoice.items.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+  const total = Math.max(0, subtotal + (Number(invoice.tax) || 0) - (Number(invoice.discount) || 0));
+  return { ...invoice, subtotal, total };
+};
 
   if (loading) return <ListSkeleton />;
 
@@ -403,6 +431,17 @@ const InvoiceList = () => {
                       >
                         <CheckCircle size={18} />
                       </button>
+
+                    {/* NEW: Edit Button - Hidden if Paid */}
+                    {inv.status !== 'paid' && (
+                      <button
+                        onClick={() => setSelectedInvoice(inv)} // Opens the edit modal
+                        className="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                    )}
+
                       <Link to={`/invoices/${inv._id}`} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all">
                         <Eye size={18} />
                       </Link>
@@ -420,6 +459,177 @@ const InvoiceList = () => {
           </div>
         )}
       </div>
+
+
+        <AnimatePresence>
+  {selectedInvoice && (
+    <div className="fixed inset-0 z-[100] bg-[#001325]/60 backdrop-blur-md flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="bg-white rounded-[2.5rem] w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl"
+      >
+        {/* Header */}
+        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div>
+            <h2 className="text-xl font-black text-[#001325] tracking-tight">Edit Invoice</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ID: {selectedInvoice._id.slice(-6)}</p>
+          </div>
+          <button onClick={() => setSelectedInvoice(null)} className="p-2 hover:bg-white rounded-full text-slate-400 shadow-sm transition-all">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-8 space-y-8">
+          {/* Section 1: Client Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">Client Name</label>
+              <input 
+                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-sm focus:ring-2 focus:ring-[#0028AE]/20 outline-none transition-all"
+                value={selectedInvoice.clientName}
+                onChange={(e) => setSelectedInvoice({...selectedInvoice, clientName: e.target.value})}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">Due Date</label>
+              <input 
+                type="date"
+                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-sm"
+                value={selectedInvoice.dueDate?.split('T')[0]}
+                onChange={(e) => setSelectedInvoice({...selectedInvoice, dueDate: e.target.value})}
+              />
+            </div>
+          </div>
+
+          {/* Section 2: Items Table */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-end">
+              <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">Line Items</label>
+            </div>
+            <div className="border border-slate-100 rounded-[2rem] overflow-hidden">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    <th className="px-6 py-4 font-black text-slate-500 uppercase text-[9px]">Item</th>
+                    <th className="px-6 py-4 font-black text-slate-500 uppercase text-[9px] w-24">Qty</th>
+                    <th className="px-6 py-4 font-black text-slate-500 uppercase text-[9px] w-32">Price</th>
+                    <th className="px-6 py-4 font-black text-slate-500 uppercase text-[9px] text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {selectedInvoice.items.map((item, idx) => (
+                    <tr key={idx} className="group">
+                      <td className="px-6 py-3">
+                        <input 
+                          className="w-full bg-transparent font-bold text-slate-700 outline-none"
+                          value={item.name}
+                          onChange={(e) => {
+                            const newItems = [...selectedInvoice.items];
+                            newItems[idx].name = e.target.value;
+                            setSelectedInvoice({...selectedInvoice, items: newItems});
+                          }}
+                        />
+                      </td>
+                      <td className="px-6 py-3">
+                        <input 
+                          type="number"
+                          className="w-full bg-transparent font-bold text-slate-700 outline-none"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const newItems = [...selectedInvoice.items];
+                            newItems[idx].quantity = Number(e.target.value);
+                            setSelectedInvoice(calculateEditTotals({...selectedInvoice, items: newItems}));
+                          }}
+                        />
+                      </td>
+                      <td className="px-6 py-3">
+                        <input 
+                          type="number"
+                          className="w-full bg-transparent font-bold text-slate-700 outline-none"
+                          value={item.unitPrice}
+                          onChange={(e) => {
+                            const newItems = [...selectedInvoice.items];
+                            newItems[idx].unitPrice = Number(e.target.value);
+                            setSelectedInvoice(calculateEditTotals({...selectedInvoice, items: newItems}));
+                          }}
+                        />
+                      </td>
+                      <td className="px-6 py-3 text-right font-black text-slate-900">
+                        {formatCurrency(item.quantity * item.unitPrice)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Section 3: Financials & Notes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">Notes</label>
+                <textarea 
+                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-sm h-32 resize-none"
+                  value={selectedInvoice.notes}
+                  onChange={(e) => setSelectedInvoice({...selectedInvoice, notes: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 rounded-[2rem] p-6 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black uppercase text-slate-400">Subtotal</span>
+                <span className="font-bold text-slate-700">{formatCurrency(selectedInvoice.subtotal)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black uppercase text-slate-400">Tax</span>
+                <input 
+                  type="number"
+                  className="w-20 text-right bg-white border border-slate-200 rounded-lg p-1 font-bold text-sm"
+                  value={selectedInvoice.tax}
+                  onChange={(e) => setSelectedInvoice(calculateEditTotals({...selectedInvoice, tax: e.target.value}))}
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black uppercase text-slate-400">Discount</span>
+                <input 
+                  type="number"
+                  className="w-20 text-right bg-white border border-slate-200 rounded-lg p-1 font-bold text-sm text-rose-500"
+                  value={selectedInvoice.discount}
+                  onChange={(e) => setSelectedInvoice(calculateEditTotals({...selectedInvoice, discount: e.target.value}))}
+                />
+              </div>
+              <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
+                <span className="text-xs font-black uppercase text-[#001325]">Grand Total</span>
+                <span className="text-xl font-black text-[#0028AE] tracking-tighter">{formatCurrency(selectedInvoice.total)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-8 bg-slate-50/50 border-t border-slate-100 flex gap-4">
+          <button 
+            onClick={() => setSelectedInvoice(null)}
+            className="flex-1 py-4 bg-white border border-slate-200 text-slate-500 rounded-2xl font-black text-sm hover:bg-slate-100 transition-all"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => handleUpdateInvoice(selectedInvoice)}
+            className="flex-[2] py-4 bg-[#001325] text-white rounded-2xl font-black text-sm hover:bg-[#0028AE] transition-all shadow-xl shadow-blue-900/10"
+          >
+            Save Changes
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
+
 
       {/* Mobile Floating Action */}
       <button
