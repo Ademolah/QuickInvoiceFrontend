@@ -591,22 +591,34 @@ const Dashboard = ({ children }) => {
   }));
 
   // NEW UPDATED RUNWAY LOGIC
-  // 1. Get total from the new expenseStats state (populated via our new endpoint)
-  const totalExpenses = expenseStats.totalAmount || 0; 
-const netCash = (stats.totalRevenue || 0) - (expenseStats.totalAmount || 0);
+  // 1. Core Financials
+const totalExpenses = expenseStats.totalAmount || 0; 
+const netCash = (stats.totalRevenue || 0) - totalExpenses;
 
-// 2. We calculate monthly burn based on current expenses. 
-// For a high-level estimate, we assume the total represents the year's spend so far.
-// If you want a more precise "Last 30 Days" burn, you can use a separate month-filtered stat.
-const monthlyBurn = totalExpenses > 0 ? (totalExpenses / 12) : 1; 
+// 2. Calculate Monthly Burn
+// If expenses are 0, we set monthlyBurn to 0 to avoid the "500,000 month" glitch
+const monthlyBurn = totalExpenses > 0 ? (totalExpenses / 12) : 0; 
 
-// 3. Calculate Runway (Net Cash divided by Monthly Burn)
-const runwayMonths = (netCash > 0 && monthlyBurn > 0) 
-    ? (netCash / monthlyBurn).toFixed(1) 
-    : "0.0";
+// 3. Calculate Runway with "Zero Expense" Protection
+let runwayMonths;
 
-// (Runway color logic remains untouched as requested)
-const runwayColor = runwayMonths > 3 ? "text-emerald-500" : runwayMonths > 1 ? "text-amber-500" : "text-rose-500";
+if (netCash <= 0) {
+    // No cash = No runway
+    runwayMonths = "0.0";
+} else if (monthlyBurn === 0) {
+    // Cash exists but NO expenses = Infinite runway
+    runwayMonths = "∞"; 
+} else {
+    // Standard calculation
+    runwayMonths = (netCash / monthlyBurn).toFixed(1);
+}
+
+// 4. Runway Color Logic (Updated to handle Infinity)
+const runwayColor = (runwayMonths === "∞" || Number(runwayMonths) > 3) 
+    ? "text-emerald-500" 
+    : Number(runwayMonths) > 1 
+        ? "text-amber-500" 
+        : "text-rose-500";
 
   if (loading) return <DashboardSkeleton />;
 
