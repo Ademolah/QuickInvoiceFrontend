@@ -43,6 +43,7 @@ import HowToUse from "./pages/HowToUse";
 import Solutions from "./components/Solutions";
 import Bookkeeping from "./pages/BookKeeping";
 import AppLayout from "./components/AppLayout";
+import AddBusiness from "./pages/AddBusiness";
 
 export default function App() {
   return (
@@ -74,6 +75,7 @@ export default function App() {
       <Route path="/invoices/new" element={<NewInvoice />} />
       <Route path="/expenses" element={<Expenses />} />
       <Route path="/bookkeeping" element={<Bookkeeping />} />
+      <Route path="/settings/accounts/new" element={<AddBusiness />} />
       <Route path="/receipts" element={<Receipts />} />
       <Route path="/receipts/:invoiceId" element={<ReceiptDetails />} />
       
