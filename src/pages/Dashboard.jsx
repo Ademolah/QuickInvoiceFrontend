@@ -505,6 +505,23 @@ const Dashboard = ({ children }) => {
         const userData = userRes.data;
         const invoicesData = invoiceRes.data;
 
+        // 🛡️ THE ENTERPRISE TIER GUARD (Revenue Protection)
+      // If the plan has expired (not enterprise) but the user is still 
+      // pointing to a secondary business (activeBusinessId is not null)
+      if (userData.plan !== 'enterprise' && userData.activeBusinessId !== null) {
+        console.log("⚠️ Unauthorized context detected. Resetting to Main Account...");
+        
+        // Silently reset them via the backend
+        await axios.post(`${API}/api/enterprise/switch-context`, 
+          { businessId: null }, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Force a refresh to clean the state and fetch "Main Account" invoices
+        window.location.reload(); 
+        return; // Stop execution here
+      }
+
         setUser(userData);
         // setBusinessName(userData.businessName || '');
         setBusinessName(userData.activeContext?.businessName || userData.businessName);

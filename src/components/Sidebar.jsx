@@ -379,7 +379,6 @@ const Sidebar = ({ closeMenu }) => {
   const handleSwitchBusiness = async (businessId) => {
   const token = localStorage.getItem('token');
   try {
-    // 1. Tell the backend to switch the 'activeBusinessId'
     const { data } = await axios.post(`${API}/api/enterprise/switch-context`, 
       { businessId }, 
       { headers: { Authorization: `Bearer ${token}` } }
@@ -392,17 +391,24 @@ const Sidebar = ({ closeMenu }) => {
       
       setShowBusinessDropdown(false);
 
-      // 2. THE AUTO-REFRESH LOGIC
-      // Using window.location.href to the dashboard forces a full page reload.
-      // This is the safest way to ensure all useEffects in all components 
-      // re-run with the NEW businessId context.
       setTimeout(() => {
         window.location.href = '/dashboard';
-      }, 500); // Small delay so the user can see the success toast
+      }, 500); 
     }
   } catch (err) {
     console.error(err);
-    toast.error("Failed to switch business context");
+
+    // ✨ WORLD-CLASS ERROR HANDLING
+    if (err.response?.status === 403) {
+      toast.error("Enterprise Plan Required: Upgrade to switch businesses", {
+        icon: '🔒',
+        style: { borderRadius: '12px', background: '#7F1D1D', color: '#fff', fontSize: '11px', fontWeight: '900' }
+      });
+      // OPTIONAL: Redirect them to the pricing page or open upgrade modal
+      // setShowUpgradeModal(true);
+    } else {
+      toast.error(err.response?.data?.message || "Failed to switch business context");
+    }
   }
 }
 
@@ -454,63 +460,94 @@ const Sidebar = ({ closeMenu }) => {
     <ChevronDown size={14} className={`text-slate-400 transition-transform ${showBusinessDropdown ? 'rotate-180' : ''}`} />
   </button>
 
+  
   {/* Dropdown Menu */}
-  <AnimatePresence>
-    {showBusinessDropdown && (
-      <motion.div 
-        initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
-        className="absolute left-6 right-6 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden z-[100]"
-      >
-        <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto no-scrollbar">
-          
-          {/* 1. The Main Account Option */}
-          <button 
-            onClick={() => handleSwitchBusiness(null)}
-            className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-              !user?.activeBusinessId ? 'bg-blue-50/50 text-[#0028AE]' : 'hover:bg-slate-50 text-slate-600'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <Building size={14} />
-              <span className="text-xs font-black">{user?.businessName}</span>
-            </div>
-            {!user?.activeBusinessId && <Check size={14} />}
-          </button>
+<AnimatePresence>
+  {showBusinessDropdown && (
+    <motion.div 
+      initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
+      className="absolute left-6 right-6 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden z-[100]"
+    >
+      <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto no-scrollbar">
+        
+        {/* 1. The Main Account Option - ALWAYS ACTIVE */}
+        <button 
+          onClick={() => handleSwitchBusiness(null)}
+          className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+            !user?.activeBusinessId ? 'bg-blue-50/50 text-[#0028AE]' : 'hover:bg-slate-50 text-slate-600'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <Building size={14} />
+            <span className="text-xs font-black">{user?.businessName}</span>
+          </div>
+          {!user?.activeBusinessId && <Check size={14} />}
+        </button>
 
-          <div className="h-px bg-slate-50 mx-2 my-1" />
+        <div className="h-px bg-slate-50 mx-2 my-1" />
 
-          {/* 2. List of Enterprise Sub-Businesses */}
-          {user?.enterpriseBusinesses?.map((biz) => (
+        {/* 2. List of Enterprise Sub-Businesses - TIER LOCKED */}
+        {user?.enterpriseBusinesses?.map((biz) => {
+          const isLocked = user?.plan !== 'enterprise';
+          const isActive = user?.activeBusinessId === biz._id;
+
+          return (
             <button 
               key={biz._id}
-              onClick={() => handleSwitchBusiness(biz._id)}
+              onClick={() => !isLocked && handleSwitchBusiness(biz._id)}
+              disabled={isLocked}
               className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-                user?.activeBusinessId === biz._id ? 'bg-purple-50 text-purple-600' : 'hover:bg-slate-50 text-slate-600'
+                isActive 
+                  ? 'bg-purple-50 text-purple-600' 
+                  : isLocked 
+                    ? 'opacity-60 cursor-not-allowed bg-slate-50/50 grayscale-[0.5]' 
+                    : 'hover:bg-slate-50 text-slate-600'
               }`}
             >
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-slate-200 overflow-hidden">
+                <div className={`w-4 h-4 rounded overflow-hidden ${isLocked ? 'bg-slate-300' : 'bg-slate-200'}`}>
                    {biz.logo?.url ? <img src={biz.logo.url} alt="" className="w-full h-full object-cover" /> : <Building2 size={10} />}
                 </div>
-                <span className="text-xs font-bold">{biz.businessName}</span>
+                <span className={`text-xs ${isLocked ? 'font-medium' : 'font-bold'}`}>
+                  {biz.businessName}
+                </span>
               </div>
-              {user?.activeBusinessId === biz._id && <Check size={14} />}
+              
+              {isLocked ? (
+                <Lock size={12} className="text-slate-400" />
+              ) : (
+                isActive && <Check size={14} />
+              )}
             </button>
-          ))}
+          );
+        })}
 
-          {/* 3. Add New Business Button */}
-          <button 
-            onClick={handleAddAccount}
-            className="w-full flex items-center gap-2 p-3 mt-1 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-[#0028AE] transition-all group border border-dashed border-slate-200 border-spacing-4"
-          >
-            <Plus size={14} />
-            <span className="text-xs font-black uppercase tracking-tighter">Add New Business</span>
-            {user?.plan !== 'enterprise' && <Lock size={10} className="ml-auto" />}
-          </button>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
+        {/* 3. Add New Business Button - TIER LOCKED */}
+        <button 
+          onClick={() => {
+            if (user?.plan === 'enterprise') {
+              handleAddAccount();
+            } else {
+              toast.error("Enterprise Plan Required to add multiple businesses", {
+                icon: '🔒',
+                style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '10px' }
+              });
+            }
+          }}
+          className={`w-full flex items-center gap-2 p-3 mt-1 rounded-xl transition-all group border border-dashed border-spacing-4 ${
+            user?.plan === 'enterprise'
+              ? 'hover:bg-slate-50 text-slate-400 hover:text-[#0028AE] border-slate-200'
+              : 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+          }`}
+        >
+          <Plus size={14} />
+          <span className="text-xs font-black uppercase tracking-tighter">Add New Business</span>
+          {user?.plan !== 'enterprise' && <Lock size={10} className="ml-auto text-slate-400" />}
+        </button>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 </div>
 
       {/* Navigation Groups */}
