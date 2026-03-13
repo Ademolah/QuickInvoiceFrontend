@@ -659,18 +659,33 @@ export default function Billing() {
         )}
 
         {/* Payout Details */}
-        <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
-          <Landmark className="absolute -right-6 -bottom-6 text-white/5 group-hover:scale-110 transition-transform duration-700" size={140} />
-          <h3 className="text-white/40 font-black text-[9px] uppercase tracking-[0.2em] mb-6">Payout Settlement Account</h3>
-          <p className="text-xl font-black mb-1 leading-none">{user?.activeContext?.name || "Active Business"}</p>
-          <p className="text-white/60 font-medium text-xs mb-8">{user?.activeContext?.accountDetails?.accountName || user?.accountDetails?.accountName || "Settlement Not Set"}</p>
-          <p className="text-white/60 font-medium text-xs mb-8">
-            {user?.activeContext?.accountDetails?.bankName || user?.accountDetails?.bankName || "Connect a bank in settings"}
-          </p>
-          <div className="inline-flex py-2.5 px-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 text-[11px] font-mono tracking-[0.2em]">
-            {user?.activeContext?.accountDetails?.accountNumber || user?.accountDetails?.accountNumber || "••••••••••"}
-          </div>
-        </div>
+<div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
+  <Landmark className="absolute -right-6 -bottom-6 text-white/5 group-hover:scale-110 transition-transform duration-700" size={140} />
+  
+  <h3 className="text-white/40 font-black text-[9px] uppercase tracking-[0.2em] mb-6">
+    {user?.activeContext?.businessName || "Main Account"} Payout Details
+  </h3>
+
+  {/* Priority: Use activeContext details, then fallback to user global details */}
+  <p className="text-xl font-black mb-1 leading-none uppercase tracking-tight">
+    {user?.activeContext?.accountDetails?.accountName || user?.accountDetails?.accountName || "Settlement Not Set"}
+  </p>
+
+  <p className="text-white/60 font-medium text-xs mb-8">
+    {user?.activeContext?.accountDetails?.bankName || user?.accountDetails?.bankName || "Connect a bank in settings"}
+  </p>
+
+  <div className="flex items-center justify-between">
+    <div className="inline-flex py-2.5 px-5 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 text-[11px] font-mono tracking-[0.2em]">
+      {user?.activeContext?.accountDetails?.accountNumber || user?.accountDetails?.accountNumber || "••••••••••"}
+    </div>
+    
+    <div className="flex items-center gap-1.5 opacity-50">
+       <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+       <span className="text-[8px] font-black uppercase tracking-widest">Active Settlement</span>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>
