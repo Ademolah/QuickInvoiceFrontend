@@ -327,7 +327,7 @@ const Sidebar = ({ closeMenu }) => {
     {
       group: "Growth",
       items: [
-        { name: "MarketZone", icon: <ShoppingCart size={18} />, path: "/market" },
+        // { name: "MarketZone", icon: <ShoppingCart size={18} />, path: "/market" },
         { name: "Billing", icon: <Wallet size={18} />, path: "/billing" },
       ]
     },
