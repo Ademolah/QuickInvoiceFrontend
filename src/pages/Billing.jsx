@@ -581,7 +581,7 @@ export default function Billing() {
         <p className="text-slate-300 text-[10px] mt-1 uppercase tracking-tighter">Your premium history will appear here</p>
       </div>
     ) : (
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-slate-100 max-h-[620px] overflow-y-auto custom-billing-scroll">
         {history.map((h, i) => (
           <div key={i} className="group p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all duration-300">
             <div className="flex items-center gap-5">
