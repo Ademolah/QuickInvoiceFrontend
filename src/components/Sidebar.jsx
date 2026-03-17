@@ -316,7 +316,7 @@ const Sidebar = ({ closeMenu }) => {
     {
       group: "Commerce",
       items: [
-        { name: "Invoices", icon: <FileText size={18} />, path: "/invoices" },
+        { name: "Create Invoice", icon: <FileText size={18} />, path: "/invoices" },
         { name: "Receipts", icon: <Receipt size={18} />, path: "/receipts" },
         { name: "Inventory", icon: <Building2 size={18} />, path: "/inventory" },
         { name: "Bookkeeping", icon: <BarChart3 size={18} />, path: "/bookkeeping", isPro: true },
