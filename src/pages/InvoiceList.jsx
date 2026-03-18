@@ -215,7 +215,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   Trash2, Eye, CheckCircle, Search, Filter, 
-  Plus, MoreVertical, Calendar, User, ArrowLeft , FileText, LayoutDashboard, Pencil, X,
+  Plus, MoreVertical, Calendar, User, ArrowLeft , FileText, LayoutDashboard, Pencil, X, Wallet,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -232,6 +232,43 @@ const InvoiceList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const { code } = useCurrency();
+
+
+  const [showAccountReminder, setShowAccountReminder] = useState(false);
+  const [user, setUser] = useState(null); // 👈 This was missing
+
+
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // 1. Fetch User and Invoices
+      const [userRes, invRes] = await Promise.all([
+        axios.get(`${API}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/api/invoices`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+
+      const userData = userRes.data;
+      setUser(userData);
+      setInvoices(invRes.data);
+
+      // 🛡️ THE HARD GATE LOGIC
+      // We check for the presence of the 3 key banking fields
+      const isMissingDetails = !userData.accountNumber || !userData.bankName || !userData.accountName;
+      
+      if (isMissingDetails) {
+        // We removed the sessionStorage check. 
+        // This will now trigger every time the component mounts.
+        setShowAccountReminder(true);
+      }
+    } catch (err) {
+      console.error("Error loading Invoice List data:", err);
+    }
+  };
+
+  if (token) fetchData();
+}, [token]);
 
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('en-NG', {
@@ -624,6 +661,61 @@ const InvoiceList = () => {
           >
             Save Changes
           </button>
+        </div>
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
+
+
+<AnimatePresence>
+  {showAccountReminder && (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-hidden">
+      {/* Note: We removed the onClick from the backdrop. 
+          The user is now "locked" until they click the action button. 
+      */}
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-[#001325]/90 backdrop-blur-2xl"
+      />
+
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0, y: 30 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        className="relative bg-white rounded-[3.5rem] w-full max-w-md p-12 shadow-[0_32px_64px_-20px_rgba(0,0,0,0.5)] border border-slate-100"
+      >
+        <div className="flex flex-col items-center text-center">
+          {/* Pulse Icon Area */}
+          <div className="w-24 h-24 bg-amber-50 rounded-[2.5rem] flex items-center justify-center mb-8 relative">
+            <div className="absolute inset-0 bg-amber-200/30 rounded-[2.5rem] animate-ping" />
+            <Wallet size={40} className="text-amber-600 relative z-10" />
+          </div>
+
+          <h3 className="text-2xl font-black text-[#001325] leading-tight mb-4">
+            Payment Setup Required
+          </h3>
+          
+          <p className="text-slate-500 font-medium text-sm leading-relaxed mb-10 px-2">
+            To generate professional invoices and receive payments, you must first configure your <span className="text-[#0028AE] font-bold">Bank Payout Details</span> in your profile settings.
+          </p>
+
+          <div className="w-full">
+            <button 
+              onClick={() => navigate('/settings')}
+              className="w-full py-5 bg-[#0028AE] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-[#001325] transition-all shadow-xl shadow-blue-900/20 active:scale-[0.98] flex items-center justify-center gap-3"
+            >
+              Configure Account
+              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-white rounded-full" />
+              </div>
+            </button>
+            
+            <p className="mt-6 text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+              Action Required to continue
+            </p>
+          </div>
         </div>
       </motion.div>
     </div>
