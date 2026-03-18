@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
@@ -243,7 +244,6 @@ const InvoiceList = () => {
   useEffect(() => {
   const fetchData = async () => {
     try {
-      // 1. Fetch User and Invoices
       const [userRes, invRes] = await Promise.all([
         axios.get(`${API}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/api/invoices`, { headers: { Authorization: `Bearer ${token}` } })
@@ -253,22 +253,28 @@ const InvoiceList = () => {
       setUser(userData);
       setInvoices(invRes.data);
 
-      // 🛡️ THE HARD GATE LOGIC
-      // We check for the presence of the 3 key banking fields
-      const isMissingDetails = !userData.accountNumber || !userData.bankName || !userData.accountName;
-      
+      // 🛡️ THE FIX: Access the nested 'accountDetails' object
+      const details = userData.accountDetails;
+
+      const isMissingDetails = 
+        !details || 
+        !details.bankName || 
+        !details.accountNumber || 
+        !details.accountName;
+
       if (isMissingDetails) {
-        // We removed the sessionStorage check. 
-        // This will now trigger every time the component mounts.
         setShowAccountReminder(true);
+      } else {
+        setShowAccountReminder(false); // 👈 Explicitly close if they exist
       }
+      
     } catch (err) {
       console.error("Error loading Invoice List data:", err);
     }
   };
 
   if (token) fetchData();
-}, [token]);
+}, [token, API]);
 
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('en-NG', {
