@@ -641,7 +641,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 import { 
   User, Shield, Landmark, Globe, Camera, 
-  ArrowLeft, Check, Loader2, Save, Key 
+  ArrowLeft, Check, Loader2, Save, Key , Hash, FileText, CheckCircle,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import { uploadAvatar } from "../utils/upload";
@@ -667,6 +667,45 @@ export default function Settings() {
   const { currency, switchCurrency } = useCurrency();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [user, setUser] = useState(null);
+  const [tin, setTin] = useState(user?.tin || ""); // Initialize with existing user data
+
+  const handleUpdateTin = async () => {
+    // 1. Basic Validation
+    if (!tin || tin.trim().length < 5) {
+      return toast.error("Please enter a valid Tax Identification Number", {
+        style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '11px', fontWeight: '900' }
+      });
+    }
+
+    const token = localStorage.getItem('token');
+    setIsUpdating(true);
+
+    try {
+      const { data } = await axios.put(
+        `${API}/api/users/update-tin`, 
+        { tin: tin.trim() }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (data.success) {
+        // 2. Update local state so the UI reflects the change immediately
+        setUser({ ...user, tin: data.tin });
+        
+        toast.success("Tax ID Updated Successfully", {
+          icon: '📝',
+          style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '11px', fontWeight: '900' }
+        });
+      }
+    } catch (err) {
+      console.error("TIN Update Error:", err);
+      toast.error(err.response?.data?.message || "Failed to update Tax ID");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -828,6 +867,56 @@ export default function Settings() {
                   <option value="EUR">€ Euro (EUR)</option>
                 </select>
               </div>
+
+
+              {/* ✨ NEW: Taxation Card */}
+    <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-blue-50 text-[#0028AE] rounded-lg"><FileText size={20} /></div>
+        <div>
+           <h3 className="text-lg font-black text-slate-900">Taxation</h3>
+           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Required for professional business invoices</p>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        <div>
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Tax Identification Number (TIN)</label>
+          <div className="relative group">
+            <input 
+              type="text" 
+              value={tin}
+              onChange={(e) => setTin(e.target.value)}
+              placeholder="e.g. 12345678-0001"
+              className="w-full p-4 pr-12 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-[#0028AE] focus:bg-white transition-all font-bold text-slate-700 outline-none placeholder:text-slate-300"
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0028AE] transition-colors">
+              <Hash size={16} />
+            </div>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleUpdateTin}
+          disabled={isUpdating}
+          className="bg-[#001325] text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#0028AE] transition-all active:scale-95 shadow-lg shadow-blue-900/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
+        >
+          {isUpdating ? (
+            <>
+              <Loader2 size={14} className="animate-spin" />
+              Updating...
+            </>
+          ) : (
+            <>
+              <CheckCircle size={14} />
+              Save Tax ID
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+
+
             </motion.div>
           )}
 

@@ -1073,6 +1073,11 @@ const {
               <div>
                 <h2 className="text-3xl font-black tracking-tighter uppercase">Invoice</h2>
                 <p className="text-sm font-bold opacity-80">{user?.businessName || "QuickInvoice NG"}</p>
+                
+                {/* 👇 Only renders if tin exists and is not an empty string */}
+                {user?.tin && (
+                  <p className="text-sm font-bold opacity-80">TIN: {user.tin}</p>
+                )}
               </div>
             </div>
             
