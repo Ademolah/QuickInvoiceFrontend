@@ -1,162 +1,221 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { Send, Bot } from "lucide-react"; 
+import React, { useState, useEffect, useRef } from 'react';
+import { MessageSquare, X, Send, Sparkles, Zap, Smile, ShieldCheck } from 'lucide-react';
+import axios from 'axios';
+import { io } from 'socket.io-client';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
+const API = "https://quickinvoice-backend-1.onrender.com"; // Ensure your port matches
 
 
-const BASE_URL = "https://quickinvoice-backend-1.onrender.com"; //
+const QuickBuddy = ({ user, activeBusiness }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [chat, setChat] = useState([]);
+  const [ticketId, setTicketId] = useState(null); // 🔑 The Room ID
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef(null);
+  
 
+  // 1. Fetch Chat History on Mount
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API}/api/support/history`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (res.data._id) {
+          setTicketId(res.data._id);
+          setChat(res.data.messages || []);
+        }
+      } catch (err) {
+        console.error("History recovery failed:", err);
+      }
+    };
+    fetchHistory();
+  }, []);
 
-export default function QuickBuddy() {
-  const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([]); // { role: 'user' | 'assistant', text }
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [contextSummary, setContextSummary] = useState(null);
-  const scroller = useRef();
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  async function sendToBackend(message) {
-    if (!token) {
-      setMessages(prev => [...prev, { role: "assistant", text: "Please sign in to use Quick Buddy." }]);
-      return;
+  // 2. Socket.io Real-Time Connection
+  useEffect(() => {
+    if (!ticketId) return;
+
+    const socket = io(API);
+    
+    // 🛡️ Join the private room for this ticket
+    socket.emit('join_chat', ticketId);
+
+    // 📩 Listen for Admin replies
+    socket.on('receive_reply', (data) => {
+      setIsTyping(false);
+      setChat(prev => [...prev, data.message]);
+      
+      // Optional: Sound notification
+      // new Audio('/pop.mp3').play();
+    });
+
+    return () => socket.disconnect();
+  }, [ticketId]);
+
+  // 3. Auto-scroll logic
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
+  }, [chat, isTyping]);
+
+  const handleSend = async () => {
+    if (!msg.trim()) return;
+    
+    const tempMsg = msg;
+    setMsg(""); // Clear input immediately for "Premium" feel
+
     try {
-      setLoading(true);
-      const res = await axios.post(
-        `${BASE_URL}/api/quickbuddy/message`,
-        { message },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      if (res.data?.success) {
-        const reply = res.data.reply || "Sorry, no response.";
-        setMessages(prev => [...prev, { role: "assistant", text: reply }]);
-        if (res.data.context) setContextSummary(res.data.context);
-      } else {
-        setMessages(prev => [...prev, { role: "assistant", text: "Quick Buddy is currently unavailable." }]);
+      const token = localStorage.getItem("token");
+      const res = await axios.post(`${API}/api/support/send`, {
+        text: tempMsg,
+        context: {
+          page: window.location.pathname,
+          businessName: activeBusiness?.businessName || user?.businessName || "General",
+          plan: user?.plan || "Standard"
+        }
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (res.data.success) {
+        // Update ticketId if it's the first message
+        if (!ticketId) setTicketId(res.data.ticket._id);
+        setChat(res.data.ticket.messages);
       }
     } catch (err) {
-      console.error("QuickBuddy frontend error:", err?.response?.data || err.message);
-      setMessages(prev => [...prev, { role: "assistant", text: "There was an error contacting Quick Buddy." }]);
-    } finally {
-      setLoading(false);
-      setInput("");
+      console.error("Support delivery failed:", err);
     }
-  }
-  // When opening first time, get greeting (backend will return a friendly summary)
-  useEffect(() => {
-    if (open && messages.length === 0) {
-      // add a loader assistant message optionally
-      setMessages([{ role: "assistant", text: "Connecting to Quick Buddy..." }]);
-      sendToBackend(""); // empty triggers greeting + context
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-  // Auto-scroll
-  useEffect(() => {
-    if (scroller.current) {
-      scroller.current.scrollTop = scroller.current.scrollHeight + 200;
-    }
-  }, [messages]);
-  // const handleSend = async (e) => {
-  //   e?.preventDefault();
-  //   if (!input.trim()) return;
-  //   setMessages(prev => [...prev, { role: "user", text: input.trim() }]);
-  //   await sendToBackend(input.trim());
-  // };
+  };
 
-  const handleSend = async (e) => {
-      e?.preventDefault();
-      if (!input.trim()) return;
-      const userMessage = input.trim();   // store before clearing
-      setMessages(prev => [...prev, { role: "user", text: userMessage }]);
-      setInput("");                       // ✅ clear input immediately
-      setLoading(true);                   // ✅ trigger thinking/loading state
-      await sendToBackend(userMessage);
-      setLoading(false);                  // ✅ stop loading indicator once response comes back
-    };
   return (
-    <>
-      {/* Floating button */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setOpen(v => !v)}
-          aria-label="Quick Buddy"
-          className="w-14 h-14 rounded-full bg-gradient-to-br from-[#0028AE] to-[#00A6FA] shadow-lg flex items-center justify-center text-white hover:scale-105 transition-transform"
-        >
-          <Bot size={20} />
-        </button>
-      </div>
-      {/* Chat panel */}
-      {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[95%] bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
-          {/* header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-white border-b">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-[#0028AE] to-[#00A6FA] flex items-center justify-center text-white font-bold">
-                Q
-              </div>
-              <div>
-                <div className="text-sm font-semibold text-[#0046A5]">Quick Buddy</div>
-                <div className="text-xs text-gray-500">Your professional assistant</div>
-              </div>
-            </div>
-            <div className="text-xs text-gray-400">{loading ? "Thinking..." : "Ready"}</div>
-          </div>
-          {/* messages */}
-          <div ref={scroller} className="p-4 max-h-72 overflow-y-auto space-y-3 bg-gray-50">
-            {messages.map((m, idx) => (
-              <div key={idx} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`${m.role === "user" ? "bg-[#0046A5] text-white" : "bg-white text-gray-800 border"} px-3 py-2 rounded-lg max-w-[85%] shadow-sm`}>
-                  <div className="text-sm whitespace-pre-wrap">{m.text}</div>
+    <div className="fixed bottom-10 right-10 z-[1000] font-sans">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.8, filter: 'blur(20px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: 40, scale: 0.9, transition: { duration: 0.2 } }}
+            className="mb-6 w-[380px] md:w-[420px] h-[600px] md:h-[650px] bg-white/90 backdrop-blur-3xl rounded-[3rem] border border-white/50 shadow-[0_40px_80px_-15px_rgba(0,18,37,0.25)] flex flex-col overflow-hidden"
+          >
+            {/* 💎 PREMIUM HEADER */}
+            <div className="p-8 bg-[#001325] text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 blur-3xl rounded-full -mr-16 -mt-16" />
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-[#0028AE] rounded-[1.25rem] flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <Sparkles size={22} className="text-white animate-pulse" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black uppercase tracking-[0.2em]">QuickSupport</h4>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                      <p className="text-[9px] text-blue-200 font-bold uppercase tracking-widest">Priority Support Active</p>
+                    </div>
+                  </div>
                 </div>
+                <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all">
+                  <X size={16} />
+                </button>
               </div>
-            ))}
-          </div>
-          {/* optional small context summary */}
-          {contextSummary && (
-            <div className="px-4 py-2 bg-white border-t text-xs text-gray-600">
-              <strong className="text-gray-800">Summary:</strong> {contextSummary.unpaidCount} unpaid • {contextSummary.paidCount} paid
             </div>
-          )}
-          {/* input */}
-          <form onSubmit={handleSend} className="p-3 bg-white border-t flex gap-2 items-center">
-            {/* <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Quick Buddy (e.g. Who owes me?)"
-              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              className="p-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white disabled:opacity-60"
-            >
-              <Send size={16} />
-            </button> */}
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Quick Buddy (e.g. Who owes me?)"
-              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0046A5]"
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || loading}
-              className="p-2 rounded-md bg-[#0046A5] hover:bg-[#00398D] text-white disabled:opacity-60 flex items-center justify-center w-9 h-9"
-            >
-              {loading ? (
-                <span className="animate-pulse text-lg font-bold">...</span>
-              ) : (
-                <Send size={16} />
+
+            {/* 📍 CONTEXT BAR */}
+            <div className="px-6 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={12} className="text-emerald-500" />
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+                  Secure Session: {activeBusiness?.businessName || "Active Dashboard"}
+                </span>
+              </div>
+              <Zap size={12} className="text-amber-400" />
+            </div>
+
+            {/* 💬 CHAT AREA */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 no-scrollbar bg-gradient-to-b from-white to-slate-50/50">
+              {chat.length === 0 && (
+                <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                    <MessageSquare className="text-blue-600" size={24} />
+                  </div>
+                  <h5 className="font-black text-xs uppercase tracking-widest text-slate-800 mb-2">How can we help today?</h5>
+                  <p className="text-[10px] font-bold text-slate-400 leading-relaxed uppercase">Send a message and a specialized agent will respond in real-time.</p>
+                </div>
               )}
-            </button>
-          </form>
+              {chat.map((m, i) => (
+                <motion.div 
+                  initial={{ opacity: 0, x: m.sender === 'user' ? 20 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  key={i} 
+                  className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[85%] p-4 rounded-[1.5rem] text-[11px] font-bold leading-relaxed shadow-sm ${
+                    m.sender === 'user' 
+                      ? 'bg-[#0028AE] text-white rounded-tr-none' 
+                      : 'bg-white text-slate-700 border border-slate-100 rounded-tl-none'
+                  }`}>
+                    {m.text}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* ⌨️ INPUT AREA */}
+            <div className="p-6 md:p-8 bg-white border-t border-slate-100">
+              <div className="relative flex items-center gap-3">
+                <div className="flex-1 relative">
+                  <input 
+                    type="text"
+                    value={msg}
+                    onChange={(e) => setMsg(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder="Describe your issue..."
+                    className="w-full bg-slate-50 border-none rounded-[1.5rem] pl-6 pr-12 py-4 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-[#0028AE]/10 transition-all outline-none"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                    <Smile size={18} className="cursor-pointer hover:text-slate-500 transition-colors" />
+                  </div>
+                </div>
+                <button 
+                  onClick={handleSend}
+                  className="w-12 h-12 bg-[#001325] text-white rounded-2xl flex items-center justify-center hover:bg-[#0028AE] transition-all shadow-lg shadow-blue-900/10 active:scale-90"
+                >
+                  <Send size={18} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🔘 TRIGGER BUTTON */}
+      <motion.button
+        whileHover={{ scale: 1.05, rotate: 5 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-20 h-20 bg-[#001325] text-white rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_50px_rgba(0,40,174,0.3)] relative group"
+      >
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#0028AE] to-blue-400 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative z-10">
+          {isOpen ? <X size={30} /> : <MessageSquare size={30} />}
         </div>
-      )}
-    </>
+        {!isOpen && chat.some(m => m.sender === 'admin' && !m.isRead) && (
+          <div className="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 border-4 border-[#F8FAFC] rounded-full flex items-center justify-center text-[10px] font-black text-white">
+            !
+          </div>
+        )}
+      </motion.button>
+    </div>
   );
-}
+};
 
-
-
+export default QuickBuddy;

@@ -182,25 +182,59 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
 
-    try {
-      const res = await axios.post(`${API}/api/auth/login`, formData);
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        setTimeout(() => navigate("/dashboard"), 300);
-      } else {
-        setError("Authentication failed. Please try again.");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Invalid credentials.");
-    } finally {
-      setLoading(false);
+  //   try {
+  //     const res = await axios.post(`${API}/api/auth/login`, formData);
+  //     if (res.data.token) {
+  //       localStorage.setItem("token", res.data.token);
+  //       setTimeout(() => navigate("/dashboard"), 300);
+  //     } else {
+  //       setError("Authentication failed. Please try again.");
+  //     }
+  //   } catch (err) {
+  //     setError(err.response?.data?.message || "Invalid credentials.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await axios.post(`${API}/api/auth/login`, formData);
+    
+    if (res.data.token) {
+      // 1. Secure the Token and Role
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role); // 👈 Store for global access
+
+      // 2. Role-Based Navigation Logic
+      const userRole = res.data.role;
+
+      setTimeout(() => {
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
+      }, 300);
+
+    } else {
+      setError("Authentication failed. Please try again.");
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || "Invalid credentials.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 relative overflow-hidden">
