@@ -225,9 +225,9 @@ const handleAdminReply = async (ticketId) => {
     <div className="h-screen w-full bg-[#F8FAFC] flex font-sans text-[#001325] overflow-hidden">
       
       {/* Sidebar logic remains identical (Desktop & Mobile Drawer) */}
-      <aside className="w-72 bg-[#001325] p-8 flex flex-col lg:flex h-full flex-shrink-0">
-      <SidebarContent />
-    </aside>
+      <aside className="hidden lg:flex lg:flex-col w-72 bg-[#001325] p-8 h-full flex-shrink-0">
+        <SidebarContent />
+        </aside>
 
       <AnimatePresence>
         {isMobileMenuOpen && (

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // import React, { useState } from "react";
 // import Sidebar from "./Sidebar";
 // import { Outlet } from "react-router-dom";
@@ -59,7 +60,7 @@
 
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import { Outlet, useLocation} from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const AppLayout = () => {
