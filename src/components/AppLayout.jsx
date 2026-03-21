@@ -105,20 +105,19 @@ const AppLayout = () => {
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-[100] lg:hidden">
             <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)} 
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" 
-            />
-            <motion.div 
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              className="absolute inset-y-0 left-0 w-72 bg-white shadow-2xl"
-            >
-              <Sidebar closeMenu={() => setIsMobileMenuOpen(false)} />
-            </motion.div>
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            /* 🚀 THE FIX: Precise, smooth transition without the bounce */
+            transition={{ 
+              type: "tween", 
+              ease: "circOut", // or "easeInOut" for a more natural feel
+              duration: 0.3 
+            }}
+            className="absolute inset-y-0 left-0 w-72 bg-white shadow-2xl"
+          >
+            <Sidebar closeMenu={() => setIsMobileMenuOpen(false)} />
+          </motion.div>
           </div>
         )}
       </AnimatePresence>
