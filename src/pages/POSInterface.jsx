@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, Trash2, Plus, Minus, Download,  User, Store, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
+import { Search, ShoppingBag, Trash2, Plus, Minus, Download, MessageCircle, User, Store, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import jsPDF from "jspdf";
@@ -19,6 +19,9 @@ const POSInterface = () => {
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [todaySales, setTodaySales] = useState([]);
   const [terminalStats, setTerminalStats] = useState({ total: 0, count: 0 });
+  const [showWhatsappModal, setShowWhatsappModal] = useState(false);
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [lastSaleData, setLastSaleData] = useState(null);
 
 
 
@@ -205,64 +208,64 @@ const downloadReceipt = (saleData) => {
   
 
   const handleFinalize = async () => {
-    if (cart.length === 0) return;
-    
-    try {
-      const token = localStorage.getItem("token");
-      const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-      
-      // 🚀 THE FIX: Calculate subtotals for the backend
-      const formattedItems = cart.map(item => ({
-        productId: item.productId,
-        name: item.name,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        subtotal: item.unitPrice * item.quantity // ⬅️ Add this!
-      }));
+  if (cart.length === 0) return;
 
-      const payload = {
-        items: formattedItems,
-        totalAmount,
-        paymentDetails: { 
-          method: paymentMethod,
-          amountTendered: totalAmount, 
-          changeDue: 0 
-        }
-      };
-      
-      const res = await axios.post(`${API}/api/pos/process`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
+  try {
+    const token = localStorage.getItem("token");
+    const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+    // 🚀 Prepare items for backend
+    const formattedItems = cart.map(item => ({
+      productId: item.productId,
+      name: item.name,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      subtotal: item.unitPrice * item.quantity 
+    }));
+
+    const payload = {
+      items: formattedItems,
+      totalAmount,
+      paymentDetails: {
+        method: paymentMethod,
+        amountTendered: totalAmount,
+        changeDue: 0
+      }
+    };
+
+    const res = await axios.post(`${API}/api/pos/process`, payload, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.data.success) {
+      // 1. Capture the sale data for WhatsApp
+      setLastSaleData({
+        receiptId: res.data.sale.receiptNumber || `QI-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        total: totalAmount,
+        method: paymentMethod
       });
 
+      // 2. Success Feedback
+      toast.success("Sale Recorded Successfully!", {
+        icon: '✅',
+        style: { borderRadius: '15px', background: '#10B981', color: '#fff' }
+      });
 
+      // 3. Trigger Actions
+      downloadReceipt(res.data.sale); // Keep PDF as backup
+      setCart([]);
+      setIsMobileCartOpen(false);
+      fetchData(); // Refresh Today's Revenue
 
-      if (res.data.success) {
-        toast.success("Sale Recorded!");
-        downloadReceipt(res.data.sale);
-        setCart([]);
-        
-        // 🚀 REFRESH STATS IMMEDIATELY after a sale
-        fetchData(); 
-      }
-
-
-      if (res.data.success) {
-        toast.success("Sale Recorded Successfully!", {
-          icon: '✅',
-          style: { borderRadius: '15px', background: '#10B981', color: '#fff' }
-        });
-        
-        downloadReceipt(res.data.sale);
-        setCart([]);
-        setIsMobileCartOpen(false);
-      }
-    } catch (err) {
-      // Improved error reporting
-      const errorMsg = err.response?.data?.message || "Sale failed";
-      toast.error(errorMsg);
-      console.error("POS Error Details:", err.response?.data);
+      // 4. 🚀 OPEN WHATSAPP MODAL
+      setShowWhatsappModal(true); 
     }
-  };
+  } catch (err) {
+    const errorMsg = err.response?.data?.message || "Sale failed";
+    toast.error(errorMsg);
+    console.error("POS Error Details:", err.response?.data);
+  }
+};
 
 
  
@@ -570,6 +573,62 @@ const cartUIContent = (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white w-6 h-6 rounded-full text-[10px] font-black border-2 border-white flex items-center justify-center">{cart.length}</span>
          </button>
       )}
+
+      <AnimatePresence>
+  {showWhatsappModal && (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-white rounded-[2.5rem] w-full max-w-md overflow-hidden shadow-2xl"
+      >
+        <div className="p-8 text-center">
+          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <MessageCircle size={40} />
+          </div>
+          <h3 className="text-2xl font-black text-slate-800 mb-2">Send WhatsApp Receipt</h3>
+          <p className="text-slate-500 font-medium mb-8">Enter the buyer's phone number to send the digital receipt via WhatsApp.</p>
+          
+          <div className="relative mb-6">
+            <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">+234</span>
+            <input 
+              autoFocus
+              type="tel"
+              placeholder="803 000 0000"
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 pl-16 pr-6 text-lg font-bold focus:border-green-500 transition-all outline-none"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={() => {
+                const cleanPhone = customerPhone.startsWith('0') ? '234' + customerPhone.substring(1) : '234' + customerPhone;
+                const message = `*Receipt from QuickInvoice*%0A--------------------------%0A*Order ID:* ${lastSaleData?.receiptId}%0A*Total:* N${lastSaleData?.total.toLocaleString()}%0A*Method:* ${lastSaleData?.method}%0A%0A_Thank you for your patronage!_`;
+                window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+                setShowWhatsappModal(false);
+                setCustomerPhone("");
+              }}
+              className="w-full py-5 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black text-lg transition-all active:scale-95"
+            >
+              Send Receipt
+            </button>
+            <button 
+              onClick={() => setShowWhatsappModal(false)}
+              className="w-full py-4 text-slate-400 font-bold hover:text-slate-600"
+            >
+              Skip for now
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
+
+
     </div>
   );
 };
