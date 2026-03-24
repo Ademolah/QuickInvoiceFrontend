@@ -614,7 +614,7 @@ const cartUIContent = (
                 const receiptLink = `https://quickinvoice.com/view-receipt/${lastSaleData?.receiptId}`;
 
                 // 3. Construct the Message
-                const message = `*Receipt from QuickInvoice*%0A` +
+                const message = `*Receipt from ${user?.businessName}*%0A` +
                                 `--------------------------%0A` +
                                 `*Order ID:* ${lastSaleData?.receiptId}%0A` +
                                 `*Total Amount:* N${lastSaleData?.total.toLocaleString()}%0A%0A` +
