@@ -46,6 +46,7 @@ import AppLayout from "./components/AppLayout";
 import AddBusiness from "./pages/AddBusiness";
 import AdminDashboard from "./pages/AdminDashboard";
 import POSInterface from "./pages/POSInterface";
+import PublicReceipt from "./pages/PublicReceipt";
 
 export default function App() {
   return (
@@ -88,6 +89,7 @@ export default function App() {
       <Route path="/clients" element={<Client />} />
       <Route path="/inventory" element={<Inventory />} />
       <Route path="/pos" element={<POSInterface />} />
+      <Route path="/view-receipt/:id" element={<PublicReceipt />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/support" element={<Support />} />
 
