@@ -611,7 +611,7 @@ const cartUIContent = (
                     : customerPhone.startsWith('234') ? customerPhone : '234' + customerPhone;
 
                 // 2. Create a link to the receipt on your website
-                const receiptLink = `https://quickinvoice.com/view-receipt/${lastSaleData?.receiptId}`;
+                const receiptLink = `https://quickinvoiceng.com/view-receipt/${lastSaleData?.receiptId}`;
 
                 // 3. Construct the Message
                 const message = `*Receipt from ${user?.businessName}*%0A` +
