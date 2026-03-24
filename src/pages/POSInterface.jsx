@@ -605,12 +605,29 @@ const cartUIContent = (
           <div className="flex flex-col gap-3">
             <button 
               onClick={() => {
-                const cleanPhone = customerPhone.startsWith('0') ? '234' + customerPhone.substring(1) : '234' + customerPhone;
-                const message = `*Receipt from QuickInvoice*%0A--------------------------%0A*Order ID:* ${lastSaleData?.receiptId}%0A*Total:* N${lastSaleData?.total.toLocaleString()}%0A*Method:* ${lastSaleData?.method}%0A%0A_Thank you for your patronage!_`;
+                // 1. Format the phone number (080... -> 23480...)
+                const cleanPhone = customerPhone.startsWith('0') 
+                    ? '234' + customerPhone.substring(1) 
+                    : customerPhone.startsWith('234') ? customerPhone : '234' + customerPhone;
+
+                // 2. Create a link to the receipt on your website
+                const receiptLink = `https://quickinvoice.com/view-receipt/${lastSaleData?.receiptId}`;
+
+                // 3. Construct the Message
+                const message = `*Receipt from QuickInvoice*%0A` +
+                                `--------------------------%0A` +
+                                `*Order ID:* ${lastSaleData?.receiptId}%0A` +
+                                `*Total Amount:* N${lastSaleData?.total.toLocaleString()}%0A%0A` +
+                                `*Click below to download your PDF receipt:*%0A` +
+                                `${receiptLink}%0A%0A` +
+                                `_Thank you for your patronage!_`;
+
+                // 4. Open WhatsApp
                 window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+                
                 setShowWhatsappModal(false);
                 setCustomerPhone("");
-              }}
+                }}
               className="w-full py-5 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black text-lg transition-all active:scale-95"
             >
               Send Receipt
