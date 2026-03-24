@@ -273,7 +273,8 @@ import {
   X, FileText, Users, BarChart2, Settings, 
   LayoutDashboard, LogOut, Receipt, CreditCard, ShoppingCart,
   Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock,
-  Plus, ChevronDown, Check, Building
+  Plus, ChevronDown, Check, Building,
+  Calculator
 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -319,6 +320,7 @@ const Sidebar = ({ closeMenu }) => {
         { name: "Create Invoice", icon: <FileText size={18} />, path: "/invoices" },
         { name: "Generate Receipts", icon: <Receipt size={18} />, path: "/receipts" },
         { name: "Inventory", icon: <Building2 size={18} />, path: "/inventory" },
+        { name: "POS", icon: <Calculator size={18} />, path: "/pos", isPro: true },
         { name: "Bookkeeping", icon: <BarChart3 size={18} />, path: "/bookkeeping", isPro: true },
         { name: "Expenses", icon: <CreditCard size={18} />, path: "/expenses" },
         { name: "Clients", icon: <Users size={18} />, path: "/clients" },

@@ -45,6 +45,7 @@ import Bookkeeping from "./pages/BookKeeping";
 import AppLayout from "./components/AppLayout";
 import AddBusiness from "./pages/AddBusiness";
 import AdminDashboard from "./pages/AdminDashboard";
+import POSInterface from "./pages/POSInterface";
 
 export default function App() {
   return (
@@ -86,6 +87,7 @@ export default function App() {
       <Route path="/billing" element={<Billing />} />
       <Route path="/clients" element={<Client />} />
       <Route path="/inventory" element={<Inventory />} />
+      <Route path="/pos" element={<POSInterface />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/support" element={<Support />} />
 
