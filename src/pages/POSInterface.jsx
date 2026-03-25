@@ -606,6 +606,7 @@ const cartUIContent = (
             <button 
               onClick={() => {
                 // 1. Format the phone number (080... -> 23480...)
+                const itemNames = cart.map(item => item.name).join(", ");
                 const cleanPhone = customerPhone.startsWith('0') 
                     ? '234' + customerPhone.substring(1) 
                     : customerPhone.startsWith('234') ? customerPhone : '234' + customerPhone;
@@ -617,6 +618,7 @@ const cartUIContent = (
                 const message = `*Receipt from ${user?.businessName}*%0A` +
                                 `--------------------------%0A` +
                                 `*Order ID:* ${lastSaleData?.receiptId}%0A` +
+                                `*Item(s):* ${itemNames}%0A` + 
                                 `*Total Amount:* N${lastSaleData?.total.toLocaleString()}%0A%0A` +
                                 `*Click below to download your PDF receipt:*%0A` +
                                 `${receiptLink}%0A%0A` +
