@@ -129,11 +129,21 @@ const downloadReceipt = (saleData) => {
 
       const doc = new jsPDF({ unit: "mm", format: [80, 160] });
 
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const centerX = pageWidth / 2;
+      const businessName = user?.businessName?.toUpperCase() || "QUICKPOS";
+      if (businessName.length > 20) {
+          doc.setFontSize(10); // Shrink for long names
+      } else {
+          doc.setFontSize(14); // Standard bold size
+      }
+
       // --- 1. HEADER SECTION ---
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
       doc.setTextColor(0, 19, 37);
-      doc.text(user?.businessName?.toUpperCase() || "QUICKPOS", 40, 12, { align: "center" });
+      doc.text(businessName, centerX, 12, { align: "center" });
+      // doc.text(user?.businessName?.toUpperCase() || "QUICKPOS", 40, 12, { align: "center" });
       
       doc.setDrawColor(200, 200, 200);
       doc.line(5, 15, 75, 15);
