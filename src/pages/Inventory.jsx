@@ -801,7 +801,7 @@ import { useCurrency } from "../context/CurrencyContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Pencil, Trash2, Search, Package, Tag, Hash, 
-  Layers, X, Filter, ChevronRight, AlertCircle, FileText
+  Layers, X, Filter, ChevronRight, AlertCircle, FileText, ShoppingCart
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PrintInventory from "../components/PrintInventory";
@@ -959,21 +959,9 @@ export default function Inventory() {
   const totals = useMemo(() => ({
     totalProducts: filtered.length,
     totalUnits: filtered.reduce((s, it) => s + Number(it.stock || 0), 0),
+    totalValueSold: filtered.reduce((s, it) => s + Number(it.sold || 0), 0),
     totalValue: filtered.reduce((s, it) => s + Number(it.stock || 0) * Number(it.price || 0), 0)
   }), [filtered]);
-
-  // const saveItem = async () => {
-  //   if (!form.name || !form.price || !form.stock) return setError("Required fields missing");
-  //   setSaving(true);
-  //   try {
-  //     const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
-  //     const res = mode === "create" ? await api.post("/inventory", payload) : await api.put(`/inventory/${form._id}`, payload);
-  //     setItems(prev => mode === "create" ? [res.data, ...prev] : prev.map(it => it._id === form._id ? res.data : it));
-  //     setOpen(false);
-  //   } catch (e) {
-  //     setError(e.response?.data?.message || "Save failed");
-  //   } finally { setSaving(false); }
-  // };
 
 
 
@@ -1084,14 +1072,38 @@ const saveItem = async () => {
         </div>
       </div>
 
+     
       {/* STATS OVERLAY */}
-      <div className="max-w-7xl mx-auto px-6 -mt-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard title="Total Items" value={totals.totalProducts} icon={Package} colorClass="bg-blue-50 text-blue-600" />
-          <StatCard title="Stock Count" value={totals.totalUnits} icon={Layers} colorClass="bg-indigo-50 text-indigo-600" />
-          <StatCard title="Total Value" value={formatCurrency(totals.totalValue)} icon={Tag} colorClass="bg-emerald-50 text-emerald-600" />
-        </div>
-      </div>
+<div className="max-w-7xl mx-auto px-6 -mt-10">
+  {/* 🚀 Changed grid-cols-1 md:grid-cols-3 to md:grid-cols-4 */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <StatCard 
+      title="Total Items" 
+      value={totals.totalProducts} 
+      icon={Package} 
+      colorClass="bg-blue-50 text-blue-600" 
+    />
+    <StatCard 
+      title="Stock Count" 
+      value={totals.totalUnits} 
+      icon={Layers} 
+      colorClass="bg-indigo-50 text-indigo-600" 
+    />
+    <StatCard 
+      title="Total Value" 
+      value={formatCurrency(totals.totalValue)} 
+      icon={Tag} 
+      colorClass="bg-emerald-50 text-emerald-600" 
+    />
+    {/* 🚀 NEW STAT CARD: Total Units Sold */}
+    <StatCard 
+      title="Units Sold" 
+      value={formatCurrency(totals.totalValueSold)} 
+      icon={ShoppingCart} // Or use 'TrendingUp' from lucide-react
+      colorClass="bg-amber-50 text-amber-600" 
+    />
+  </div>
+</div>
 
       {/* PRODUCT LIST */}
       <div className="max-w-7xl mx-auto px-6 mt-12">
