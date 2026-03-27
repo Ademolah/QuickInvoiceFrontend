@@ -809,6 +809,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
+import autoTable from "jspdf-autotable";
 
 /* =========================
    WORLD-CLASS UI COMPONENTS
@@ -1040,25 +1041,154 @@ const saveItem = async () => {
     } catch { setExporting(false); }
   };
 
+
+
+//sales summary
+
+const [reportRange, setReportRange] = useState('monthly');
+const token = localStorage.getItem("token");
+
+const [isGenerating, setIsGenerating] = useState(false);
+
+const handleExportSalesReport = async () => {
+  setIsGenerating(true);
+  try {
+    const res = await api.get(`/pos/sales-summary?range=${reportRange}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    const { summary, grandTotal, period } = res.data;
+    generateSalesReportPDF(summary, grandTotal, period, user);
+    toast.success("Report downloaded successfully");
+  } catch (err) {
+    console.error(err);
+    toast.error("Error fetching sales data");
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
+const generateSalesReportPDF = (data, total, range, user) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const brandColor = [0, 40, 174]; // Your #0028AE Blue
+  const secondaryColor = [15, 23, 42]; // Slate-900
+
+  // 1. BRAND HEADER (Solid Blue Bar)
+  doc.setFillColor(...brandColor);
+  doc.rect(0, 0, pageWidth, 40, "F");
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.text(user?.businessName?.toUpperCase() || "QUICKPOS", 15, 22);
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(`${range.toUpperCase()} PERFORMANCE REPORT`, 15, 30);
+  doc.text(`DATE: ${new Date().toLocaleDateString()}`, pageWidth - 15, 30, { align: "right" });
+
+  // 2. REVENUE SUMMARY BOX
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(15, 50, pageWidth - 30, 25, 3, 3, "F");
+  doc.setTextColor(...secondaryColor);
+  doc.setFontSize(9);
+  doc.text("TOTAL REVENUE GENERATED", 25, 60);
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...brandColor);
+  doc.text(`N${total.toLocaleString()}`, 25, 70);
+
+  // 3. THE TABLE (Using the imported autoTable function)
+  const tableColumn = ["ITEM DESCRIPTION", "UNITS", "AVG PRICE", "TOTAL REVENUE"];
+  const tableRows = data.map(item => [
+    item.name.toUpperCase(),
+    item.quantity,
+    `₦${(item.revenue / item.quantity).toLocaleString()}`,
+    `₦${item.revenue.toLocaleString()}`
+  ]);
+
+  // 🚀 FIXED CALL: autoTable(doc, props)
+  autoTable(doc, {
+    startY: 85,
+    head: [tableColumn],
+    body: tableRows,
+    theme: 'striped',
+    styles: { fontSize: 9, cellPadding: 4 },
+    headStyles: { fillColor: secondaryColor, textColor: [255, 255, 255], fontStyle: 'bold' },
+    columnStyles: { 
+        0: { cellWidth: 80 },
+        3: { fontStyle: 'bold', halign: 'right' } 
+    },
+    alternateRowStyles: { fillColor: [250, 252, 255] },
+    margin: { left: 15, right: 15 }
+  });
+
+  doc.save(`${user?.businessName}_Report_${range}.pdf`);
+};
+
+
+
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
       {/* HEADER SECTION */}
       <div className="bg-slate-900 pt-12 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <h1 className="text-3xl font-black text-white tracking-tight">Inventory</h1>
-              <p className="text-slate-400 text-sm font-medium mt-1">Manage your stock and business value</p>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={exportInventoryPDF} disabled={exporting} className="flex items-center gap-2 px-5 py-3 bg-slate-800 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-700 transition-all">
-                <FileText size={16} /> {exporting ? "..." : "Export"}
-              </button>
-              <button onClick={() => { setMode("create"); setForm({ name: "", sku: "", price: "", stock: "", category: "", description: "" }); setOpen(true); }} className="flex items-center gap-2 px-5 py-3 bg-[#0028AE] text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all">
-                <Plus size={18} /> Add Product
-              </button>
-            </div>
-          </div>
+          {/* HEADER SECTION */}
+<div className="bg-slate-900 pt-12 pb-20 px-6">
+  <div className="max-w-7xl mx-auto">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div>
+        <h1 className="text-3xl font-black text-white tracking-tight">Inventory</h1>
+        <p className="text-slate-400 text-sm font-medium mt-1">Manage your stock and business value</p>
+      </div>
+
+      <div className="flex flex-wrap md:flex-nowrap gap-3">
+        {/* 🚀 START: SALES REPORT GENERATOR SECTION */}
+        <div className="flex items-center gap-2 bg-slate-800 p-1.5 rounded-2xl border border-slate-700 shadow-sm transition-all hover:border-slate-600">
+          <select 
+            value={reportRange} 
+            onChange={(e) => setReportRange(e.target.value)}
+            className="bg-transparent text-slate-300 text-[11px] font-black uppercase tracking-wider px-3 outline-none border-none cursor-pointer hover:text-white"
+          >
+            <option value="weekly" className="bg-slate-900">Weekly</option>
+            <option value="monthly" className="bg-slate-900">Monthly</option>
+            <option value="yearly" className="bg-slate-900">Yearly</option>
+          </select>
+          
+          <button 
+            onClick={handleExportSalesReport}
+            disabled={isGenerating}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-900 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-white hover:scale-105 transition-all shadow-md active:scale-95"
+          >
+            <FileText size={14} />
+            Sales Report
+          </button>
+        </div>
+        {/* 🚀 END: SALES REPORT GENERATOR SECTION */}
+
+        <button 
+          onClick={exportInventoryPDF} 
+          disabled={exporting} 
+          className="flex items-center gap-2 px-5 py-3 bg-slate-800 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-700 transition-all border border-transparent active:scale-95"
+        >
+          <FileText size={16} /> {exporting ? "..." : "Export"}
+        </button>
+
+        <button 
+          onClick={() => { 
+            setMode("create"); 
+            setForm({ name: "", sku: "", price: "", stock: "", category: "", description: "" }); 
+            setOpen(true); 
+          }} 
+          className="flex items-center gap-2 px-5 py-3 bg-[#0028AE] text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-all active:scale-95"
+        >
+          <Plus size={18} /> Add Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
           {/* QUICK SEARCH */}
           <div className="mt-8 relative max-w-xl">
