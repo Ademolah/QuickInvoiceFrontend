@@ -7,6 +7,7 @@ import Pricing from '../components/sections/Pricing'
 import Testimonials from '../components/sections/Testimonials'
 // import AppleParallaxSlider from '../components/sections/AppleParallaxSlider'
 import POSBespokeShowcase from '../components/sections/Pos'
+import InventoryFeatureShowcase from '../components/sections/Inventory'
 
 export default function Landing(){
   return (
@@ -15,6 +16,7 @@ export default function Landing(){
       <Hero />
       <POSBespokeShowcase/>
       <Features />
+      <InventoryFeatureShowcase/>
       <Pricing/>
       <Testimonials/>
       <Footer />
