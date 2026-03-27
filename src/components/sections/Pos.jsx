@@ -44,7 +44,7 @@ const POSBespokeShowcase = () => {
 
           <motion.p variants={fadeUp} className="text-lg md:text-xl text-slate-500 leading-relaxed font-medium">
             We’ve reimagined the checkout experience from the ground up. 
-            Faster processing, smarter inventory, and elegant digital receipts—all in one world-class interface.
+            Faster processing, smarter inventory, and elegant digital receipts, all in one world-class interface.
           </motion.p>
         </motion.div>
 
