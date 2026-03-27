@@ -1099,16 +1099,15 @@ const generateSalesReportPDF = (data, total, range, user) => {
   doc.setTextColor(...brandColor);
   doc.text(`N${total.toLocaleString()}`, 25, 70);
 
-  // 3. THE TABLE (Using the imported autoTable function)
+  // 3. THE TABLE
   const tableColumn = ["ITEM DESCRIPTION", "UNITS", "AVG PRICE", "TOTAL REVENUE"];
   const tableRows = data.map(item => [
     item.name.toUpperCase(),
     item.quantity,
-    `₦${(item.revenue / item.quantity).toLocaleString()}`,
-    `₦${item.revenue.toLocaleString()}`
+    `N${(item.revenue / item.quantity).toLocaleString()}`,
+    `N${item.revenue.toLocaleString()}`
   ]);
 
-  // 🚀 FIXED CALL: autoTable(doc, props)
   autoTable(doc, {
     startY: 85,
     head: [tableColumn],
@@ -1121,11 +1120,38 @@ const generateSalesReportPDF = (data, total, range, user) => {
         3: { fontStyle: 'bold', halign: 'right' } 
     },
     alternateRowStyles: { fillColor: [250, 252, 255] },
-    margin: { left: 15, right: 15 }
+    margin: { left: 15, right: 15, bottom: 25 }, // 🚀 Margin for footer
+
+    // 🛠️ THE WORLD-CLASS FOOTER
+    didDrawPage: (data) => {
+      const pWidth = doc.internal.pageSize.getWidth();
+      const pHeight = doc.internal.pageSize.getHeight();
+
+      // Separator Line
+      doc.setDrawColor(226, 232, 240); // Slate-200
+      doc.line(15, pHeight - 20, pWidth - 15, pHeight - 20);
+
+      // Footer Text
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184); // Slate-400
+      
+      // Left: Timestamp
+      const timestamp = `Generated: ${new Date().toLocaleString()} | QuickPOS`;
+      doc.text(timestamp, 15, pHeight - 12);
+
+      // Center: Page Number
+      const pageStr = `Page ${doc.internal.getNumberOfPages()}`;
+      doc.text(pageStr, pWidth / 2, pHeight - 12, { align: "center" });
+
+      // Right: Branding/Stamp
+      doc.setFont("helvetica", "bolditalic");
+      doc.text("OFFICIAL BUSINESS RECORD", pWidth - 15, pHeight - 12, { align: "right" });
+    }
   });
 
-  doc.save(`${user?.businessName}_Report_${range}.pdf`);
+  doc.save(`${user?.businessName || 'QuickPOS'}_Report_${range}.pdf`);
 };
+
 
 
 
