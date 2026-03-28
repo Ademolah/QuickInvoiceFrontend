@@ -22,6 +22,7 @@ const POSInterface = () => {
   const [showWhatsappModal, setShowWhatsappModal] = useState(false);
   const [customerPhone, setCustomerPhone] = useState("");
   const [lastSaleData, setLastSaleData] = useState(null);
+  const [lastSaleItems, setLastSaleItems] = useState("");
 
 
 
@@ -223,6 +224,9 @@ const downloadReceipt = (saleData) => {
   try {
     const token = localStorage.getItem("token");
     const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+    const capturedNames = cart.map(item => item.name).join(", ");
+    setLastSaleItems(capturedNames);
 
     // 🚀 Prepare items for backend
     const formattedItems = cart.map(item => ({
@@ -616,7 +620,6 @@ const cartUIContent = (
             <button 
               onClick={() => {
                 // 1. Format the phone number (080... -> 23480...)
-                const itemNames = cart.map(item => item.name).join(", ");
                 const cleanPhone = customerPhone.startsWith('0') 
                     ? '234' + customerPhone.substring(1) 
                     : customerPhone.startsWith('234') ? customerPhone : '234' + customerPhone;
@@ -628,7 +631,7 @@ const cartUIContent = (
                 const message = `*Receipt from ${user?.businessName}*%0A` +
                                 `--------------------------%0A` +
                                 `*Order ID:* ${lastSaleData?.receiptId}%0A` +
-                                `*Item(s):* ${itemNames}%0A` + 
+                                `*Item(s):* ${lastSaleItems}%0A` + 
                                 `*Total Amount:* N${lastSaleData?.total.toLocaleString()}%0A%0A` +
                                 `*Click below to download your PDF receipt:*%0A` +
                                 `${receiptLink}%0A%0A` +
