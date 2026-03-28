@@ -949,29 +949,45 @@ export default function InvoiceDetails() {
     }
   };
 
-  // 4. DOWNLOAD PDF
-  const downloadPDF = async () => {
-    if (!invoiceRef.current) return;
-    setActionLoading(true);
-    try {
-      const canProceed = await logUsage();
-      if (!canProceed) return;
+  // // 4. DOWNLOAD PDF
+  // const downloadPDF = async () => {
 
-      const canvas = await html2canvas(invoiceRef.current, { scale: 3, useCORS: true });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pageWidth) / canvas.width;
-      
-      pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pdfHeight);
-      pdf.save(`Invoice-${id.slice(-6)}.pdf`);
-      toast.success("PDF Saved");
-    } catch (err) {
-      toast.error("PDF failed");
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  const downloadPDF = async () => {
+  if (!invoiceRef.current) return;
+  setActionLoading(true);
+  try {
+    const canProceed = await logUsage();
+    if (!canProceed) return;
+
+    // 1. Lower the scale slightly (2 is plenty for A4 sharpness)
+    const canvas = await html2canvas(invoiceRef.current, { 
+      scale: 2, 
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
+
+    // 2. CRITICAL CHANGE: Use JPEG instead of PNG and set quality to 0.7 or 0.8
+    // PNG is lossless (heavy). JPEG at 0.7 is 90% smaller and looks identical on a phone.
+    const imgData = canvas.toDataURL("image/jpeg", 0.7); 
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // 3. Add the JPEG to the PDF
+    pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    
+    pdf.save(`Invoice-${id.slice(-6)}.pdf`);
+    toast.success("PDF Downloaded (Optimized)");
+  } catch (err) {
+    console.error(err);
+    toast.error("PDF generation failed");
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   const handleMarkPaid = async () => {
     if (!window.confirm("Mark as paid?")) return;

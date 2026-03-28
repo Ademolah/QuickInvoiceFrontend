@@ -488,10 +488,11 @@ export default function ReceiptDetails() {
   load();
 }, [invoiceId]);
 
+  
+
   const handleCapture = async (format = 'pdf') => {
     if (!captureRef.current) return;
     
-    // 1. Enter Capture Mode (Triggers CSS changes to remove rounding/shadows)
     setActionLoading(true);
     const loadingToast = toast.loading(`Generating Premium ${format.toUpperCase()}...`);
 
@@ -512,35 +513,39 @@ export default function ReceiptDetails() {
         return;
       }
 
-      // Small delay to allow React to re-render the "Flat" version for capture
       await new Promise(r => setTimeout(r, 100));
 
       const canvas = await html2canvas(captureRef.current, {
-        scale: 3,
+        scale: 2, // 🚀 Optimized from 3 to 2 (Plenty sharp for receipts)
         useCORS: true,
         backgroundColor: "#ffffff",
         windowWidth: 794, 
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      // 🚀 CRITICAL: Switch to JPEG with 0.7 compression for massive size savings
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
 
       if (format === 'pdf') {
         const pdf = new jsPDF("p", "mm", "a4");
         const pageWidth = pdf.internal.pageSize.getWidth();
-        const imgWidth = pageWidth; // Full bleed
+        const imgWidth = pageWidth; 
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight); // Start at 0,0
+        
+        // 🚀 Use 'JPEG' and 'FAST' alias for optimized PDF building
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, undefined, 'FAST');
         pdf.save(`Receipt-${invoice._id.slice(-6).toUpperCase()}.pdf`);
       } else {
+        // For 'Share PNG', we actually send a compressed JPEG but keep the name .png 
+        // Or better yet, rename to .jpg for better compatibility
         const blob = await (await fetch(imgData)).blob();
-        const file = new File([blob], `Receipt-${invoice._id.slice(-6).toUpperCase()}.png`, { type: "image/png" });
+        const file = new File([blob], `Receipt-${invoice._id.slice(-6).toUpperCase()}.jpg`, { type: "image/jpeg" });
         
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: "Receipt" });
+          await navigator.share({ files: [file], title: "Receipt", text: "Here is your receipt from QuickPOS" });
         } else {
           const link = document.createElement("a");
           link.href = imgData;
-          link.download = `Receipt-${invoice._id.slice(-6).toUpperCase()}.png`;
+          link.download = `Receipt-${invoice._id.slice(-6).toUpperCase()}.jpg`;
           link.click();
         }
       }
@@ -549,11 +554,10 @@ export default function ReceiptDetails() {
       console.error(err);
       toast.error("Capture failed.");
     } finally {
-      // 2. Exit Capture Mode (Restores visual rounding/shadows)
       setActionLoading(false);
       toast.dismiss(loadingToast);
     }
-  };
+};
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
