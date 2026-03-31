@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, Trash2, Plus, Minus, Download, MessageCircle, User, Store, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
+import { Search, ShoppingBag, Trash2, Plus, Minus, Download, MessageCircle, User, Store,Maximize, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import ScannerModal from "../components/ScannerModal";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -23,6 +24,7 @@ const POSInterface = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [lastSaleData, setLastSaleData] = useState(null);
   const [lastSaleItems, setLastSaleItems] = useState("");
+  const [showScanner, setShowScanner] = useState(false);
 
 
 
@@ -117,6 +119,43 @@ const POSInterface = () => {
     }
     return true;
   };
+
+  const handleBarcodeScan = (barcode) => {
+  // 1. Search the main inventory array
+  // We use String() on both sides to avoid type-mismatch (number vs string)
+  const product = inventory.find(p => String(p.barcode) === String(barcode));
+
+  if (product) {
+    // 2. Check stock levels before adding
+    if (product.stock <= 0) {
+      toast.error(`Stock Alert: ${product.name} is empty`, {
+        style: { borderRadius: '15px', background: '#BE123C', color: '#fff' }
+      });
+      return;
+    }
+
+    // 3. Add to your cart state
+    addToCart(product); 
+    
+    // 4. Open the mobile drawer automatically
+    setIsMobileCartOpen(true);
+
+    // 5. World-Class Feedback
+    toast.success(`Added ${product.name}`, {
+      icon: '🛒',
+      style: { borderRadius: '15px', background: '#0F172A', color: '#fff' }
+    });
+
+    // Haptic feedback for mobile devices
+    if (navigator.vibrate) navigator.vibrate(100); 
+
+  } else {
+    // If barcode isn't found, show a subtle error
+    toast.error(`Barcode [${barcode}] not found`, {
+      style: { borderRadius: '15px', background: '#334155', color: '#fff' }
+    });
+  }
+};
 
 
 const downloadReceipt = (saleData) => {
@@ -298,9 +337,19 @@ const cartUIContent = (
          <ShoppingBag className="text-blue-600" /> Cart
        </h2>
        
-       <button onClick={() => setCart([])} className="text-red-400 hover:text-red-600 p-2">
-         <Trash2 size={22}/>
-       </button>
+       <div className="flex items-center gap-2">
+      {/* 🚀 ADD SCANNER ICON TO CART HEADER */}
+      <button 
+        onClick={() => setShowScanner(true)}
+        className="p-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-100 transition-colors"
+      >
+        <Maximize size={20} />
+      </button>
+
+      <button onClick={() => setCart([])} className="text-red-400 hover:text-red-600 p-2">
+        <Trash2 size={22}/>
+      </button>
+    </div>
     </div>
 
     <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -581,12 +630,50 @@ const cartUIContent = (
 {/* --- SURGICAL REPLACEMENT END --- */}
 
       {/* FLOATING ACTION (Mobile) */}
-      {!isMobileCartOpen && cart.length > 0 && (
+      {/* {!isMobileCartOpen && cart.length > 0 && (
          <button onClick={() => setIsMobileCartOpen(true)} className="md:hidden fixed bottom-8 right-8 bg-blue-600 text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center z-50 animate-bounce">
             <ShoppingBag size={30}/>
             <span className="absolute -top-1 -right-1 bg-red-500 text-white w-6 h-6 rounded-full text-[10px] font-black border-2 border-white flex items-center justify-center">{cart.length}</span>
          </button>
-      )}
+      )} */}
+
+      {/* --- BOTTOM RIGHT ACTIONS (MOBILE ONLY) --- */}
+<div className="md:hidden fixed bottom-8 right-6 flex flex-col gap-4 z-[70]">
+  
+  {/* 1. THE SCANNER BUTTON (Always visible for quick entry) */}
+  {!isMobileCartOpen && (
+    <button 
+      onClick={() => setShowScanner(true)}
+      className="w-16 h-16 bg-[#0028AE] text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white active:scale-90 transition-all"
+    >
+      <Maximize size={24} />
+    </button>
+  )}
+
+  {/* 2. THE SHOPPING BAG (Only shows if cart has items) */}
+  {!isMobileCartOpen && cart.length > 0 && (
+    <button 
+      onClick={() => setIsMobileCartOpen(true)} 
+      className="bg-blue-600 text-white w-20 h-20 rounded-full shadow-2xl flex items-center justify-center animate-bounce border-4 border-white relative active:scale-90 transition-all"
+    >
+      <ShoppingBag size={30}/>
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white w-7 h-7 rounded-full text-[12px] font-black border-2 border-white flex items-center justify-center">
+        {cart.length}
+      </span>
+    </button>
+  )}
+</div>
+
+{/* 🚀 THE SCANNER MODAL (Place this at the root level of return) */}
+{showScanner && (
+  <ScannerModal 
+    onScan={(code) => {
+      handleBarcodeScan(code);
+      // Optional: setShowScanner(false) if you want it to close after one scan
+    }} 
+    onClose={() => setShowScanner(false)} 
+  />
+)}
 
       <AnimatePresence>
   {showWhatsappModal && (
