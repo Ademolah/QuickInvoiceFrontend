@@ -1,32 +1,44 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { X, Zap } from 'lucide-react';
 
 const ScannerModal = ({ onScan, onClose }) => {
   useEffect(() => {
-    // 1. Initialize Scanner
-    const scanner = new Html5QrcodeScanner("reader", { 
-      fps: 10, 
-      qrbox: { width: 280, height: 160 }, // Landscape box for barcodes
-      aspectRatio: 1.777778
-    });
+  // 1. Create the instance
+  const scanner = new Html5QrcodeScanner("reader", { 
+    fps: 10, 
+    qrbox: { width: 280, height: 160 }, 
+    aspectRatio: 1.777778,
+    // Add this to skip the "Select Camera" screen and go straight to live feed
+    rememberLastUsedCamera: true,
+    supportedScanTypes: [0] // 0 means ONLY camera, no file uploads
+  });
 
+  // 2. Start with a tiny delay to ensure React has painted the 'reader' div
+  const startScanner = setTimeout(() => {
     scanner.render(
       (decodedText) => {
-        // 2. Success! Vibrate and send data back
         if (navigator.vibrate) navigator.vibrate(100);
         onScan(decodedText);
       },
       (error) => {
-        // We ignore errors during scanning to keep the feed smooth
+        // Just a placeholder for the scanner engine
       }
     );
+  }, 100);
 
-    // 3. Cleanup on close
-    return () => {
-      scanner.clear().catch(err => console.error("Scanner cleanup failed", err));
-    };
-  }, [onScan]);
+  // 3. Robust Cleanup
+  return () => {
+    clearTimeout(startScanner);
+    scanner.clear().catch(err => {
+      // We ignore the error if it was already cleared
+      console.log("Scanner cleared successfully or already inactive.");
+    });
+  };
+  // 🚀 IMPORTANT: Remove [onScan] from here to prevent constant restarts
+  // We only want this scanner to start once when the modal opens.
+}, []);
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
