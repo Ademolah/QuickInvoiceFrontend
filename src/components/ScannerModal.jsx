@@ -9,14 +9,15 @@ const ScannerModal = ({ onScan, onClose }) => {
     const html5QrCode = new Html5Qrcode("reader");
 
     const config = { 
-      fps: 15, // Slightly higher FPS for faster capture
+      fps: 15,
       qrbox: { width: 280, height: 160 },
       aspectRatio: 1.777778,
-      // 🚀 THE SECRET SAUCE: Better focus and resolution
       experimentalFeatures: {
         useBarCodeDetectorIfSupported: true 
       },
+      // 🚀 SURGICAL FIX: Force facingMode inside constraints as well
       videoConstraints: {
+        facingMode: { exact: "environment" }, 
         focusMode: "continuous",
         width: { min: 640, ideal: 1280, max: 1920 },
         height: { min: 480, ideal: 720, max: 1080 },
@@ -25,20 +26,23 @@ const ScannerModal = ({ onScan, onClose }) => {
 
     const startCamera = async () => {
       try {
+        // Attempt to start with exact back camera
         await html5QrCode.start(
-          { facingMode: "environment" }, 
+          { facingMode: { exact: "environment" } }, 
           config, 
           (decodedText) => {
             if (navigator.vibrate) navigator.vibrate(100);
             onScan(decodedText);
           },
-          (errorMessage) => {
-            // This runs 15 times a second if no code is found. Keep empty.
-          }
+          () => {} 
         );
       } catch (err) {
-        // 🚀 MOBILE DEBUG: This will show you exactly why it's failing
-        alert("Camera Error: " + err);
+        // Fallback: If "exact" fails (e.g. on desktop with no back cam), try normal environment
+        try {
+          await html5QrCode.start({ facingMode: "environment" }, config, (text) => onScan(text), () => {});
+        } catch (secondErr) {
+          console.error("Camera Error: ", secondErr);
+        }
       }
     };
 
