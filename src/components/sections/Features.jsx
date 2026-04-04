@@ -219,44 +219,122 @@ const features = [
   },
 ];
 
-// Miniature Design Components for each feature
+// Upgraded Miniature Design Components
 const FeatureVisual = ({ type, color }) => {
-  const baseClass = "relative w-full h-32 mb-8 rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-transparent transition-colors duration-500";
+  const baseClass = "relative w-full h-40 mb-8 rounded-[2rem] overflow-hidden bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white transition-all duration-500 shadow-inner";
   
+  // 1. INVOICE VISUAL - Layered & Professional
   if (type === "invoice") return (
     <div className={baseClass}>
-      <div className="w-16 h-20 bg-white rounded shadow-sm border border-slate-100 p-2 flex flex-col gap-1 rotate-[-5deg] group-hover:rotate-0 transition-transform">
-        <div className="w-full h-1 bg-slate-100 rounded" />
-        <div className="w-2/3 h-1 bg-slate-100 rounded" />
-        <div className="mt-auto w-full h-4 bg-[#0028AE]/10 rounded" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0028AE]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative w-20 h-24 bg-white rounded-lg shadow-[0_20px_50px_rgba(0,40,174,0.1)] border border-slate-100 p-3 flex flex-col gap-2 rotate-[-6deg] group-hover:rotate-0 transition-all duration-500">
+        <div className="w-8 h-1.5 bg-[#0028AE] rounded-full" />
+        <div className="space-y-1.5 mt-2">
+          <div className="w-full h-1 bg-slate-100 rounded-full" />
+          <div className="w-full h-1 bg-slate-100 rounded-full" />
+          <div className="w-3/4 h-1 bg-slate-100 rounded-full" />
+        </div>
+        <div className="mt-auto flex justify-between items-center">
+          <div className="w-10 h-3 bg-[#00A6FA]/10 rounded-md" />
+          <div className="w-5 h-5 rounded-full border-2 border-slate-100" />
+        </div>
       </div>
+      {/* Background Accent */}
+      <div className="absolute -right-4 bottom-4 w-24 h-24 bg-[#00A6FA]/5 rounded-full blur-2xl" />
     </div>
   );
 
+  // 2. RECEIPT VISUAL - Detailed & Clear
   if (type === "receipt") return (
     <div className={baseClass}>
-      <div className="w-12 h-24 bg-white rounded shadow-sm border border-slate-100 p-2 flex flex-col gap-2 translate-y-2 group-hover:translate-y-0 transition-transform">
-        <div className="w-full h-1 border-b border-dashed border-slate-200" />
-        <div className="flex flex-col gap-1">
-          <div className="w-full h-1 bg-slate-50" />
-          <div className="w-full h-1 bg-slate-50" />
+      <div className="w-16 h-28 bg-white rounded shadow-2xl border-t-[6px] border-[#00A6FA] p-3 flex flex-col gap-2 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+        <div className="flex justify-between items-center">
+          <div className="w-2 h-2 rounded-full bg-slate-200" />
+          <div className="w-8 h-1 bg-slate-100 rounded-full" />
         </div>
-        <div className="mt-auto text-[8px] font-bold text-[#00A6FA] text-center">PAID</div>
+        <div className="w-full h-px border-b border-dashed border-slate-200 my-1" />
+        <div className="space-y-2">
+          <div className="flex justify-between"><div className="w-8 h-1.5 bg-slate-50 rounded" /><div className="w-4 h-1.5 bg-slate-100 rounded" /></div>
+          <div className="flex justify-between"><div className="w-10 h-1.5 bg-slate-50 rounded" /><div className="w-5 h-1.5 bg-slate-100 rounded" /></div>
+        </div>
+        <div className="mt-auto pt-3 border-t border-slate-50">
+          <div className="bg-[#00A6FA] text-white text-[8px] font-black py-1.5 rounded-md text-center tracking-widest shadow-lg shadow-[#00A6FA]/20">PAID</div>
+        </div>
       </div>
     </div>
   );
 
+  // 3. INVENTORY VISUAL - Dynamic & Modern
   if (type === "inventory") return (
     <div className={baseClass}>
-      <div className="grid grid-cols-2 gap-1 w-20">
-        {[1, 2, 3, 4].map(i => <div key={i} className={`h-8 w-full rounded ${i === 1 ? 'bg-[#001325]' : 'bg-slate-200'} animate-pulse`} />)}
+      <div className="grid grid-cols-2 gap-2 w-28 relative z-10">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className={`h-12 w-full rounded-xl border-b-4 transition-all duration-500 flex flex-col p-2 
+            ${i === 1 ? 'bg-[#001325] border-[#00A6FA] -translate-y-2' : 'bg-white border-slate-100'}`} 
+          >
+            <div className={`h-1 w-1/2 rounded-full ${i === 1 ? 'bg-[#00A6FA]/40' : 'bg-slate-100'}`} />
+            <div className={`mt-auto h-2 w-full rounded-sm ${i === 1 ? 'bg-[#00A6FA]' : 'bg-slate-50'}`} />
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(#00A6FA_1px,transparent_1px)] [background-size:12px_12px] opacity-[0.15]" />
+    </div>
+  );
+
+  // 4. SCANNER VISUAL - High-Tech Feel
+  if (type === "scanner") return (
+    <div className={baseClass}>
+       <div className="relative w-24 h-16 bg-white rounded-xl shadow-xl border border-slate-100 p-2 overflow-hidden">
+          <div className="flex gap-1 mb-2">
+            <div className="w-1 h-1 rounded-full bg-slate-200" />
+            <div className="w-1 h-1 rounded-full bg-slate-200" />
+          </div>
+          <div className="w-full h-full border-2 border-dashed border-[#0028AE]/20 rounded-lg flex items-center justify-center relative overflow-hidden">
+            <motion.div 
+              animate={{ y: [-20, 40] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="absolute top-0 left-0 w-full h-0.5 bg-[#0028AE] shadow-[0_0_10px_#0028AE]" 
+            />
+            <div className="flex gap-1">
+              {[1, 2, 3, 4].map(i => <div key={i} className="w-1 h-6 bg-slate-100 rounded-full" />)}
+            </div>
+          </div>
+       </div>
+    </div>
+  );
+
+  // 5. STATS VISUAL - Business Analytics
+  if (type === "stats") return (
+    <div className={baseClass}>
+      <div className="w-28 h-20 bg-white rounded-xl shadow-lg border border-slate-100 p-3 flex items-end gap-1.5">
+        {[40, 70, 45, 90, 60].map((h, i) => (
+          <motion.div 
+            key={i}
+            initial={{ height: 0 }}
+            whileInView={{ height: `${h}%` }}
+            transition={{ duration: 1, delay: i * 0.1 }}
+            className={`flex-1 rounded-t-sm ${i === 3 ? 'bg-[#00A6FA]' : 'bg-[#0028AE]/20'}`}
+          />
+        ))}
       </div>
     </div>
   );
 
-  return <div className={baseClass}><div className="w-10 h-10 rounded-full bg-slate-200" /></div>;
+  // 6. DASHBOARD VISUAL - Multi-Shop
+  if (type === "dashboard") return (
+    <div className={baseClass}>
+      <div className="w-28 h-20 bg-slate-900 rounded-xl shadow-2xl p-2 flex flex-col gap-2 scale-110 group-hover:scale-125 transition-transform duration-500">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-[#00A6FA]" />
+          <div className="w-10 h-1 bg-slate-700 rounded-full" />
+        </div>
+        <div className="grid grid-cols-3 gap-1 mt-1">
+          {[1,2,3,4,5,6].map(i => <div key={i} className="h-3 w-full bg-white/5 rounded-sm" />)}
+        </div>
+      </div>
+    </div>
+  );
 };
-
 const FeatureCard = ({ feature, index }) => {
   return (
     <motion.div
