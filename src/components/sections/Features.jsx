@@ -173,6 +173,7 @@ import {
   ArrowRight,
   Zap
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   {
@@ -372,6 +373,9 @@ const FeatureCard = ({ feature, index }) => {
 };
 
 export default function Features() {
+
+  const navigate = useNavigate()
+
   return (
     <section id="features" className="relative py-24 md:py-32 bg-[#FDFDFD] overflow-hidden">
       {/* Background Dots */}
@@ -422,7 +426,7 @@ export default function Features() {
         >
           <div className="relative z-10 max-w-2xl mx-auto">
             <h4 className="text-3xl md:text-5xl font-black tracking-tight mb-6">Take your business to the next level today.</h4>
-            <button className="bg-white text-[#0028AE] px-8 md:px-12 py-4 md:py-6 rounded-2xl font-black text-base md:text-xl hover:shadow-xl hover:scale-105 transition-all flex items-center gap-3 mx-auto uppercase tracking-tighter">
+            <button onClick={()=> navigate('/register')} className="bg-white text-[#0028AE] px-8 md:px-12 py-4 md:py-6 rounded-2xl font-black text-base md:text-xl hover:shadow-xl hover:scale-105 transition-all flex items-center gap-3 mx-auto uppercase tracking-tighter">
               Start Free Trial <ArrowRight size={20} />
             </button>
           </div>
