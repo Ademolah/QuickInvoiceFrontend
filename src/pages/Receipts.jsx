@@ -61,145 +61,126 @@ export default function Receipts() {
   }
 
   return (
-    <div className="p-4 md:p-10 max-w-7xl mx-auto mb-20">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-[#0028AE]/10 p-2 rounded-xl">
-              <Receipt size={24} className="text-[#0028AE]" />
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-              Receipts
-            </h1>
+  <div className="p-4 md:p-10 max-w-5xl mx-auto mb-20">
+    {/* Header Section */}
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="bg-[#0028AE]/10 p-2 rounded-xl">
+            <Receipt size={24} className="text-[#0028AE]" />
           </div>
-          <p className="text-slate-500 font-medium">History of cleared transactions</p>
+          <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
+            Receipts
+          </h1>
         </div>
-
-        {/* Search Bar - Premium Styled */}
-        <div className="relative group w-full md:w-96">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="text-slate-400 group-focus-within:text-[#0028AE] transition-colors" size={20} />
-          </div>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by client or Receipt #"
-            className="w-full bg-white border-2 border-slate-100 rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-4 focus:ring-[#0028AE]/5 focus:border-[#0028AE] transition-all font-bold text-slate-700 placeholder:text-slate-400"
-          />
-        </div>
+        <p className="text-sm md:text-base text-slate-500 font-medium tracking-tight">History of cleared transactions</p>
       </div>
 
-      {/* Main Content Area */}
-      <div className="relative">
-        {filtered.length === 0 ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-[2.5rem] border border-slate-100 p-12 text-center shadow-2xl shadow-slate-200/50"
-          >
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Wallet className="text-slate-300" size={40} />
-            </div>
-            <h3 className="text-xl font-black text-slate-800 mb-2">No Receipts Found</h3>
-            <p className="text-slate-500 max-w-xs mx-auto mb-8 font-medium">
-              Only invoices marked as <span className="text-emerald-500 font-bold">Paid</span> will appear here for receipt generation.
-            </p>
-            <button 
-              onClick={() => navigate("/invoices")}
-              className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#0028AE] transition-colors"
+      {/* Search Bar - Premium Styled */}
+      <div className="relative group w-full md:w-80">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Search className="text-slate-400 group-focus-within:text-[#0028AE] transition-colors" size={18} />
+        </div>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search receipts..."
+          className="w-full bg-white border-2 border-slate-100 rounded-2xl pl-11 pr-4 py-3 md:py-4 focus:outline-none focus:ring-4 focus:ring-[#0028AE]/5 focus:border-[#0028AE] transition-all font-bold text-slate-700 placeholder:text-slate-400 text-sm md:text-base"
+        />
+      </div>
+    </div>
+
+    {/* Main Content Area - Flattened Stack */}
+    <div className="flex flex-col gap-3 md:gap-4">
+      {filtered.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-[2.5rem] border border-slate-100 p-12 text-center shadow-2xl shadow-slate-200/50"
+        >
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Wallet className="text-slate-300" size={32} />
+          </div>
+          <h3 className="text-lg font-black text-slate-800 mb-2">No Receipts Found</h3>
+          <p className="text-sm text-slate-500 max-w-xs mx-auto mb-8 font-medium">
+            Only invoices marked as <span className="text-emerald-500 font-bold">Paid</span> will appear here.
+          </p>
+        </motion.div>
+      ) : (
+        <AnimatePresence>
+          {filtered.map((inv, idx) => (
+            <motion.div
+              key={inv._id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.03 }}
+              onClick={() => navigate(`/receipts/${inv._id}`)}
+              className="group relative bg-white rounded-2xl md:rounded-[2rem] p-4 md:p-6 border border-slate-100 hover:border-[#0028AE]/30 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md flex items-center gap-4 md:gap-6"
             >
-              Check Unpaid Invoices
-            </button>
-          </motion.div>
-        ) : (
-          <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-50 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Receipt #</th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client Name</th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Amount</th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date Paid</th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  <AnimatePresence>
-                    {filtered.map((inv, idx) => (
-                      <motion.tr 
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        key={inv._id} 
-                        className="group hover:bg-slate-50/80 transition-colors"
-                      >
-                        <td className="px-8 py-6 font-bold text-slate-400 font-mono">
-                          #{inv._id.slice(-6).toUpperCase()}
-                        </td>
-                        <td className="px-8 py-6">
-                          <p className="font-black text-slate-800">{inv.clientName}</p>
-                          <p className="text-xs text-slate-400 font-medium">{inv.clientEmail || 'No Email'}</p>
-                        </td>
-                        <td className="px-8 py-6 text-right">
-                          <span className="font-black text-slate-900 text-lg">
-                            {formatCurrency(Number(inv.total))}
-                          </span>
-                        </td>
-                        <td className="px-8 py-6">
-                           <div className="flex flex-col">
-                             <span className="font-bold text-slate-700 text-sm">
-                               {new Date(inv.createdAt).toLocaleDateString("en-GB", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                               })}
-                             </span>
-                             <span className="text-[10px] font-black text-emerald-500 uppercase flex items-center gap-1">
-                               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Fully Paid
-                             </span>
-                           </div>
-                        </td>
-                        <td className="px-8 py-6 text-center">
-                          <button
-                            onClick={() => navigate(`/receipts/${inv._id}`)}
-                            className="bg-[#0028AE] text-white p-3 rounded-xl shadow-lg shadow-blue-500/20 hover:scale-110 active:scale-95 transition-all group"
-                          >
-                            <FileText size={18} />
-                          </button>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Table Footer */}
-            <div className="px-8 py-5 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">
-                Showing top results. Search to filter deep records.
-              </p>
-              <div className="flex gap-2">
-                <div className="px-4 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest shadow-sm">
-                  {invoices.length} Total Receipts
+              {/* Date Column - Simplified */}
+              <div className="flex flex-col items-center justify-center bg-slate-50 min-w-[50px] md:min-w-[65px] py-2 md:py-3 rounded-xl border border-slate-100">
+                <span className="text-[9px] md:text-[10px] font-black text-[#0028AE] uppercase tracking-tighter">
+                  {new Date(inv.createdAt).toLocaleDateString("en-GB", { month: "short" })}
+                </span>
+                <span className="text-base md:text-xl font-black text-slate-900 leading-none">
+                  {new Date(inv.createdAt).toLocaleDateString("en-GB", { day: "2-digit" })}
+                </span>
+              </div>
+
+              {/* Info Column - Flattened Layout */}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
+                  <div>
+                    <h3 className="text-base md:text-xl font-black text-slate-900 truncate group-hover:text-[#0028AE] transition-colors leading-tight">
+                      {inv.clientName}
+                    </h3>
+                    <p className="text-[10px] md:text-xs font-mono font-bold text-slate-400 mt-0.5">
+                      #{inv._id.slice(-6).toUpperCase()}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between md:justify-end gap-4 mt-2 md:mt-0">
+                    <div className="text-right">
+                      <span className="text-sm md:text-2xl font-black text-slate-900 tracking-tighter">
+                        {formatCurrency(Number(inv.total))}
+                      </span>
+                    </div>
+                    
+                    {/* Persistent Premium Badge */}
+                    <div className="bg-[#0028AE] text-white p-2 rounded-lg shadow-lg shadow-[#0028AE]/20">
+                      <FileText size={14} className="md:w-4 md:h-4" />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Floating Premium Q Button */}
-      <button
-        onClick={() => navigate("/dashboard")}
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-14 h-14 flex items-center justify-center rounded-2xl shadow-3xl hover:scale-110 active:scale-90 transition-all z-50 group overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-        <span className="text-xl font-black">Q</span>
-      </button>
+              
+              {/* Status Indicator (Mobile Only Spark) */}
+              <div className="absolute top-2 right-2 md:hidden">
+                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      )}
     </div>
-  );
+
+    {/* Counter Badge */}
+    {filtered.length > 0 && (
+      <div className="mt-8 flex justify-center">
+        <div className="px-5 py-1.5 bg-slate-900/5 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest">
+          Showing {filtered.length} Records
+        </div>
+      </div>
+    )}
+
+    {/* Floating Action Button */}
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-2xl shadow-2xl hover:scale-110 active:scale-90 transition-all z-50 group"
+    >
+      <span className="text-lg md:text-xl font-black">Q</span>
+    </button>
+  </div>
+);
 }
 
