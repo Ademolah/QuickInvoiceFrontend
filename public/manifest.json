@@ -1,9 +1,9 @@
 {
-  "short_name": "QuickInvoice NG",
-  "name": "Built by Binary technologies",
+  "short_name": "QuickInvoice",
+  "name": "QuickInvoice - Smart Invoicing, e-Receipt & POS for Nigerian Businesses",
   "icons": [
     {
-      "src": "qfavi.png",
+      "src": "quickfavi.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
