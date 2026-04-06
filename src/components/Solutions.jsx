@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async"; // Highly recommended for SEO
 import { 
   Zap, ShieldCheck, BarChart3, Globe, 
   Smartphone, Users, ArrowRight, CheckCircle2 
@@ -14,22 +15,22 @@ export default function Solutions() {
 
   const categories = [
     {
-      title: "For Freelancers",
-      description: "Get paid faster with professional PDF invoices and automated payment links.",
-      features: ["Instant WhatsApp Sharing", "Multi-currency Support", "Pro PDF Templates"],
+      title: "Freelancers & Creators",
+      description: "Professional PDF invoicing and global payment links designed for the modern solo-preneur.",
+      features: ["WhatsApp Integration", "Multi-currency Support", "Pro PDF Exports"],
       icon: <Zap className="text-amber-500" size={24} />,
       color: "bg-amber-50"
     },
     {
-      title: "For Retail & SMEs",
-      description: "Track your monthly limits and manage customer payouts with bank-grade security.",
-      features: ["Transaction History", "Usage Tracking", "Verified Payouts"],
+      title: "Retail & SMEs",
+      description: "Comprehensive transaction history and automated payout tracking for growing businesses.",
+      features: ["Inventory Tracking", "Monthly Limit Analytics", "Verified Payouts"],
       icon: <Users className="text-[#0028AE]" size={24} />,
       color: "bg-blue-50"
     },
     {
-      title: "For Digital Agencies",
-      description: "Scale your business with branding tools and centralized document management.",
+      title: "Agencies & ERPs",
+      description: "White-label branding and high-volume document management for large-scale operations.",
       features: ["Custom Branding", "Expense Insights", "Priority Support"],
       icon: <Globe className="text-emerald-500" size={24} />,
       color: "bg-emerald-50"
@@ -37,113 +38,121 @@ export default function Solutions() {
   ];
 
   return (
-    /* Removed pb-20 so Footer touches the bottom properly */
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+      {/* SEO Metadata: The Global Handshake */}
+      <Helmet>
+        <title>Business Solutions | QuickInvoice Technologies</title>
+        <meta name="description" content="Explore tailored billing and inventory solutions for freelancers, retail SMEs, and digital agencies. Optimized for the Nigerian and global market." />
+        <meta property="og:title" content="QuickInvoice Solutions - Invoicing for Every Business" />
+        <link rel="canonical" href="https://quickinvoiceng.com/solutions" />
+      </Helmet>
+
       <Navbar />
 
-      {/* Main Content Wrapper - flex-grow ensures footer stays at bottom if content is short */}
       <main className="flex-grow">
         
-        {/* Hero Section */}
-        <section className="bg-white border-b border-slate-200 pt-20 pb-16 px-6">
+        {/* Hero Section: Optimized for LCP */}
+        <header className="bg-white border-b border-slate-200 pt-24 pb-20 px-6">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-block px-4 py-1.5 mb-6 rounded-full bg-[#0028AE]/5 border border-[#0028AE]/10 text-[#0028AE] text-[10px] font-black uppercase tracking-[0.2em]"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-block px-4 py-1.5 mb-8 rounded-full bg-[#0028AE]/5 border border-[#0028AE]/10 text-[#0028AE] text-[10px] font-black uppercase tracking-[0.2em]"
             >
               The QuickInvoice Ecosystem
             </motion.div>
-            <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-6 leading-tight">
-              Tailored billing for every <br />
-              <span className="text-[#0028AE]">business model.</span>
+            <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter mb-8 leading-[1.1]">
+              Tailored billing for <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#0028AE] to-[#00A6FA]">every business model.</span>
             </h1>
-            <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto leading-relaxed">
-              Whether you're a solo creator or a growing team, our platform adapts to your workflow, 
-              securing your cashflow with world-class automation.
+            <p className="text-slate-500 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
+              Securing cashflow for Nigerian entrepreneurs through world-class automation and mobile-first design.
             </p>
           </div>
-        </section>
+        </header>
 
-        <div className="max-w-6xl mx-auto px-6 -mt-10">
-          {/* Solutions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <section className="max-w-7xl mx-auto px-6 -mt-12 relative z-10">
+          {/* Solutions Grid: Semantic <article> tags for SEO */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
             {categories.map((cat, idx) => (
-              <motion.div
+              <motion.article
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group"
+                className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group"
               >
-                <div className={`w-14 h-14 ${cat.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-16 h-16 ${cat.color} rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner group-hover:rotate-6 transition-transform`}>
                   {cat.icon}
                 </div>
-                <h3 className="text-xl font-black text-slate-900 mb-3">{cat.title}</h3>
-                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6">
+                <h2 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{cat.title}</h2>
+                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
                   {cat.description}
                 </p>
-                <div className="space-y-3 mb-8">
+                <div className="space-y-4 mb-10">
                   {cat.features.map((feat) => (
-                    <div key={feat} className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                      <CheckCircle2 size={14} className="text-[#0028AE]" />
+                    <div key={feat} className="flex items-center gap-3 text-xs font-bold text-slate-700">
+                      <div className="bg-emerald-500/10 p-1 rounded-full">
+                        <CheckCircle2 size={12} className="text-emerald-500" />
+                      </div>
                       {feat}
                     </div>
                   ))}
                 </div>
-              </motion.div>
+                <button className="w-full py-4 rounded-2xl border-2 border-slate-50 font-black text-[10px] uppercase tracking-widest text-slate-400 group-hover:border-[#0028AE] group-hover:text-[#0028AE] transition-all">
+                  Learn More
+                </button>
+              </motion.article>
             ))}
           </div>
 
-          {/* Bento Feature Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-slate-900 rounded-[3rem] p-10 text-white overflow-hidden relative group">
-              <Smartphone className="absolute -right-10 -bottom-10 text-white/5 group-hover:rotate-12 transition-transform duration-500" size={300} />
-              <div className="relative z-10">
-                <h3 className="text-2xl font-black mb-4">Mobile-First <br />Invoicing</h3>
-                <p className="text-white/60 font-medium mb-8 max-w-xs text-sm">
-                  Generate and send professional receipts directly from your phone. 
-                  Optimized for the Nigerian entrepreneur on the go.
+          {/* Bento Feature Section: Visual Storytelling */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-24">
+            <div className="lg:col-span-3 bg-slate-900 rounded-[3.5rem] p-12 text-white overflow-hidden relative group min-h-[400px] flex flex-col justify-center">
+              <Smartphone className="absolute -right-20 -bottom-20 text-white/5 group-hover:scale-110 transition-transform duration-700" size={500} />
+              <div className="relative z-10 max-w-md">
+                <span className="text-[#00A6FA] font-black text-[10px] uppercase tracking-[0.3em] mb-4 block">Merchant App</span>
+                <h2 className="text-3xl md:text-5xl font-black mb-6 leading-tight">Mobile-First <br />Invoicing</h2>
+                <p className="text-white/50 font-medium mb-10 text-base leading-relaxed">
+                  Generate professional receipts in seconds while chatting with customers. Optimized for the fast-paced Nigerian marketplace.
                 </p>
-                <button 
-                  onClick={() => navigate("/login")}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#00A6FA] hover:gap-4 transition-all"
-                >
-                  Launch Dashboard <ArrowRight size={16} />
+                <button onClick={() => navigate("/login")} className="inline-flex items-center gap-3 px-8 py-4 bg-[#00A6FA] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:shadow-blue-500/20 transition-all">
+                  Get Started <ArrowRight size={16} />
                 </button>
               </div>
             </div>
 
-            <div className="bg-[#0028AE] rounded-[3rem] p-10 text-white overflow-hidden relative group">
-              <ShieldCheck className="absolute -right-10 -bottom-10 text-white/5 group-hover:-rotate-12 transition-transform duration-500" size={300} />
+            <div className="lg:col-span-2 bg-[#0028AE] rounded-[3.5rem] p-12 text-white overflow-hidden relative group min-h-[400px] flex flex-col justify-center">
+              <ShieldCheck className="absolute -right-10 -bottom-10 text-white/5 group-hover:-rotate-12 transition-transform duration-700" size={350} />
               <div className="relative z-10">
-                <h3 className="text-2xl font-black mb-4">Bank-Grade <br />Settlements</h3>
-                <p className="text-white/60 font-medium mb-8 max-w-xs text-sm">
-                  Integrate your bank details once and let our system handle the rest. 
-                  Secure, transparent, and built for trust.
+                <span className="text-white/60 font-black text-[10px] uppercase tracking-[0.3em] mb-4 block">Reliability</span>
+                <h2 className="text-3xl font-black mb-6 leading-tight">Bank-Grade <br />Settlements</h2>
+                <p className="text-white/60 font-medium mb-10 text-sm leading-relaxed">
+                  Integrate bank details and automate reconciliation with trust-built systems.
                 </p>
-                <button 
-                   onClick={() => navigate("/login")}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white hover:gap-4 transition-all"
-                >
-                  View Plans <ArrowRight size={16} />
+                <button onClick={() => navigate("/login")} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white group-hover:gap-4 transition-all">
+                  Explore Payouts <ArrowRight size={16} />
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Final CTA - Added mb-24 to create space before Footer */}
-        <section className="mt-24 mb-24 px-6 text-center">
-          <div className="max-w-3xl mx-auto bg-white rounded-[3rem] p-12 border border-slate-100 shadow-sm">
-            <BarChart3 className="mx-auto text-slate-200 mb-6" size={48} />
-            <h2 className="text-3xl font-black text-slate-900 mb-4">Ready to optimize?</h2>
-            <p className="text-slate-500 font-medium mb-8">Join thousands of businesses simplifying their financial operations.</p>
+        {/* Final CTA: Conversion Focused */}
+        <section className="mb-32 px-6 text-center">
+          <div className="max-w-4xl mx-auto bg-white rounded-[4rem] p-16 border border-slate-100 shadow-2xl shadow-slate-200/30 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#0028AE] to-transparent opacity-20" />
+            <BarChart3 className="mx-auto text-[#0028AE]/10 mb-8" size={64} />
+            <h2 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">Ready to optimize?</h2>
+            <p className="text-slate-500 text-lg font-medium mb-10 max-w-xl mx-auto">
+              Join thousands of businesses simplifying operations with <span className="text-slate-900 font-bold">QuickInvoice.</span>
+            </p>
             <button 
               onClick={() => navigate("/login")}
-              className="px-10 py-5 bg-[#0028AE] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:scale-105 transition-all"
+              className="px-12 py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl hover:bg-[#0028AE] hover:scale-105 transition-all duration-300"
             >
-              Start Invoicing Now
+              Launch Your Dashboard
             </button>
           </div>
         </section>
