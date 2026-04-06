@@ -348,7 +348,7 @@ const Sidebar = ({ closeMenu }) => {
               className={`h-full transition-all duration-1000 ease-out rounded-full ${
                 user?.plan === 'enterprise' ? 'w-full bg-purple-500' : user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
               }`}
-              style={{ width: user?.plan !== 'free' ? '100%' : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 12) * 100, 100)}%` }} 
+              style={{ width: user?.plan !== 'free' ? '100%' : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 10) * 100, 100)}%` }} 
             />
           </div>
         </div>

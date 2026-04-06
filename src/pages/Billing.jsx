@@ -112,7 +112,7 @@ export default function Billing() {
   const isEnterprise = user?.plan === "enterprise";
   const invoiceUsage = user?.usage?.invoicesThisMonth || 0;
   const receiptUsage = user?.usage?.receiptsThisMonth || 0;
-  const LIMIT = 12;
+  const LIMIT = 10;
 
   if (loading) {
     return (
