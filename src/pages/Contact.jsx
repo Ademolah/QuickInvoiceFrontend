@@ -77,7 +77,7 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
           className="text-4xl md:text-5xl font-bold font-poppins"
         >
-          Get in Touch with QuickInvoice NG
+          Get in Touch with QuickInvoice
         </motion.h1>
         <p className="mt-4 text-lg max-w-2xl mx-auto font-inter">
           We’d love to hear from you. Whether you’re a customer, partner, or
