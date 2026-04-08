@@ -160,7 +160,7 @@ const POSInterface = () => {
 
 const downloadReceipt = (saleData) => {
     try {
-      // 🚀 SURGERY: Determine source (Reprint vs Live Cart)
+      
       const isReprint = !!saleData?._id;
       const itemsToPrint = isReprint ? saleData.items : cart;
       const methodToPrint = isReprint ? (saleData.paymentDetails?.method || "N/A") : paymentMethod;
