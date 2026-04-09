@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, Trash2, Plus, Minus, Download, MessageCircle, User, Store,Maximize, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
+import { Search, ShoppingBag, Trash2, Plus, Minus, Download, MessageCircle,  User, Store,Maximize, ArrowLeft, Zap, Printer, ChevronLeft } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import ScannerModal from "../components/ScannerModal";
+import { db } from '../db/posDb'
+import SyncStatusBadge from "../components/SyncStatusBadge";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -257,68 +259,161 @@ const downloadReceipt = (saleData) => {
 
   
 
-  const handleFinalize = async () => {
+//   const handleFinalize = async () => {
+//   if (cart.length === 0) return;
+
+//   try {
+//     const token = localStorage.getItem("token");
+//     const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+    // const capturedNames = cart.map(item => item.name).join(", ");
+    // setLastSaleItems(capturedNames);
+
+//     // 🚀 Prepare items for backend
+//     const formattedItems = cart.map(item => ({
+//       productId: item.productId,
+//       name: item.name,
+//       quantity: item.quantity,
+//       unitPrice: item.unitPrice,
+//       subtotal: item.unitPrice * item.quantity 
+//     }));
+
+//     const payload = {
+//       items: formattedItems,
+//       totalAmount,
+//       paymentDetails: {
+//         method: paymentMethod,
+//         amountTendered: totalAmount,
+//         changeDue: 0
+//       }
+//     };
+
+//     const res = await axios.post(`${API}/api/pos/process`, payload, {
+//       headers: { Authorization: `Bearer ${token}` }
+//     });
+
+    // if (res.data.success) {
+    //   // 1. Capture the sale data for WhatsApp
+    //   setLastSaleData({
+    //     receiptId: res.data.sale.receiptNumber || `QI-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+    //     total: totalAmount,
+    //     method: paymentMethod
+    //   });
+
+//       // 2. Success Feedback
+//       toast.success("Sale Recorded Successfully!", {
+//         icon: '✅',
+//         style: { borderRadius: '15px', background: '#10B981', color: '#fff' }
+//       });
+
+//       // 3. Trigger Actions
+//       downloadReceipt(res.data.sale); // Keep PDF as backup
+//       setCart([]);
+//       setIsMobileCartOpen(false);
+//       fetchData(); // Refresh Today's Revenue
+
+//       // 4. 🚀 OPEN WHATSAPP MODAL
+//       setShowWhatsappModal(true); 
+//     }
+//   } catch (err) {
+//     const errorMsg = err.response?.data?.message || "Sale failed";
+//     toast.error(errorMsg);
+//     console.error("POS Error Details:", err.response?.data);
+//   }
+// };
+
+
+const handleFinalize = async () => {
   if (cart.length === 0) return;
 
-  try {
-    const token = localStorage.getItem("token");
-    const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+  const clientTxnId = window.crypto.randomUUID ? window.crypto.randomUUID() : `TXN-${Date.now()}`;
+  const localReceiptNumber = `QN-POS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const offlineCreatedAt = new Date().toISOString();
+  
+  const token = localStorage.getItem("token");
+  const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
 
-    const capturedNames = cart.map(item => item.name).join(", ");
-    setLastSaleItems(capturedNames);
+  const capturedNames = cart.map(item => item.name).join(", ");
+  setLastSaleItems(capturedNames);
 
-    // 🚀 Prepare items for backend
-    const formattedItems = cart.map(item => ({
+  const salePayload = {
+    clientTxnId,
+    receiptNumber: localReceiptNumber,
+    items: cart.map(item => ({
       productId: item.productId,
       name: item.name,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       subtotal: item.unitPrice * item.quantity 
-    }));
+    })),
+    totalAmount,
+    paymentDetails: {
+      method: paymentMethod,
+      amountTendered: totalAmount,
+      changeDue: 0
+    },
+    offlineCreatedAt,
+    isOffline: !navigator.onLine
+  };
 
-    const payload = {
-      items: formattedItems,
-      totalAmount,
-      paymentDetails: {
-        method: paymentMethod,
-        amountTendered: totalAmount,
-        changeDue: 0
+  // --- THE TRUTH TRACKER ---
+  // Start with local data; upgrade to server data if sync works.
+  let finalSaleData = salePayload; 
+  let apiSuccess = false;
+
+  try {
+    // 1. Save Locally (Safety First)
+    await db.pendingSales.add(salePayload);
+
+    // 2. Attempt Sync
+    if (navigator.onLine) {
+      try {
+        const res = await axios.post(`${API}/api/pos/process`, 
+          { sales: [salePayload] }, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.data.success || res.data.summary?.synced.length > 0) {
+          apiSuccess = true;
+          // If server returned the saved object, use it for the receipt
+          if (res.data.sale) finalSaleData = res.data.sale; 
+          
+          await db.pendingSales.where({ clientTxnId }).delete();
+          await db.syncedSales.add(finalSaleData);
+        }
+      } catch (syncErr) {
+        console.warn("Offline fallback engaged.");
       }
-    };
+    }
 
-    const res = await axios.post(`${API}/api/pos/process`, payload, {
-      headers: { Authorization: `Bearer ${token}` }
+    // 3. UI & Actions (Using finalSaleData)
+    setLastSaleData({
+      receiptId: finalSaleData.receiptNumber,
+      total: finalSaleData.totalAmount,
+      method: finalSaleData.paymentDetails.method
     });
 
-    if (res.data.success) {
-      // 1. Capture the sale data for WhatsApp
-      setLastSaleData({
-        receiptId: res.data.sale.receiptNumber || `QI-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-        total: totalAmount,
-        method: paymentMethod
-      });
+    toast.success(apiSuccess ? "Sale Synced!" : "Saved Offline ✅", {
+      icon: apiSuccess ? '✅' : '📡',
+      style: { borderRadius: '15px', background: apiSuccess ? '#10B981' : '#6366F1', color: '#fff' }
+    });
 
-      // 2. Success Feedback
-      toast.success("Sale Recorded Successfully!", {
-        icon: '✅',
-        style: { borderRadius: '15px', background: '#10B981', color: '#fff' }
-      });
+    // 🚀 IMPORTANT: We now pass the 'Final' version to these functions
+    downloadReceipt(finalSaleData); 
+    setCart([]);
+    setIsMobileCartOpen(false);
+    
+    if (apiSuccess) fetchData(); 
 
-      // 3. Trigger Actions
-      downloadReceipt(res.data.sale); // Keep PDF as backup
-      setCart([]);
-      setIsMobileCartOpen(false);
-      fetchData(); // Refresh Today's Revenue
+    setShowWhatsappModal(true); 
 
-      // 4. 🚀 OPEN WHATSAPP MODAL
-      setShowWhatsappModal(true); 
-    }
   } catch (err) {
-    const errorMsg = err.response?.data?.message || "Sale failed";
-    toast.error(errorMsg);
-    console.error("POS Error Details:", err.response?.data);
+    toast.error("Critical Storage Error.");
+    console.error(err);
   }
 };
+
+
 
 
  
@@ -433,23 +528,44 @@ const cartUIContent = (
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-3">
   {/* 🚀 MOBILE-ONLY BACK ARROW (Hidden on Screens 768px and up) */}
+  {/* 🚀 MOBILE-ONLY BACK ARROW (Hidden on Screens 768px and up) */}
+  <div className="flex items-center gap-3 md:gap-5 w-full">
+  {/* 1. MINIMALIST NAVIGATION */}
   <button 
     onClick={() => window.location.href = '/dashboard'} 
-    className="md:hidden mr-2 p-2 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-blue-600 rounded-xl transition-all active:scale-90 group"
-    title="Back to Dashboard"
+    className="flex items-center justify-center min-w-[40px] md:hidden h-10 md:h-12 md:w-12 bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-100 hover:shadow-sm rounded-xl transition-all active:scale-95 group"
   >
-    <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+    <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
   </button>
 
-  <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-xl shadow-blue-100">
-    <Store size={24} />
-  </div>
-  <div>
-    <h1 className="text-xl font-black text-slate-800 leading-tight">Quick Terminal</h1>
-    <p className="text-[10px] text-blue-600 font-black uppercase tracking-[0.2em]">{user?.businessName}</p>
+  {/* 2. BRAND & STATUS CONTAINER */}
+  <div className="flex items-center gap-3 overflow-hidden">
+    {/* Scaled Icon: Smaller on mobile, standard on desktop */}
+    <div className="hidden xs:flex p-2 md:p-3 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl md:rounded-2xl text-white shadow-lg shadow-blue-100 flex-shrink-0">
+      <Store size={18} className="md:w-6 md:h-6" />
+    </div>
+
+    <div className="flex flex-col min-w-0">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <h1 className="text-lg md:text-xl font-[900] text-slate-900 tracking-tight whitespace-nowrap">
+          Quick <span className="text-blue-600">Terminal</span>
+        </h1>
+        
+        {/* Status Badge: Integrated as a sleek tag */}
+        <div className="transform scale-90 md:scale-100 origin-left">
+          <SyncStatusBadge />
+        </div>
+      </div>
+
+      {/* Business Name: Subtle and crisp */}
+      <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] truncate">
+        {user?.businessName || "Main Branch"}
+      </p>
+    </div>
   </div>
 </div>
-      </div>
+</div>
+</div>
       
       {/* STATS PILLS */}
         <div className="flex items-center gap-2">
