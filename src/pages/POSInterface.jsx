@@ -32,28 +32,47 @@ const POSInterface = () => {
 
 // 1. Create a reusable fetch function
   const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = { headers: { Authorization: `Bearer ${token}` } };
+  try {
+    const token = localStorage.getItem("token");
+    const config = { headers: { Authorization: `Bearer ${token}` } };
 
-      const [userRes, prodRes, salesRes] = await Promise.all([
-        axios.get(`${API}/api/users/me`, config),
-        axios.get(`${API}/api/inventory`, config),
-        axios.get(`${API}/api/pos/today`, config) // The new route
-      ]);
+    const userRes = await axios.get(`${API}/api/users/me`, config);
+    const currentUser = userRes.data;
+    setUser(currentUser);
 
-      setUser(userRes.data);
-      setInventory(prodRes.data);
-      setTodaySales(salesRes.data.sales);
-      setTerminalStats({
-        total: salesRes.data.totalRevenue,
-        count: salesRes.data.sales.length
-      });
-    } catch (err) {
-      console.error(err);
-      // Only toast once to avoid spam
+    // 1. DYNAMIC EXTRACTION: Check top-level OR inside activeContext
+    const activeBusinessId = currentUser.activeBusinessId || currentUser.activeContext?.id;
+
+
+    // 2. LOGIC FOR "CHARLES KITCHEN" FALLBACK
+    // If there is no activeBusinessId, it means they are using the primary account.
+    // Instead of 'return', we should fetch the primary data.
+    
+    let inventoryUrl = `${API}/api/inventory`;
+    let salesUrl = `${API}/api/pos/today`;
+
+    if (activeBusinessId) {
+      inventoryUrl += `?businessId=${activeBusinessId}`;
+      salesUrl += `?businessId=${activeBusinessId}`;
     }
-  };
+
+    // 3. FETCH THE DATA
+    const [prodRes, salesRes] = await Promise.all([
+      axios.get(inventoryUrl, config),
+      axios.get(salesUrl, config)
+    ]);
+
+    setInventory(prodRes.data);
+    setTodaySales(salesRes.data.sales || []);
+    setTerminalStats({
+      total: salesRes.data.totalRevenue || 0,
+      count: (salesRes.data.sales || []).length
+    });
+
+  } catch (err) {
+    console.error("Fetch Error:", err);
+  }
+};
 
   // 2. Initial load
   useEffect(() => {
@@ -173,7 +192,7 @@ const downloadReceipt = (saleData) => {
 
       const pageWidth = doc.internal.pageSize.getWidth();
       const centerX = pageWidth / 2;
-      const businessName = user?.businessName?.toUpperCase() || "QUICKPOS";
+      const businessName = user?.activeContext?.businessName?.toUpperCase() || "QUICKPOS";
       if (businessName.length > 20) {
           doc.setFontSize(10); // Shrink for long names
       } else {
@@ -559,7 +578,7 @@ const cartUIContent = (
 
       {/* Business Name: Subtle and crisp */}
       <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-[0.15em] truncate">
-        {user?.businessName || "Main Branch"}
+        {user?.activeContext?.businessName || "Main Branch"}
       </p>
     </div>
   </div>
@@ -831,7 +850,7 @@ const cartUIContent = (
                 const receiptLink = `https://quickinvoiceng.com/view-receipt/${lastSaleData?.receiptId}`;
 
                 // 3. Construct the Message
-                const message = `*Receipt from ${user?.businessName}*%0A` +
+                const message = `*Receipt from ${user?.activeContext?.businessName}*%0A` +
                                 `--------------------------%0A` +
                                 `*Order ID:* ${lastSaleData?.receiptId}%0A` +
                                 `*Item(s):* ${lastSaleItems}%0A` + 
