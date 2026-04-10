@@ -510,7 +510,7 @@ const cartUIContent = (
           <span className="text-3xl font-black">N{cart.reduce((s, i) => s + (i.unitPrice * i.quantity), 0).toLocaleString()}</span>
        </div>
        <button onClick={handleFinalize} disabled={cart.length === 0} className="w-full py-6 bg-blue-600 rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 active:scale-95">
-         <Download size={24} /> Pay & Receipt
+         <Download size={24} /> CHECKOUT
        </button>
     </div>
   </div>
