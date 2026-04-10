@@ -63,7 +63,7 @@ const NewInvoice = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!clientName || items.some(i => !i.description)) {
-      showAlert('Please complete client info and item descriptions', 'warning'); // ✅ Premium Alert
+      showAlert('Please complete client info and item descriptions, quantities and prices', 'warning'); // ✅ Premium Alert
       return;
     }
 
