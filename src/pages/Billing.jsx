@@ -11,6 +11,7 @@ import {
   FileText, TrendingUp, Building, Sparkles, X, Palette, Layout, Check, Shield
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useAlert } from "../context/AlertContext";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -21,6 +22,7 @@ export default function Billing() {
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
   const fetchUserAndHistory = async () => {
@@ -98,11 +100,14 @@ export default function Billing() {
     }
 
   } catch (err) {
-    console.error("Payment init error:", err);
-    toast.error(
-      err.response?.data?.message || "Payment gateway unavailable. Please try again.", 
-      { id: 'payment-loading' }
-    );
+   
+    toast.dismiss('payment-loading');
+
+    // 2. Trigger the premium alert
+    const paymentErrorMessage = err.response?.data?.message || "Payment gateway is currently unavailable. Please check your internet connection or try a different payment method.";
+
+    showAlert(paymentErrorMessage, "error");
+    
   } finally {
     setUpgradeLoading(false);
   }
