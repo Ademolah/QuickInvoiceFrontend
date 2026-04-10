@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import toast from "react-hot-toast";
+import { useAlert } from "../context/AlertContext";
 
 const API_BASE = "https://quickinvoice-backend-1.onrender.com"
 
@@ -34,6 +35,7 @@ export default function InvoiceDetails() {
   const [bankName, setBankName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
+  const {showAlert} = useAlert();
 
   const token = useMemo(() => localStorage.getItem("token"), []);
 
@@ -102,7 +104,9 @@ export default function InvoiceDetails() {
     });
     const data = await res.json();
     if (!res.ok) {
-      toast.error(data.message || "Usage limit exceeded. Upgrade to Pro.");
+      // Use the premium modal for professional boundary setting
+      showAlert(data.message || "You've reached your current usage limit. To continue scaling your business, please upgrade to Pro.", "warning");
+      
       return false;
     }
     return true;
@@ -140,7 +144,8 @@ export default function InvoiceDetails() {
         toast.success("PNG Downloaded");
       }
     } catch (err) {
-      toast.error("Sharing failed");
+      // toast.error("Sharing failed");
+      showAlert("Failed to share invoice. Maybe browser or network connectivity, please retry", "error");
     } finally {
       setActionLoading(false);
     }
@@ -180,7 +185,8 @@ export default function InvoiceDetails() {
     toast.success("PDF Downloaded (Optimized)");
   } catch (err) {
     console.error(err);
-    toast.error("PDF generation failed");
+    // toast.error("PDF generation failed");
+    showAlert("Failed to generate PDF. Please try again.", "error");
   } finally {
     setActionLoading(false);
   }
@@ -196,7 +202,8 @@ export default function InvoiceDetails() {
       setInvoice(res.data);
       toast.success("Receipt generated!");
     } catch (err) {
-      toast.error("Failed to update status");
+      // toast.error("Failed to update status");
+      showAlert("Failed to update invoice status. Please try again.", "error");
     } finally {
       setActionLoading(false);
     }

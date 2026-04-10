@@ -1,6 +1,5 @@
 
 
-
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -10,6 +9,7 @@ import jsPDF from "jspdf";
 import { ArrowLeft, Download, CheckCircle2, Share2 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import toast, { Toaster } from "react-hot-toast";
+import { useAlert } from "../context/AlertContext";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -23,6 +23,7 @@ export default function ReceiptDetails() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const {showAlert} = useAlert();
 
   useEffect(() => {
   const load = async () => {
@@ -55,14 +56,14 @@ export default function ReceiptDetails() {
       setInvoice(invoiceData);
       setUser(contextualUser);
     } catch (e) {
-      console.error("Receipt load error:", e);
-      toast.error("Failed to load receipt details");
+      // toast.error("Failed to load receipt details");
+     showAlert("We couldn't retrieve the receipt details. This may be due to a connection timeout. Please try again.", "error");
     } finally {
       setLoading(false);
     }
   };
   load();
-}, [invoiceId]);
+}, [invoiceId, showAlert]);
 
   
 
@@ -83,11 +84,17 @@ export default function ReceiptDetails() {
       });
       
       if (!logRes.ok) {
-        toast.error("Usage limit exceeded.");
-        setActionLoading(false);
-        toast.dismiss(loadingToast);
-        return;
-      }
+      // 1. Trigger the world-class modal (Type: warning)
+      showAlert("You've reached your current usage limit. To continue scaling your business, please upgrade to Pro.", "warning");
+      
+      // 2. Clean up UI states
+      setActionLoading(false);
+      
+      // 3. Dismiss any active "Processing" toast so it doesn't hang behind the modal
+      toast.dismiss(loadingToast); 
+      
+      return;
+    }
 
       await new Promise(r => setTimeout(r, 100));
 
@@ -127,7 +134,6 @@ export default function ReceiptDetails() {
       }
       toast.success("Ready!");
     } catch (err) {
-      console.error(err);
       toast.error("Capture failed.");
     } finally {
       setActionLoading(false);

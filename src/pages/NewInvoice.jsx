@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import VatToggle from '../components/VatToggle';
 import { useCurrency } from "../context/CurrencyContext";
+import { useAlert } from '../context/AlertContext';
 
 const API = "https://quickinvoice-backend-1.onrender.com"
 
@@ -22,6 +21,7 @@ const NewInvoice = () => {
   const location = useLocation();
   const { code } = useCurrency();
   const selectedClient = useMemo(() => location.state?.client || null, [location.state]);
+  const { showAlert} = useAlert()
 
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
@@ -63,7 +63,7 @@ const NewInvoice = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!clientName || items.some(i => !i.description)) {
-      toast.error('Please complete client info and item descriptions');
+      showAlert('Please complete client info and item descriptions', 'warning'); // ✅ Premium Alert
       return;
     }
 
@@ -78,7 +78,8 @@ const NewInvoice = () => {
       toast.success("Invoice created successfully!");
       navigate(`/invoices/${response.data._id}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create invoice');
+      const errorMessage = err.response?.data?.message || 'We could not create your invoice at this time.';
+      showAlert(errorMessage, 'error');
     } finally {
       setLoading(false);
     }

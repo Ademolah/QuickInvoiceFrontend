@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
 import { uploadAvatar } from "../utils/upload";
+import { useAlert } from "../context/AlertContext";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -38,12 +39,14 @@ export default function Settings() {
   const [user, setUser] = useState(null);
   const [tin, setTin] = useState(user?.tin || ""); // Initialize with existing user data
 
+  const { showAlert } = useAlert();
+
   const handleUpdateTin = async () => {
     // 1. Basic Validation
     if (!tin || tin.trim().length < 5) {
-      return toast.error("Please enter a valid Tax Identification Number", {
-        style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '11px', fontWeight: '900' }
-      });
+      // Swapping the dark toast for the Premium Warning Modal
+      showAlert("Please enter a valid Tax Identification Number to ensure your business remains compliant.", "warning");
+      return;
     }
 
     const token = localStorage.getItem('token');
@@ -66,8 +69,9 @@ export default function Settings() {
         });
       }
     } catch (err) {
-      console.error("TIN Update Error:", err);
-      toast.error(err.response?.data?.message || "Failed to update Tax ID");
+      const errorMessage = err.response?.data?.message || "We encountered an issue updating your Tax ID. Please try again or contact support if the problem persists.";
+  
+      showAlert(errorMessage, "error");
     } finally {
       setIsUpdating(false);
     }
@@ -103,7 +107,8 @@ export default function Settings() {
       });
       toast.success("Payout details updated");
     } catch (err) {
-      toast.error("Update failed");
+      // toast.error("Update failed");
+      showAlert("We couldn't update your payout details. Please check your inputs and try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -111,7 +116,10 @@ export default function Settings() {
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
-    if (passwords.new !== passwords.confirm) return toast.error("Passwords don't match");
+    if (passwords.new !== passwords.confirm) {
+      showAlert("Passwords do not match. Please ensure both fields are identical.", "warning");
+      return;
+    }
     setLoadingPassword(true);
     try {
       await axios.put(`${API}/api/users/change-password`, 
@@ -121,7 +129,10 @@ export default function Settings() {
       toast.success("Password updated");
       setPasswords({ current: "", new: "", confirm: "" });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error updating password");
+      // toast.error(err.response?.data?.message || "Error updating password");
+      const errorMessage = err.response?.data?.message || "We couldn't update your password. Please ensure your current password is correct and try again.";
+  
+      showAlert(errorMessage, "error");
     } finally {
       setLoadingPassword(false);
     }
@@ -134,7 +145,8 @@ export default function Settings() {
       await uploadAvatar(selectedFile, token);
       toast.success("Profile photo updated");
     } catch (error) {
-      toast.error("Upload failed");
+      // toast.error("Upload failed");
+      showAlert("We couldn't update your profile photo. Please try again.", "error");
     } finally {
       setLoading(false);
     }

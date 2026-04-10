@@ -8,6 +8,7 @@ import autoTable from "jspdf-autotable";
 import ScannerModal from "../components/ScannerModal";
 import { db } from '../db/posDb'
 import SyncStatusBadge from "../components/SyncStatusBadge";
+import { useAlert } from "../context/AlertContext";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -27,6 +28,7 @@ const POSInterface = () => {
   const [lastSaleData, setLastSaleData] = useState(null);
   const [lastSaleItems, setLastSaleItems] = useState("");
   const [showScanner, setShowScanner] = useState(false);
+  const { showAlert } = useAlert();
 
 
 
@@ -149,9 +151,8 @@ const POSInterface = () => {
   if (product) {
     // 2. Check stock levels before adding
     if (product.stock <= 0) {
-      toast.error(`Stock Alert: ${product.name} is empty`, {
-        style: { borderRadius: '15px', background: '#BE123C', color: '#fff' }
-      });
+  // Using the premium modal to block the sale of out-of-stock items
+    showAlert(`Stock Alert: ${product.name} is currently out of stock. Please update your inventory.`, "warning");
       return;
     }
 
@@ -270,8 +271,7 @@ const downloadReceipt = (saleData) => {
 
       doc.save(`Receipt_${saleData?.receiptNumber || Date.now()}.pdf`);
     } catch (pdfError) {
-      console.error("PDF Beauty Error:", pdfError);
-      toast.error("Receipt failed. Check console.");
+      showAlert("We couldn't generate the receipt at this time. Please try again later.", "error");
     }
   };
 

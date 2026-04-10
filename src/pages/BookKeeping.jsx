@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useRef } from 'react'; 
+import { useAlert } from '../context/AlertContext';
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -28,6 +29,7 @@ export default function Bookkeeping() {
   const [showModal, setShowModal] = useState(false);
   const reportRef = useRef(); 
   const [isExporting, setIsExporting] = useState(false);
+  const { showAlert } = useAlert();
 
   const [formData, setFormData] = useState({
     type: 'EXPENSE',
@@ -85,8 +87,8 @@ const handleExport = async () => {
       toast.dismiss();
       toast.success("Executive Report Downloaded");
     } catch (error) {
-      console.error(error);
-      toast.error("Export failed");
+      // toast.error("Export failed");
+      showAlert("We couldn't export your report at this time. Please try again later.", "error");
     } finally {
       setIsExporting(false);
     }
@@ -104,6 +106,7 @@ const handleExport = async () => {
       }
     } catch (e) {
       toast.error("Failed to sync financial ledger");
+
     } finally {
       setLoading(false);
     }
@@ -122,7 +125,8 @@ const handleExport = async () => {
       setFormData({ type: 'EXPENSE', amount: '', category: 'General', description: '', date: new Date().toISOString().split('T')[0] });
       fetchData();
     } catch (e) {
-      toast.error("Error saving transaction");
+      // toast.error("Error saving transaction");
+      showAlert("We couldn't save your transaction. Please check your inputs and try again.", "error");
     }
   };
 

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
 import { useCurrency } from "../context/CurrencyContext";
@@ -17,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 import autoTable from "jspdf-autotable";
 import Barcode from 'react-barcode';
+import { useAlert } from "../context/AlertContext";
 
 /* =========================
    WORLD-CLASS UI COMPONENTS
@@ -69,6 +69,7 @@ export default function Inventory() {
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportItems, setExportItems] = useState([]);
+  const { showAlert } = useAlert();
 
   const user = useMemo(() => {
     const token = localStorage.getItem("token");
@@ -176,11 +177,10 @@ export default function Inventory() {
 const saveItem = async () => {
   // 1. Premium validation feedback
   if (!form.name || !form.price || !form.stock) {
-    toast.error("Please fill all required fields", {
-      style: { borderRadius: '15px', background: '#0F172A', color: '#fff', fontSize: '12px', fontWeight: 'bold' }
-    });
-    return setError("Required fields missing");
-  }
+  showAlert("Please fill all required fields", "warning");
+  
+  return setError("Required fields missing");
+}
 
   setSaving(true);
   
@@ -268,8 +268,7 @@ const handleExportSalesReport = async () => {
     generateSalesReportPDF(summary, grandTotal, period, user);
     toast.success("Report downloaded successfully");
   } catch (err) {
-    console.error(err);
-    toast.error("Error fetching sales data");
+  showAlert("We encountered an issue fetching your sales data. Please check your connection or refresh the dashboard.", "error");
   } finally {
     setIsGenerating(false);
   }

@@ -23,13 +23,16 @@ import App from './App'
 import './index.css'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { HelmetProvider } from 'react-helmet-async' // ✅ Added for SEO
+import { AlertProvider } from './context/AlertContext'
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider> {/* ✅ Wraps the entire app for SEO management */}
+      <AlertProvider>
       <CurrencyProvider>
         <App />
       </CurrencyProvider>
+      </AlertProvider>
     </HelmetProvider>
   </React.StrictMode>
 )

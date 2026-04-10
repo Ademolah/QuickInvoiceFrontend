@@ -16,8 +16,9 @@ import {
   ArrowLeft, X, TrendingDown, MoreHorizontal, Trash2, ShieldCheck,
 } from "lucide-react";
 import { useCurrency } from "../context/CurrencyContext";
+import { useAlert } from "../context/AlertContext";
 
-import toast from "react-hot-toast"; // Add this for premium feedback
+// import toast from "react-hot-toast"; // Add this for premium feedback
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -34,6 +35,7 @@ export default function Expenses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { showAlert } = useAlert();
 
   // const [form, setForm] = useState({
   //   title: "", category: "Others", amount: "", paymentMethod: "transfer", expenseDate: new Date().toISOString().split('T')[0], note: "",
@@ -114,15 +116,11 @@ const exportExpensesPDF = async () => {
 
     // PRO GUARD: Only Pro users can export the Expenditure Statement
     if (user?.plan !== 'pro' && user?.plan !== 'enterprise') {
-  toast.error("Premium Feature: Monthly Statements require a Pro or Enterprise Plan", {
-    icon: '🔒',
-    style: { 
-      borderRadius: '16px', // Slightly rounder for that premium feel
-      background: '#001325', // Using your deep midnight color
-      color: '#fff',
-      border: '1px solid rgba(255,255,255,0.1)' 
-    }
-  });
+  // Replace the locked toast with a high-conversion Premium Modal
+  showAlert(
+    "Premium Feature: Monthly Statements are reserved for our Pro and Enterprise users. Upgrade your plan to unlock deep business insights.", 
+    "warning"
+  );
   return;
 }
 
