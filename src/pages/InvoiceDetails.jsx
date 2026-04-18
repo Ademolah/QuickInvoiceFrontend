@@ -133,7 +133,7 @@ export default function InvoiceDetails() {
         await navigator.share({
           files: [file],
           title: `Invoice from ${user?.businessName}`,
-          text: `Invoice #${id.slice(-8).toUpperCase()}`,
+          text: `Invoice from ${user?.businessName}`,
         });
       } else {
         const url = URL.createObjectURL(blob);
@@ -410,9 +410,13 @@ const {
               <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
                 <ShieldCheck size={14}/> Secured by QuickInvoice
               </div>
+              <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
+                  www.quickinvoiceng.com
+              </div>
               <p className="text-[10px] font-bold text-slate-400">
-                Powered by QuickInvoice • {new Date().getFullYear()} • <span className="text-[#0028AE]">www.quickinvoiceng.com</span>
+                Powered by QuickInvoice • {new Date().getFullYear()} 
               </p>
+
             </div>
           </div>
         </div>
