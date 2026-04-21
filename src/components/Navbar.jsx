@@ -201,6 +201,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Solutions", path: "/solutions", description: "Tailored for your industry" },
     { name: "Integration", path: "/how", description: "Connect your ecosystem" },
+    { name: "QuickPOS", path: "/quickpos", description: "Elevate your retail stores" },
     { name: "Resources", path: "/blog", description: "Insights for growth" },
     { name: "Contact", path: "/contact", description: "Global 24/7 support" },
   ];

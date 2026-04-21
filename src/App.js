@@ -47,6 +47,7 @@ import AddBusiness from "./pages/AddBusiness";
 import AdminDashboard from "./pages/AdminDashboard";
 import POSInterface from "./pages/POSInterface";
 import PublicReceipt from "./pages/PublicReceipt";
+import QuickPosPage from "./pages/QuickPOSPage";
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
     <Route path="/contact" element={<Contact />} />
     <Route path="/how" element={<HowToInstall />} />
     <Route path="/solutions" element={<Solutions />} />
+    <Route path="/quickpos" element={<QuickPosPage />} />
     <Route path="/privacy" element={<PrivacyPolicy />} />
     <Route path="/blog" element={<Blog posts={blogPosts} />} /> 
     <Route path="/blog/:id" element={<BlogDetail posts={blogPosts} />} />
