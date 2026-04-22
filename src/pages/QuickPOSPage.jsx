@@ -63,7 +63,7 @@ const QuickPosPage = () => {
               {[
                 "Instant Offline-to-Cloud Sync",
                 "Built-in Nigerian VAT Intelligence",
-                "Bento-Style Inventory Management",
+                "Inventory Management",
                 "High-Fidelity Transaction Reports"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 font-bold text-slate-800">
@@ -88,7 +88,7 @@ const QuickPosPage = () => {
             />
             <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xs">
               <ShoppingBag className="w-8 h-8 text-blue-600 mb-2" />
-              <p className="font-black text-slate-900 leading-tight">Trusted by 500+ Luxury Brands in across Nigeria.</p>
+              <p className="font-black text-slate-900 leading-tight">Trusted by 500+ Luxury Brands across Nigeria.</p>
             </div>
           </motion.div>
         </div>
