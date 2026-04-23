@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { 
@@ -18,6 +19,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useRef } from 'react'; 
 import { useAlert } from '../context/AlertContext';
+import { useCurrency } from '../context/CurrencyContext';
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -31,6 +33,11 @@ export default function Bookkeeping() {
   const [isExporting, setIsExporting] = useState(false);
   const { showAlert } = useAlert();
 
+  const [user, setUser] = useState(null); // Added for Pro check
+  const { formatCurrency } = useCurrency();
+  const bookkeepingPrintRef = useRef(null);
+  const token = localStorage.getItem("token");
+
   const [formData, setFormData] = useState({
     type: 'EXPENSE',
     amount: '',
@@ -40,60 +47,111 @@ export default function Bookkeeping() {
   });
 
 
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const { data } = await axios.get(`${API}/api/users/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(data);
+        } catch (err) { console.error(err); }
+      };
+      fetchUser();
+    }, []);
+
+
+
+// const handleExport = async () => {
+//   const element = reportRef.current;
+//   if (!element) return;
+
+//   setIsExporting(true);
+//   toast.loading("Polishing your financial report...");
+
+//   setTimeout(async () => {
+//     try {
+//       // THE FIX: We force html2canvas to render at a desktop-scale width
+//       // even if the user is on a small phone screen.
+//       const canvas = await html2canvas(element, { 
+//         scale: 2, 
+//         useCORS: true,
+//         backgroundColor: "#F8FAFC",
+//         // These properties force the "virtual" window size
+//         windowWidth: 1200, 
+//         width: 1200,
+//         onclone: (clonedDoc) => {
+//           // This ensures the cloned element in the virtual window 
+//           // doesn't have mobile padding/constraints
+//           const clonedElement = clonedDoc.querySelector('[ref="reportRef"]') || clonedDoc.body.querySelector('.p-8');
+//           if (clonedElement) {
+//             clonedElement.style.width = "1200px";
+//           }
+//         }
+//       });
+      
+//       const imgData = canvas.toDataURL('image/png');
+//       const pdf = new jsPDF('p', 'mm', 'a4');
+      
+//       const pdfWidth = pdf.internal.pageSize.getWidth();
+//       const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+//       const imgProps = pdf.getImageProperties(imgData);
+//       const ratio = imgProps.height / imgProps.width;
+//       const finalImgHeight = pdfWidth * ratio;
+
+//       // Center the image if it's smaller than the page, or fit to width
+//       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalImgHeight);
+      
+//       pdf.save(`QuickInvoice_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      
+//       toast.dismiss();
+//       toast.success("Executive Report Downloaded");
+//     } catch (error) {
+//       // toast.error("Export failed");
+//       showAlert("We couldn't export your report at this time. Please try again later.", "error");
+//     } finally {
+//       setIsExporting(false);
+//     }
+//   }, 500); // Increased timeout slightly to allow the virtual render to settle
+// };
 
 const handleExport = async () => {
-  const element = reportRef.current;
+
+  const element = bookkeepingPrintRef.current; // Target the hidden div
   if (!element) return;
 
   setIsExporting(true);
-  toast.loading("Polishing your financial report...");
+  const loadingToast = toast.loading("Structuring your Executive Statement...");
 
-  setTimeout(async () => {
-    try {
-      // THE FIX: We force html2canvas to render at a desktop-scale width
-      // even if the user is on a small phone screen.
-      const canvas = await html2canvas(element, { 
-        scale: 2, 
-        useCORS: true,
-        backgroundColor: "#F8FAFC",
-        // These properties force the "virtual" window size
-        windowWidth: 1200, 
-        width: 1200,
-        onclone: (clonedDoc) => {
-          // This ensures the cloned element in the virtual window 
-          // doesn't have mobile padding/constraints
-          const clonedElement = clonedDoc.querySelector('[ref="reportRef"]') || clonedDoc.body.querySelector('.p-8');
-          if (clonedElement) {
-            clonedElement.style.width = "1200px";
-          }
-        }
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      const imgProps = pdf.getImageProperties(imgData);
-      const ratio = imgProps.height / imgProps.width;
-      const finalImgHeight = pdfWidth * ratio;
+  try {
+    const canvas = await html2canvas(element, { 
+      scale: 3, 
+      useCORS: true,
+      logging: false,
+      width: 800,
+      windowWidth: 800 
+    });
 
-      // Center the image if it's smaller than the page, or fit to width
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalImgHeight);
-      
-      pdf.save(`QuickInvoice_Report_${new Date().toISOString().split('T')[0]}.pdf`);
-      
-      toast.dismiss();
-      toast.success("Executive Report Downloaded");
-    } catch (error) {
-      // toast.error("Export failed");
-      showAlert("We couldn't export your report at this time. Please try again later.", "error");
-    } finally {
-      setIsExporting(false);
-    }
-  }, 500); // Increased timeout slightly to allow the virtual render to settle
+    const imgData = canvas.toDataURL("image/png");
+    const pdfWidth = 210;
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    const pdf = new jsPDF("p", "mm", [pdfWidth, pdfHeight]);
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    
+    pdf.save(`Executive_Statement_${user?.businessName || 'Business'}.pdf`);
+    
+    toast.dismiss(loadingToast);
+    toast.success("Statement Exported Successfully");
+  } catch (error) {
+    toast.dismiss(loadingToast);
+    // showAlert("Failed to generate PDF document.", "error");
+  } finally {
+    setIsExporting(false);
+  }
 };
+
+
 
   const fetchData = async () => {
     try {
@@ -308,25 +366,119 @@ const handleExport = async () => {
           </div>
         </div>
       )}
+
+      {/* HIDDEN PRINT STATEMENT (Refined Executive Style) */}
+<div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+  <div 
+    ref={bookkeepingPrintRef} 
+    className="bg-white p-16 text-slate-900" 
+    style={{ width: "800px", display: "block" }}
+  >
+    {/* Header: Corporate Branding */}
+    <div className="flex justify-between items-end border-b-8 border-[#001325] pb-8 mb-12">
+      <div>
+        <h1 className="text-5xl font-black uppercase tracking-tighter leading-none mb-3">
+          Financial<br/>Statement
+        </h1>
+        <p className="text-xl font-black text-[#0028AE] uppercase tracking-tight mb-3">
+          {user?.businessName || "Your Business"}
+        </p>
+        <p className="text-slate-500 font-bold text-sm uppercase tracking-[0.2em]">
+          Period: {new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+        </p>
+      </div>
+      <div className="text-right">
+        <p className="font-black text-2xl uppercase tracking-widest text-[#001325] mb-1">QuickInvoice</p>
+        <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.4em]">Proprietary Ledger Analytics</p>
+      </div>
+    </div>
+
+    {/* Executive Summary: Big Numbers (Calculated from transactions) */}
+    <div className="grid grid-cols-3 gap-6 mb-12">
+      <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Inflow</p>
+        <p className="text-2xl font-black text-[#001325]">
+          ₦{transactions.filter(tx => tx.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0).toLocaleString()}
+        </p>
+      </div>
+      <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Outflow</p>
+        <p className="text-2xl font-black text-red-600">
+          {formatCurrency(transactions.filter(tx => tx.type !== 'INCOME').reduce((acc, curr) => acc + curr.amount, 0))}
+        </p>
+      </div>
+      <div className="p-6 bg-[#001325] rounded-3xl shadow-xl">
+        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Net Position</p>
+        <p className="text-2xl font-black text-white">
+          {formatCurrency(
+            transactions.filter(tx => tx.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0) - 
+            transactions.filter(tx => tx.type !== 'INCOME').reduce((acc, curr) => acc + curr.amount, 0)
+          )}
+        </p>
+      </div>
+    </div>
+
+    {/* Transaction Ledger Table */}
+    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Detailed Ledger</h3>
+    <table className="w-full mb-12 table-fixed border-collapse">
+      <thead>
+        <tr className="bg-slate-900 text-white">
+          <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[15%]">Date</th>
+          <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[45%]">Description</th>
+          <th className="p-4 text-left text-[11px] font-black uppercase tracking-wider w-[20%]">Category</th>
+          <th className="p-4 text-right text-[11px] font-black uppercase tracking-wider w-[20%]">Amount</th>
+        </tr>
+      </thead>
+     <tbody>
+  {transactions.map((tx) => (
+    <tr key={tx._id} className="border-b border-slate-100">
+      <td className="p-4 text-xs font-bold text-slate-500 align-top">
+        {new Date(tx.date).toLocaleDateString()}
+      </td>
+      
+      {/* THE FIX: Remove 'truncate', add 'whitespace-normal' */}
+      <td className="p-4 align-top">
+        <p className="font-bold text-sm text-slate-800 whitespace-normal break-words leading-snug">
+          {tx.description}
+        </p>
+        <p className="text-[9px] text-slate-400 font-medium mt-1">
+          Ref: {tx.referenceId || 'Manual Entry'}
+        </p>
+      </td>
+
+      <td className="p-4 align-top text-center">
+        <span className="text-[9px] font-black px-2 py-1 bg-slate-100 rounded-full text-slate-500 uppercase">
+          {tx.category}
+        </span>
+      </td>
+      
+      <td className={`p-4 text-right font-black text-sm align-top ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
+        {tx.type === 'INCOME' ? '+' : '-'} ₦{tx.amount.toLocaleString()}
+      </td>
+    </tr>
+  ))}
+</tbody>
+    </table>
+
+    {/* Footer Section */}
+    <div className="mt-24 pt-8 border-t border-dashed border-slate-200 text-center">
+      <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em] mb-2">
+        Confidential Financial Record • QuickInvoice Digital Audit
+      </p>
+      <div className="flex justify-center gap-8 mt-4">
+        <div className="h-1 w-24 bg-[#0028AE]"></div>
+        <div className="h-1 w-24 bg-[#001325]"></div>
+        <div className="h-1 w-24 bg-[#0028AE]"></div>
+      </div>
+    </div>
+  </div>
+</div>
+      
     </div>
   );
 }
 
-// function StatCard({ title, amount, icon, color, isMain }) {
-//   return (
-//     <div className={`p-8 rounded-[2rem] border border-slate-100 shadow-sm ${isMain ? 'bg-[#0028AE] text-white shadow-blue-900/20' : 'bg-white text-slate-900'}`}>
-//       <div className="flex justify-between items-start mb-4">
-//         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isMain ? 'bg-white/10 text-white' : color}`}>
-//           {icon}
-//         </div>
-//       </div>
-//       <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isMain ? 'text-blue-100' : 'text-slate-400'}`}>
-//         {title}
-//       </p>
-//       <h2 className="text-3xl font-black">${Number(amount || 0).toLocaleString()}</h2>
-//     </div>
-//   );
-// }
+
 
 function StatCard({ title, amount, icon, color, isMain }) {
   return (
