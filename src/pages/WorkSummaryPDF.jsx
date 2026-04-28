@@ -116,17 +116,35 @@ const WorkSummaryPDF = ({ data, invoice }) => (
         )
       ))}
 
+      
       {/* Footer / Link */}
       <View style={styles.footer}>
         <View>
           <Text style={styles.sectionLabel}>Linked Statement</Text>
-          <Text style={styles.invoiceRef}>Invoice: {invoice?._id.slice(-6) || "N/A"}</Text>
-          <Text style={{ fontSize: 10, color: '#0028AE', marginTop: 2 }}>Amount: NGN {invoice?.total?.toLocaleString()}</Text>
+          <Text style={styles.invoiceRef}>Invoice: {invoice?._id.slice(-6).toUpperCase() || "N/A"}</Text>
+          <Text style={{ fontSize: 10, color: '#0028AE', marginTop: 2 }}>
+            Amount: NGN {invoice?.total?.toLocaleString()}
+          </Text>
         </View>
         <View style={{ textAlign: 'right', justifyContent: 'flex-end' }}>
-          <Text style={styles.footerText}>Completed on {new Date(data.completionDate).toLocaleDateString()}</Text>
+          <Text style={styles.footerText}>
+            Completed on {new Date(data.completionDate).toLocaleDateString()}
+          </Text>
           <Text style={[styles.footerText, { marginTop: 4 }]}>Official Client Copy</Text>
         </View>
+      </View>
+
+      {/* SURGICAL INSERTION: Branding URL */}
+      <View style={{ marginTop: 25, borderTopWidth: 0.5, borderTopColor: '#F1F5F9', paddingTop: 15 }}>
+        <Text style={{ 
+          textAlign: 'center', 
+          fontSize: 8, 
+          color: '#94A3B8', 
+          letterSpacing: 1.5,
+          fontWeight: 'bold'
+        }}>
+          WWW.QUICKINVOICENG.COM
+        </Text>
       </View>
     </Page>
   </Document>
