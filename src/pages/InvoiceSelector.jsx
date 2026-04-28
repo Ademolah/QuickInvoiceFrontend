@@ -118,6 +118,14 @@ const InvoiceSelector = () => {
           </div>
         )}
       </div>
+
+      <button
+      onClick={() => navigate("/dashboard")}
+      className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-2xl shadow-2xl hover:scale-110 active:scale-90 transition-all z-50 group"
+    >
+      <span className="text-lg md:text-xl font-black">Q</span>
+    </button>
+    
     </div>
   );
 };
