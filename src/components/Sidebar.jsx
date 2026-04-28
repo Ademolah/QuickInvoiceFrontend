@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, FileText, Users, BarChart2, Settings, 
-  LayoutDashboard, LogOut, Receipt, CreditCard, ShoppingCart,
+  LayoutDashboard, LogOut, Receipt, CreditCard, ShoppingCart,FileCheck2,
   Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock,
   Plus, ChevronDown, Check, Building,
   Calculator
@@ -55,6 +55,7 @@ const Sidebar = ({ closeMenu }) => {
       items: [
         { name: "Create Invoice", icon: <FileText size={18} />, path: "/invoices" },
         { name: "Generate Receipts", icon: <Receipt size={18} />, path: "/receipts" },
+        { name: "Create Work Summary", icon: <FileCheck2 size={18} />, path: "/invoice-selector" },
         { name: "Inventory", icon: <Building2 size={18} />, path: "/inventory" },
         { name: "QuickPOS", icon: <Calculator size={18} />, path: "/pos", isPro: true },
         { name: "Bookkeeping", icon: <BarChart3 size={18} />, path: "/bookkeeping", isPro: true },
