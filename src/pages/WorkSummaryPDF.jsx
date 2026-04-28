@@ -91,7 +91,7 @@ const WorkSummaryPDF = ({ data, invoice }) => (
       <View style={styles.header}>
         <View>
           <Text style={{ fontSize: 14, fontWeight: 'black', color: '#001325' }}>QuickInvoice</Text>
-          <Text style={{ fontSize: 8, color: '#94A3B8', marginTop: 2 }}>PREMIUM FINANCIAL INFRASTRUCTURE</Text>
+          <Text style={{ fontSize: 8, color: '#94A3B8', marginTop: 2 }}>PREMIUM BUSINESS INFRASTRUCTURE</Text>
         </View>
         <View style={{ textAlign: 'right' }}>
           <Text style={{ fontSize: 10, fontWeight: 'bold' }}>Document Reference</Text>
