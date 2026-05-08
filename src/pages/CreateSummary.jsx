@@ -11,6 +11,7 @@ const WorkSummaryStudio = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { invoice } = location.state || {}; // Passed from the list page
+  const [isPreparingPDF, setIsPreparingPDF] = useState(false);
 
   // 1. Initial State - Pre-filling from Invoice
   const [formData, setFormData] = useState({
@@ -68,7 +69,7 @@ const WorkSummaryStudio = () => {
             </button>
         </div>
 
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
          <PDFDownloadLink 
             document={<WorkSummaryPDF data={formData} invoice={invoice} />}
             fileName={`${formData.clientName.replace(/\s+/g, '_')}_Work_Summary.pdf`}
@@ -83,7 +84,47 @@ const WorkSummaryStudio = () => {
             </button>
             )}
         </PDFDownloadLink>
+        </div> */}
+
+        {/* REPLACE THE OLD PDF DOWNLOAD LINK BLOCK WITH THIS */}
+        <div className="flex gap-3">
+          {!isPreparingPDF ? (
+            /* This button is lightweight and won't cause lag while typing */
+            <button 
+              onClick={() => setIsPreparingPDF(true)}
+              className="px-6 py-2.5 bg-[#001325] text-white rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#0028AE] transition-all"
+            >
+              <CheckCircle size={18} /> Click to Save
+            </button>
+          ) : (
+            /* Once clicked, the heavy PDF engine mounts */
+            <PDFDownloadLink 
+              document={<WorkSummaryPDF data={formData} invoice={invoice} />}
+              fileName={`${formData.clientName.replace(/\s+/g, '_')}_Work_Summary.pdf`}
+            >
+              {({ loading, error }) => (
+                <button 
+                  className="px-6 py-2.5 bg-[#0028AE] text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-blue-900/20"
+                >
+                  <Download size={18} />
+                  {loading ? 'Crunching Data...' : 'Click to Download'}
+                </button>
+              )}
+            </PDFDownloadLink>
+          )}
+          
+          {/* Option to reset if they want to edit more */}
+          {isPreparingPDF && (
+            <button 
+              onClick={() => setIsPreparingPDF(false)}
+              className="text-[10px] font-black uppercase text-slate-400 hover:text-red-500"
+            >
+              Reset
+            </button>
+          )}
         </div>
+
+
       </nav>
 
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-73px)]">
