@@ -296,7 +296,7 @@ const {
       style={{ background: headerColor }} 
       className={`text-white transition-all duration-500 ${
         userData?.brandSettings?.selectedTemplate === 'zenith' 
-        ? 'w-[280px] p-12 flex flex-col justify-between shrink-0' 
+        ? 'w-[220px] p-8 flex flex-col justify-between shrink-0' 
         : 'w-full p-10 flex justify-between items-center'
       }`}
     >
@@ -443,6 +443,9 @@ const {
         <div style={{ color: headerColor }} className="flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.3em]">
           <ShieldCheck size={14}/> Secured by QuickInvoice
         </div>
+        <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
+                  www.quickinvoiceng.com
+              </div>
         <p className="text-[10px] font-bold text-slate-400">
           Powered by QuickInvoice • {new Date().getFullYear()} 
         </p>
