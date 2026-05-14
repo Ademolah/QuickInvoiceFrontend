@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import InvoiceRenderer from '../components/InvoiceRenderer';
 
 
-const API = "http://localhost:4000";
+const API = "https://quickinvoice-backend-1.onrender.com";
 
 const BrandingStudio = () => {
   // --- 1. CORE STATE ---
