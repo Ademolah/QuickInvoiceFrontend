@@ -439,17 +439,28 @@ const {
       </div>
 
       {/* Professional Footer */}
-      <div className="mt-auto pt-10 border-t border-slate-100 text-center space-y-2">
-        <div style={{ color: headerColor }} className="flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.3em]">
-          <ShieldCheck size={14}/> Secured by QuickInvoice
-        </div>
-        <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
-                  www.quickinvoiceng.com
-              </div>
-        <p className="text-[10px] font-bold text-slate-400">
-          Powered by QuickInvoice • {new Date().getFullYear()} 
-        </p>
-      </div>
+      
+{!userData?.brandSettings?.removeWatermark && (
+  <div className="mt-auto pt-10 border-t border-slate-100 text-center space-y-2">
+    <div 
+      style={{ color: headerColor }} 
+      className="flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.3em]"
+    >
+      <ShieldCheck size={14}/> Secured by QuickInvoice
+    </div>
+    
+    <div 
+      style={{ color: headerColor }} 
+      className="flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.3em]"
+    >
+      www.quickinvoiceng.com
+    </div>
+    
+    <p className="text-[10px] font-bold text-slate-400">
+      Powered by QuickInvoice • {new Date().getFullYear()} 
+    </p>
+  </div>
+)}
     </div>
   </div>
   {/* SURGICAL INSERTION END */}

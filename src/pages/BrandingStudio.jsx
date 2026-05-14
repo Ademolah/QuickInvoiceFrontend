@@ -7,6 +7,7 @@ import {
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import InvoiceRenderer from '../components/InvoiceRenderer';
+import { useNavigate } from 'react-router-dom';
 
 
 const API = "https://quickinvoice-backend-1.onrender.com";
@@ -24,6 +25,7 @@ const BrandingStudio = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // --- 2. THE AUTHENTICATION BRIDGE ---
   const getAuthHeader = () => {
@@ -355,6 +357,14 @@ const handleSaveIdentity = async () => {
         )}
       </motion.div>
     </main>
+
+    {/* Floating Action for Mobile Navigation */}
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="fixed bottom-6 right-6 bg-[#0028AE] text-white w-14 h-14 flex items-center justify-center rounded-full shadow-2xl hover:scale-110 transition-transform z-50 font-black text-xl"
+      >
+        Q
+      </button>
 
   </div>
 )};
