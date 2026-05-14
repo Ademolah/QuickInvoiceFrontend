@@ -50,6 +50,7 @@ import PublicReceipt from "./pages/PublicReceipt";
 import QuickPosPage from "./pages/QuickPOSPage";
 import InvoiceSelector from "./pages/InvoiceSelector";
 import WorkSummaryStudio from "./pages/CreateSummary";
+import BrandingStudio from "./pages/BrandingStudio";
 
 export default function App() {
   return (
@@ -82,6 +83,7 @@ export default function App() {
       <Route path="/invoices/new" element={<NewInvoice />} />
       <Route path="/expenses" element={<Expenses />} />
       <Route path="/invoice-selector" element={<InvoiceSelector />} />
+      <Route path="/customize-invoice" element={<BrandingStudio />} />
       <Route path="/create-summary/:id" element={<WorkSummaryStudio />} />
       <Route path="/bookkeeping" element={<Bookkeeping />} />
       <Route path="/settings/accounts/new" element={<AddBusiness />} />

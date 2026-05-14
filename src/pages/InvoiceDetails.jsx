@@ -234,6 +234,12 @@ if (error || !invoice) return (
   </div>
 );
 
+// Inside your InvoiceDetails component
+const brandSettings = userData?.brandSettings || {};
+const headerColor = brandSettings.headerColor || '#0028AE';
+
+
+
 // NOW it is safe to destructure because we know 'invoice' exists
 const { 
   clientName, 
@@ -277,149 +283,173 @@ const {
         </div>
 
         {/* INVOICE CANVAS */}
-        <div 
-          ref={invoiceRef}
-          className="bg-white shadow-2xl overflow-hidden relative"
-          style={{ width: "794px", margin: "0 auto", minHeight: "1123px" }}
-        >
-          {/* Brand Header */}
-          <div className="p-10 bg-gradient-to-r from-[#0028AE] to-[#00A6FA] text-white flex justify-between items-center">
-            <div className="flex items-center gap-5">
-              {userData?.avatar ? (
-                <img src={userData.avatar} className="w-16 h-16 rounded-2xl object-cover border-2 border-white/20 shadow-lg" alt="logo" />
-              ) : (
-                <img src="/quicksocial.jpg" className="h-16 w-auto object-contain rounded-xl" alt="QuickInvoice" />
-              )}
-              <div>
-                <h2 className="text-3xl font-black tracking-tighter uppercase">Invoice</h2>
-                <p className="text-sm font-bold opacity-80">{user?.businessName || "QuickInvoice NG"}</p>
-                
-                {/* 👇 Only renders if tin exists and is not an empty string */}
-                {user?.tin && (
-                  <p className="text-sm font-bold opacity-80">TIN: {user.tin}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Reference</p>
-              <p className="text-xl font-black">#{String(id).slice(-8).toUpperCase()}</p>
-              <p className="text-xs font-bold mt-1 opacity-80">{new Date(createdAt).toLocaleDateString()}</p>
-            </div>
+<div 
+  ref={invoiceRef}
+  className="bg-white shadow-2xl overflow-hidden relative"
+  style={{ width: "794px", margin: "0 auto", minHeight: "1123px" }}
+>
+  {/* SURGICAL INSERTION START: MASTER FLEX WRAPPER */}
+  <div className={`flex ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'flex-row' : 'flex-col'} min-h-[1123px]`}>
+    
+    {/* Brand Header - Morphing between Top Bar and Sidebar */}
+    <div 
+      style={{ background: headerColor }} 
+      className={`text-white transition-all duration-500 ${
+        userData?.brandSettings?.selectedTemplate === 'zenith' 
+        ? 'w-[280px] p-12 flex flex-col justify-between shrink-0' 
+        : 'w-full p-10 flex justify-between items-center'
+      }`}
+    >
+      <div className={`flex ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'flex-col gap-10' : 'items-center gap-5'}`}>
+        {userData?.avatar ? (
+          <img 
+            src={userData.avatar} 
+            className="w-16 h-16 rounded-2xl object-cover border-2 border-white/20 shadow-lg" 
+            alt="logo" 
+          />
+        ) : (
+          <img 
+            src="/quicksocial.jpg" 
+            className="h-16 w-auto object-contain rounded-xl shadow-lg" 
+            alt="QuickInvoice" 
+          />
+        )}
+        <div>
+          <h2 className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'text-4xl' : 'text-3xl'} font-black tracking-tighter uppercase leading-none`}>
+            Invoice
+          </h2>
+          <p className="text-sm font-bold opacity-80 mt-1">
+            {userData?.companyName || userData?.businessName || "QuickInvoice NG"}
+          </p>
+          {userData?.tin && (
+            <p className="text-sm font-bold opacity-80">TIN: {userData.tin}</p>
+          )}
+        </div>
+      </div>
+      
+      <div className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'space-y-4' : 'text-right hidden md:block'}`}>
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Reference</p>
+          <p className="text-xl font-black">#{String(id).slice(-8).toUpperCase()}</p>
+        </div>
+        <div>
+          <p className="text-xs font-bold mt-1 opacity-80">{new Date(createdAt).toLocaleDateString()}</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Invoice Body - Adjusting padding based on Layout */}
+    <div className={`flex-1 transition-all duration-500 ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'p-16' : 'p-12'}`}>
+      
+      {/* Parties */}
+      <div className="grid grid-cols-2 gap-12 mb-12">
+        <div>
+          <h4 style={{ color: headerColor }} className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-80">From</h4>
+          <div className="space-y-1">
+            <p className="font-black text-slate-900">{user?.businessName}</p>
+            <p className="text-xs font-bold text-slate-500">{user?.email}</p>
+            <p className="text-xs font-bold text-slate-500">{user?.phone}</p>
           </div>
-
-          <div className="p-12">
-            {/* Parties */}
-            <div className="grid grid-cols-2 gap-12 mb-12">
-              <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0028AE] mb-3">From</h4>
-                <div className="space-y-1">
-                  <p className="font-black text-slate-900">{user?.businessName}</p>
-                  <p className="text-xs font-bold text-slate-500">{user?.email}</p>
-                  <p className="text-xs font-bold text-slate-500">{user?.phone}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0028AE] mb-3">Billed To</h4>
-                <div className="space-y-1">
-                  <p className="font-black text-slate-900">{clientName}</p>
-                  <p className="text-xs font-bold text-slate-500">{clientEmail}</p>
-                  <p className="text-xs font-bold text-slate-500">{clientPhone}</p>
-                  <div className="pt-2">
-                    <p className="text-[10px] text-slate-400 font-black uppercase">Due Date</p>
-                    <p className="text-xs font-black text-slate-900">{dueDate ? new Date(dueDate).toLocaleDateString() : "N/A"}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Table */}
-            <div className="mb-10 rounded-2xl border border-slate-100 overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="text-left p-5 text-[10px] font-black uppercase text-slate-400">Description</th>
-                    <th className="text-center p-5 text-[10px] font-black uppercase text-slate-400">Qty</th>
-                    <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Price</th>
-                    <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {items.map((it, idx) => (
-                    <tr key={idx}>
-                      <td className="p-5 text-sm font-bold text-slate-800">{it.description}</td>
-                      <td className="p-5 text-center text-sm font-bold text-slate-600">{it.quantity}</td>
-                      <td className="p-5 text-right text-sm font-bold text-slate-600">{formatCurrency(it.unitPrice)}</td>
-                      <td className="p-5 text-right text-sm font-black text-slate-900">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Bottom Section */}
-            <div className="grid grid-cols-2 gap-10">
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Payment Details</h4>
-                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
-                    <p className="text-[11px] font-black text-slate-900 flex items-center gap-2"><Building2 size={12}/> {bankName || "-"}</p>
-                    <p className="text-[11px] font-black text-[#0028AE] flex items-center gap-2"><CreditCard size={12}/> {accountNumber || "-"}</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{accountName || "-"}</p>
-                  </div>
-                </div>
-                {notes && (
-                  <div className="p-5 bg-blue-50/30 border-l-4 border-[#0028AE] rounded-r-xl">
-                    <p className="text-[10px] font-black text-[#0028AE] uppercase mb-1">Notes</p>
-                    <p className="text-xs font-medium text-slate-600 leading-relaxed">{notes}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl border border-slate-100 space-y-3">
-                <div className="flex justify-between text-xs font-bold text-slate-400">
-                  <span>Subtotal</span>
-                  <span className="text-slate-900">{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="flex justify-between text-xs font-bold text-slate-400">
-                  <span>VAT</span>
-                  <span className="text-slate-900">{formatCurrency(tax)}</span>
-                </div>
-                <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
-                  <span>Discount</span>
-                  <span className="text-emerald-500">-{formatCurrency(discount)}</span>
-                </div>
-                <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
-                  <span>Balance</span>
-                  <span className="text-red-500">-{formatCurrency(outstandingBalance)}</span>
-                </div>
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-xs font-black uppercase text-[#0028AE]">Total</span>
-                  <span className="text-2xl font-black text-[#0028AE] tracking-tighter">{formatCurrency(total)}</span>
-                </div>
-                {status === 'paid' && (
-                  <div className="mt-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-center text-[10px] font-black uppercase tracking-widest">
-                    Fully Paid
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Professional Footer */}
-            <div className="mt-20 pt-10 border-t border-slate-100 text-center space-y-2">
-              <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
-                <ShieldCheck size={14}/> Secured by QuickInvoice
-              </div>
-              <div className="flex justify-center items-center gap-2 text-[#0028AE] font-black text-[10px] uppercase tracking-[0.3em]">
-                  www.quickinvoiceng.com
-              </div>
-              <p className="text-[10px] font-bold text-slate-400">
-                Powered by QuickInvoice • {new Date().getFullYear()} 
-              </p>
-
+        </div>
+        <div className="text-right">
+          <h4 style={{ color: headerColor }} className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-80">Billed To</h4>
+          <div className="space-y-1">
+            <p className="font-black text-slate-900">{clientName}</p>
+            <p className="text-xs font-bold text-slate-500">{clientEmail}</p>
+            <p className="text-xs font-bold text-slate-500">{clientPhone}</p>
+            <div className="pt-2">
+              <p className="text-[10px] text-slate-400 font-black uppercase">Due Date</p>
+              <p className="text-xs font-black text-slate-900">{dueDate ? new Date(dueDate).toLocaleDateString() : "N/A"}</p>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Table */}
+      <div className="mb-10 rounded-2xl border border-slate-100 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-100">
+              <th className="text-left p-5 text-[10px] font-black uppercase text-slate-400">Description</th>
+              <th className="text-center p-5 text-[10px] font-black uppercase text-slate-400">Qty</th>
+              <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Price</th>
+              <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Total</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {items.map((it, idx) => (
+              <tr key={idx}>
+                <td className="p-5 text-sm font-bold text-slate-800">{it.description}</td>
+                <td className="p-5 text-center text-sm font-bold text-slate-600">{it.quantity}</td>
+                <td className="p-5 text-right text-sm font-bold text-slate-600">{formatCurrency(it.unitPrice)}</td>
+                <td className="p-5 text-right text-sm font-black text-slate-900">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Bottom Section */}
+      <div className={`grid ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'grid-cols-1 gap-12' : 'grid-cols-2 gap-10'}`}>
+        <div className="space-y-6">
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Payment Details</h4>
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
+              <p className="text-[11px] font-black text-slate-900 flex items-center gap-2"><Building2 size={12}/> {bankName || "-"}</p>
+              <p style={{ color: headerColor }} className="text-[11px] font-black flex items-center gap-2"><CreditCard size={12}/> {accountNumber || "-"}</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{accountName || "-"}</p>
+            </div>
+          </div>
+          {notes && (
+            <div style={{ borderColor: headerColor }} className="p-5 bg-blue-50/30 border-l-4 rounded-r-xl">
+              <p style={{ color: headerColor }} className="text-[10px] font-black uppercase mb-1">Notes</p>
+              <p className="text-xs font-medium text-slate-600 leading-relaxed">{notes}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white p-6 rounded-3xl border border-slate-100 space-y-3">
+          <div className="flex justify-between text-xs font-bold text-slate-400">
+            <span>Subtotal</span>
+            <span className="text-slate-900">{formatCurrency(subtotal)}</span>
+          </div>
+          <div className="flex justify-between text-xs font-bold text-slate-400">
+            <span>VAT</span>
+            <span className="text-slate-900">{formatCurrency(tax)}</span>
+          </div>
+          <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
+            <span>Discount</span>
+            <span className="text-emerald-500">-{formatCurrency(discount)}</span>
+          </div>
+          <div className="flex justify-between text-xs font-bold text-slate-400 pb-3 border-b border-dashed">
+            <span>Balance</span>
+            <span className="text-red-500">-{formatCurrency(outstandingBalance)}</span>
+          </div>
+          <div className="flex justify-between items-center pt-2">
+            <span style={{ color: headerColor }} className="text-xs font-black uppercase">Total</span>
+            <span style={{ color: headerColor }} className="text-2xl font-black tracking-tighter">{formatCurrency(total)}</span>
+          </div>
+          {status === 'paid' && (
+            <div className="mt-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-center text-[10px] font-black uppercase tracking-widest">
+              Fully Paid
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Professional Footer */}
+      <div className="mt-auto pt-10 border-t border-slate-100 text-center space-y-2">
+        <div style={{ color: headerColor }} className="flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.3em]">
+          <ShieldCheck size={14}/> Secured by QuickInvoice
+        </div>
+        <p className="text-[10px] font-bold text-slate-400">
+          Powered by QuickInvoice • {new Date().getFullYear()} 
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* SURGICAL INSERTION END */}
+</div>
       </div>
 
       {/* Floating Action for Mobile Navigation */}
