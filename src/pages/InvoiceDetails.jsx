@@ -333,6 +333,7 @@ const {
           <p className="text-xl font-black">#{String(id).slice(-8).toUpperCase()}</p>
         </div>
         <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Date Issued</p>
           <p className="text-xs font-bold mt-1 opacity-80">{new Date(createdAt).toLocaleDateString()}</p>
         </div>
       </div>
