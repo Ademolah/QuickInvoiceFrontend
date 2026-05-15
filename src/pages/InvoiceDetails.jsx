@@ -328,27 +328,27 @@ const {
       </div>
 
       {/* Reference Info */}
-      <div className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'space-y-4' : 'text-right'}`}>
+      {/* Brand Header - Morphing between Top Bar and Sidebar */}
+      {/* ... previous logo/title code ... */}
+
+      {/* Unified Reference Info */}
+      <div className={`
+        ${userData?.brandSettings?.selectedTemplate === 'zenith' 
+          ? 'space-y-6 pt-10 border-t border-white/10' // Vertical stack for Sidebar
+          : 'text-right' // Horizontal alignment for Top Bar
+        }
+      `}>
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Reference</p>
-          <p className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'text-lg' : 'text-xl'} font-black`}>
+          <p className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'text-xl' : 'text-xl'} font-black`}>
             #{String(id).slice(-8).toUpperCase()}
           </p>
         </div>
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Date Issued</p>
-          <p className="text-sm font-bold mt-1 opacity-90">{new Date(createdAt).toLocaleDateString()}</p>
-        </div>
-      </div>
-      
-      <div className={`${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'space-y-4' : 'text-right hidden md:block'}`}>
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Reference</p>
-          <p className="text-xl font-black">#{String(id).slice(-8).toUpperCase()}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Date Issued</p>
-          <p className="text-xs font-bold mt-1 opacity-80">{new Date(createdAt).toLocaleDateString()}</p>
+          <p className="text-sm font-bold mt-1 opacity-90">
+            {new Date(createdAt).toLocaleDateString()}
+          </p>
         </div>
       </div>
     </div>
