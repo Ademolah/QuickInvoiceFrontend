@@ -233,7 +233,7 @@ export default function Billing() {
             <ul className="space-y-4 mb-10 flex-grow relative z-10">
               {[
                 {t: "5 Managed Businesses", d: "4 extra accounts included"},
-                {t: "Advanced CSS Branding", d: "Full control over identity"},
+                {t: "Advanced Customization", d: "Full control over identity"},
                 {t: "Unified Dashboard", d: "Toggle businesses instantly"},
                 {t: "Team Collaboration", d: "Coming soon"}
               ].map((f, i) => (
