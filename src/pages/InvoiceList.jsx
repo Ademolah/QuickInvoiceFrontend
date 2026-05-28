@@ -66,11 +66,34 @@ const InvoiceList = () => {
   if (token) fetchData();
 }, [token, API]);
 
-  const formatCurrency = (amount) =>
-    new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: code,
-    }).format(amount);
+  // const formatCurrency = (amount) =>
+  //   new Intl.NumberFormat('en-NG', {
+  //     style: 'currency',
+  //     currency: code,
+  //   }).format(amount);
+
+  const currencies = {
+  NGN: { symbol: "₦", code: "NGN" },
+  USD: { symbol: "$", code: "USD" },
+  GBP: { symbol: "£", code: "GBP" },
+  EUR: { symbol: "€", code: "EUR" },
+  TRY: { symbol: "₺", code: "TRY" },
+};
+
+// Updated local formatter
+const formatCurrency = (amount, invoiceCurrency) => {
+  // 1. Fallback to global app 'code' if the invoice doesn't have a currency field yet
+  const targetCode = invoiceCurrency && currencies[invoiceCurrency] ? invoiceCurrency : code;
+  const target = currencies[targetCode];
+
+  const formatted = new Intl.NumberFormat('en', {
+    style: 'currency',
+    currency: target.code,
+  }).format(amount);
+
+  // Replace ISO code with your premium custom symbol
+  return formatted.replace(/[A-Z]{3}/, target.symbol);
+};
 
   const fetchInvoices = async () => {
     setLoading(true);
@@ -217,78 +240,79 @@ const InvoiceList = () => {
 
             {/* Invoice Rows */}
             <AnimatePresence>
-              {filteredInvoices.map((inv, idx) => (
-                <motion.div
-                  key={inv._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="bg-white border border-slate-100 p-5 md:px-8 md:py-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
-                >
-                  <div className="grid grid-cols-2 md:grid-cols-5 items-center gap-4">
-                    {/* Client Info */}
-                    <div className="col-span-1 flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-blue-50 text-[#0028AE] flex items-center justify-center font-black">
-                        {inv.clientName.charAt(0)}
-                      </div>
-                      <div>
-                        <Link to={`/invoices/${inv._id}`} className="block text-sm font-black text-[#001325] hover:text-[#0028AE] transition-colors truncate max-w-[120px]">
-                          {inv.clientName}
-                        </Link>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">INV-{inv._id.slice(-6).toUpperCase()}</p>
-                      </div>
-                    </div>
+  {filteredInvoices.map((inv, idx) => (
+    <motion.div
+      key={inv._id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: idx * 0.05 }}
+      className="bg-white border border-slate-100 p-5 md:px-8 md:py-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
+    >
+      <div className="grid grid-cols-2 md:grid-cols-5 items-center gap-4">
+        {/* Client Info */}
+        <div className="col-span-1 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-blue-50 text-[#0028AE] flex items-center justify-center font-black">
+            {inv.clientName.charAt(0)}
+          </div>
+          <div>
+            <Link to={`/invoices/${inv._id}`} className="block text-sm font-black text-[#001325] hover:text-[#0028AE] transition-colors truncate max-w-[120px]">
+              {inv.clientName}
+            </Link>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">INV-{inv._id.slice(-6).toUpperCase()}</p>
+          </div>
+        </div>
 
-                    {/* Amount */}
-                    <div className="text-right md:text-left">
-                      <p className="text-sm font-black text-[#001325]">{formatCurrency(inv.total)}</p>
-                    </div>
+        {/* Amount */}
+        <div className="text-right md:text-left">
+          {/* 🌟 FIXED: Passing individual invoice currency down to the custom list formatter */}
+          <p className="text-sm font-black text-[#001325]">{formatCurrency(inv.total, inv.currency)}</p>
+        </div>
 
-                    {/* Status Pill */}
-                    <div>
-                      <StatusPill status={inv.status} />
-                    </div>
+        {/* Status Pill */}
+        <div>
+          <StatusPill status={inv.status} />
+        </div>
 
-                    {/* Due Date */}
-                    <div className="hidden md:flex items-center gap-2 text-slate-400 font-bold text-xs">
-                      <Calendar size={14} />
-                      {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : 'No date'}
-                    </div>
+        {/* Due Date */}
+        <div className="hidden md:flex items-center gap-2 text-slate-400 font-bold text-xs">
+          <Calendar size={14} />
+          {inv.dueDate ? new Date(inv.dueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : 'No date'}
+        </div>
 
-                    {/* Actions */}
-                    <div className="col-span-2 md:col-span-1 flex justify-end items-center gap-2">
-                      <button
-                        onClick={() => markPaid(inv._id)}
-                        disabled={inv.status === 'paid'}
-                        className={`p-2.5 rounded-xl transition-all ${inv.status === 'paid' ? 'bg-slate-50 text-slate-300' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
-                      >
-                        <CheckCircle size={18} />
-                      </button>
+        {/* Actions */}
+        <div className="col-span-2 md:col-span-1 flex justify-end items-center gap-2">
+          <button
+            onClick={() => markPaid(inv._id)}
+            disabled={inv.status === 'paid'}
+            className={`p-2.5 rounded-xl transition-all ${inv.status === 'paid' ? 'bg-slate-50 text-slate-300' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+          >
+            <CheckCircle size={18} />
+          </button>
 
-                    {/* NEW: Edit Button - Hidden if Paid */}
-                    {inv.status !== 'paid' && (
-                      <button
-                        onClick={() => setSelectedInvoice(inv)} // Opens the edit modal
-                        className="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all"
-                      >
-                        <Pencil size={18} />
-                      </button>
-                    )}
+          {/* Edit Button - Hidden if Paid */}
+          {inv.status !== 'paid' && (
+            <button
+              onClick={() => setSelectedInvoice(inv)} // Opens the edit modal
+              className="p-2.5 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all"
+            >
+              <Pencil size={18} />
+            </button>
+          )}
 
-                      <Link to={`/invoices/${inv._id}`} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all">
-                        <Eye size={18} />
-                      </Link>
-                      <button
-                        onClick={() => deleteInvoice(inv._id)}
-                        className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-all"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+          <Link to={`/invoices/${inv._id}`} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all">
+            <Eye size={18} />
+          </Link>
+          <button
+            onClick={() => deleteInvoice(inv._id)}
+            className="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-all"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</AnimatePresence>
           </div>
         )}
       </div>

@@ -1,8 +1,60 @@
 
 
 
+// import React, { createContext, useState, useContext, useEffect } from "react";
+// // Supported currencies
+// const currencies = {
+//   NGN: { symbol: "₦", code: "NGN" },
+//   USD: { symbol: "$", code: "USD" },
+//   GBP: { symbol: "£", code: "GBP" },
+//   EUR: { symbol: "€", code: "EUR" },
+//   TRY: { symbol: "₺", code: "TRY" },
+// };
+// const CurrencyContext = createContext();
+// export const CurrencyProvider = ({ children }) => {
+//   const [currency, setCurrency] = useState(() => {
+//     return localStorage.getItem("currency") || "NGN";
+//   });
+//   useEffect(() => {
+//     localStorage.setItem("currency", currency);
+//   }, [currency]);
+//   const switchCurrency = (code) => {
+//     if (currencies[code]) {
+//       setCurrency(code);
+//     }
+//   };
+//   const current = currencies[currency];
+//   // 🌟 Centralized formatter — symbol always correct
+//   const format = (amount) => {
+//     const formatted = new Intl.NumberFormat("en", {
+//       style: "currency",
+//       currency: current.code,
+//     }).format(amount);
+//     // Replace ISO currency code with our chosen symbol
+//     return formatted.replace(/[A-Z]{3}/, current.symbol);
+//   };
+//   return (
+//     <CurrencyContext.Provider
+//       value={{
+//         currency,
+//         symbol: current.symbol,
+//         code: current.code,
+//         switchCurrency,
+//         formatCurrency: format,   // ⭐ expose the formatter
+//       }}
+//     >
+//       {children}
+//     </CurrencyContext.Provider>
+//   );
+// };
+
+// export const useCurrency = () => useContext(CurrencyContext);
+
+
+
+
 import React, { createContext, useState, useContext, useEffect } from "react";
-// Supported currencies
+
 const currencies = {
   NGN: { symbol: "₦", code: "NGN" },
   USD: { symbol: "$", code: "USD" },
@@ -10,37 +62,52 @@ const currencies = {
   EUR: { symbol: "€", code: "EUR" },
   TRY: { symbol: "₺", code: "TRY" },
 };
+
 const CurrencyContext = createContext();
+
 export const CurrencyProvider = ({ children }) => {
+  // 1. The Global Currency (User's preferred app currency)
   const [currency, setCurrency] = useState(() => {
     return localStorage.getItem("currency") || "NGN";
   });
+
+  // 2. The Override Currency (Used ONLY when viewing specific documents)
+  const [overrideCurrency, setOverrideCurrency] = useState(null);
+
   useEffect(() => {
     localStorage.setItem("currency", currency);
   }, [currency]);
+
   const switchCurrency = (code) => {
-    if (currencies[code]) {
-      setCurrency(code);
-    }
+    if (currencies[code]) setCurrency(code);
   };
-  const current = currencies[currency];
-  // 🌟 Centralized formatter — symbol always correct
+
+  // 🌟 The smart formatting logic
   const format = (amount) => {
+    // If an override is active, use it. Otherwise, use the global currency.
+    const activeCode = overrideCurrency && currencies[overrideCurrency] 
+      ? overrideCurrency 
+      : currency;
+
+    const target = currencies[activeCode];
+
     const formatted = new Intl.NumberFormat("en", {
       style: "currency",
-      currency: current.code,
+      currency: target.code,
     }).format(amount);
-    // Replace ISO currency code with our chosen symbol
-    return formatted.replace(/[A-Z]{3}/, current.symbol);
+
+    return formatted.replace(/[A-Z]{3}/, target.symbol);
   };
+
   return (
     <CurrencyContext.Provider
       value={{
-        currency,
-        symbol: current.symbol,
-        code: current.code,
+        currency: overrideCurrency || currency, // Expose the active one
+        symbol: currencies[overrideCurrency || currency].symbol,
+        code: currencies[overrideCurrency || currency].code,
         switchCurrency,
-        formatCurrency: format,   // ⭐ expose the formatter
+        formatCurrency: format,
+        setOverrideCurrency, // ⭐ Expose the ability to lock the currency
       }}
     >
       {children}
@@ -49,10 +116,6 @@ export const CurrencyProvider = ({ children }) => {
 };
 
 export const useCurrency = () => useContext(CurrencyContext);
-
-
-
-
 
 
 

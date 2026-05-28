@@ -23,7 +23,7 @@ export default function InvoiceDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const invoiceRef = useRef(null);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, setOverrideCurrency } = useCurrency();
 
   const [invoice, setInvoice] = useState(null);
   const [user, setUser] = useState(null);
@@ -91,6 +91,18 @@ export default function InvoiceDetails() {
   };
   load();
 }, [id, token]);
+
+useEffect(() => {
+    // Watch the 'invoice' state. Once it loads, lock the currency!
+    if (invoice?.currency) {
+      setOverrideCurrency(invoice.currency);
+    }
+
+    // CLEANUP: Unlock when the user leaves the page
+    return () => {
+      setOverrideCurrency(null);
+    };
+  }, [invoice?.currency, setOverrideCurrency]);
 
   // 2. USAGE LOGGING LOGIC
   const logUsage = async () => {
@@ -328,10 +340,7 @@ const {
       </div>
 
       {/* Reference Info */}
-      {/* Brand Header - Morphing between Top Bar and Sidebar */}
-      {/* ... previous logo/title code ... */}
-
-      {/* Unified Reference Info */}
+     
       <div className={`
         ${userData?.brandSettings?.selectedTemplate === 'zenith' 
           ? 'space-y-6 pt-10 border-t border-white/10' // Vertical stack for Sidebar

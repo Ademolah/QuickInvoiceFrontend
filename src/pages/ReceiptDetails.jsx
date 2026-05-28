@@ -17,13 +17,24 @@ export default function ReceiptDetails() {
   const { invoiceId } = useParams();
   const navigate = useNavigate();
   const captureRef = useRef(null);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, setOverrideCurrency } = useCurrency();
 
   const [invoice, setInvoice] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const {showAlert} = useAlert();
+
+  useEffect(() => {
+  if (invoice?.currency) {
+    setOverrideCurrency(invoice.currency);
+  }
+
+  // 🔄 CLEANUP: Instantly restores app to user's global default preference when they leave this page
+  return () => {
+    setOverrideCurrency(null);
+  };
+}, [invoice?.currency, setOverrideCurrency]);
 
   useEffect(() => {
   const load = async () => {
