@@ -182,7 +182,6 @@ const POSInterface = () => {
 
 const downloadReceipt = (saleData) => {
     try {
-      
       const isReprint = !!saleData?._id;
       const itemsToPrint = isReprint ? saleData.items : cart;
       const methodToPrint = isReprint ? (saleData.paymentDetails?.method || "N/A") : paymentMethod;
@@ -194,18 +193,20 @@ const downloadReceipt = (saleData) => {
       const pageWidth = doc.internal.pageSize.getWidth();
       const centerX = pageWidth / 2;
       const businessName = user?.activeContext?.businessName?.toUpperCase() || "QUICKPOS";
-      if (businessName.length > 20) {
-          doc.setFontSize(10); // Shrink for long names
-      } else {
-          doc.setFontSize(14); // Standard bold size
+      
+      // 🌟 PREMIUM PRODUCTION FIX: Dynamic font scaling based on length
+      let calculatedFontSize = 14; // Standard clean bold size
+      if (businessName.length > 25) {
+          calculatedFontSize = 9;  // Ultra-long names like "KOREVALIS INVESTMENT LIMITED"
+      } else if (businessName.length > 18) {
+          calculatedFontSize = 11; // Medium long names
       }
 
       // --- 1. HEADER SECTION ---
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
+      doc.setFontSize(calculatedFontSize); // 👈 FIXED: Uses the safely scaled size instead of hardcoded 16
       doc.setTextColor(0, 19, 37);
       doc.text(businessName, centerX, 12, { align: "center" });
-      // doc.text(user?.businessName?.toUpperCase() || "QUICKPOS", 40, 12, { align: "center" });
       
       doc.setDrawColor(200, 200, 200);
       doc.line(5, 15, 75, 15);
@@ -215,7 +216,7 @@ const downloadReceipt = (saleData) => {
       doc.setTextColor(100, 100, 100);
       doc.text(`CASHIER: ${user?.name?.toUpperCase() || 'STAFF'}`, 5, 22);
       doc.text(`METHOD:  ${methodToPrint.toUpperCase()}`, 5, 26);
-      doc.text(`REF:     ${saleData?.receiptNumber || 'TXN-' + Date.now()}`, 5, 30);
+      doc.text(`REF:      ${saleData?.receiptNumber || 'TXN-' + Date.now()}`, 5, 30);
       doc.text(`DATE:    ${dateToPrint.toLocaleString()}`, 5, 34);
 
       // --- 2. THE TABLE ---
