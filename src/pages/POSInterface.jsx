@@ -227,7 +227,7 @@ const downloadReceipt = (saleData) => {
           item.name.toUpperCase(), 
           item.quantity, 
           // Use stored subtotal or calculate it
-          (item.subtotal || item.unitPrice * item.quantity).toLocaleString()
+          `₦ ${(item.subtotal || item.unitPrice * item.quantity).toLocaleString()}`
         ]),
         theme: 'plain',
         styles: { fontSize: 7, cellPadding: 2, font: 'helvetica', textColor: [40, 40, 40] },
@@ -246,7 +246,7 @@ const downloadReceipt = (saleData) => {
       doc.setTextColor(0, 0, 0);
       
       doc.text("GRAND TOTAL", 5, finalY + 10);
-      doc.text(`NGN ${totalToPrint.toLocaleString()}`, 75, finalY + 10, { align: "right" });
+      doc.text(`₦ ${totalToPrint.toLocaleString()}`, 75, finalY + 10, { align: "right" });
 
       // --- 4. FOOTER ---
       doc.setFontSize(7);
