@@ -791,7 +791,7 @@ const cartUIContent = (
                                 `--------------------------%0A` +
                                 `*Order ID:* ${lastSaleData?.receiptId}%0A` +
                                 `*Item(s):* ${lastSaleItems}%0A` + 
-                                `*Total Amount:* N${lastSaleData?.total.toLocaleString()}%0A%0A` +
+                                `*Total Amount:* ₦${lastSaleData?.total.toLocaleString()}%0A%0A` +
                                 `*Click below to download your PDF receipt:*%0A` +
                                 `${receiptLink}%0A%0A` +
                                 `_Thank you for your patronage!_`;
