@@ -233,20 +233,47 @@ const saveItem = async () => {
   };
 
   const exportInventoryPDF = async () => {
-    setExporting(true);
-    try {
-      const res = await api.get("/inventory/export/all");
-      setExportItems(res.data.items);
-      setTimeout(async () => {
-        const canvas = await html2canvas(printRef.current, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        pdf.addImage(imgData, "PNG", 0, 0, 210, (canvas.height * 210) / canvas.width);
-        pdf.save("Inventory.pdf");
-        setExporting(false);
-      }, 500);
-    } catch { setExporting(false); }
-  };
+  setExporting(true);
+  try {
+    const res = await api.get("/inventory/export/all");
+    setExportItems(res.data.items);
+    
+    setTimeout(async () => {
+      // 1. Capture the full canvas height regardless of length
+      const canvas = await html2canvas(printRef.current, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      
+      // 2. Define standard A4 dimensions in mm
+      const imgWidth = 210; 
+      const pageHeight = 297; 
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      // 3. Render the first page
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // 4. PREMIUM MULTI-PAGE LOOP: Automatically slice and append remaining pages
+      while (heightLeft > 0) {
+        position -= pageHeight; // Precision shift upwards by exactly one page height
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // 5. Finalize the document download
+      pdf.save("Inventory.pdf");
+      setExporting(false);
+    }, 500);
+  } catch (error) { 
+    console.error(error);
+    setExporting(false); 
+  }
+};
 
 
 
