@@ -277,70 +277,6 @@ const downloadReceipt = (saleData) => {
   };
 
 
-  
-
-//   const handleFinalize = async () => {
-//   if (cart.length === 0) return;
-
-//   try {
-//     const token = localStorage.getItem("token");
-//     const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-
-    // const capturedNames = cart.map(item => item.name).join(", ");
-    // setLastSaleItems(capturedNames);
-
-//     // 🚀 Prepare items for backend
-//     const formattedItems = cart.map(item => ({
-//       productId: item.productId,
-//       name: item.name,
-//       quantity: item.quantity,
-//       unitPrice: item.unitPrice,
-//       subtotal: item.unitPrice * item.quantity 
-//     }));
-
-//     const payload = {
-//       items: formattedItems,
-//       totalAmount,
-//       paymentDetails: {
-//         method: paymentMethod,
-//         amountTendered: totalAmount,
-//         changeDue: 0
-//       }
-//     };
-
-//     const res = await axios.post(`${API}/api/pos/process`, payload, {
-//       headers: { Authorization: `Bearer ${token}` }
-//     });
-
-    // if (res.data.success) {
-    //   // 1. Capture the sale data for WhatsApp
-    //   setLastSaleData({
-    //     receiptId: res.data.sale.receiptNumber || `QI-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-    //     total: totalAmount,
-    //     method: paymentMethod
-    //   });
-
-//       // 2. Success Feedback
-//       toast.success("Sale Recorded Successfully!", {
-//         icon: '✅',
-//         style: { borderRadius: '15px', background: '#10B981', color: '#fff' }
-//       });
-
-//       // 3. Trigger Actions
-//       downloadReceipt(res.data.sale); // Keep PDF as backup
-//       setCart([]);
-//       setIsMobileCartOpen(false);
-//       fetchData(); // Refresh Today's Revenue
-
-//       // 4. 🚀 OPEN WHATSAPP MODAL
-//       setShowWhatsappModal(true); 
-//     }
-//   } catch (err) {
-//     const errorMsg = err.response?.data?.message || "Sale failed";
-//     toast.error(errorMsg);
-//     console.error("POS Error Details:", err.response?.data);
-//   }
-// };
 
 
 const handleFinalize = async () => {
@@ -472,7 +408,7 @@ const cartUIContent = (
         <div key={item.productId} className="p-5 bg-slate-50 rounded-[2rem] border border-slate-100">
           <div className="flex justify-between items-center mb-4">
             <span className="font-black text-slate-800 text-lg truncate pr-4">{item.name}</span>
-            <span className="font-black text-blue-600">N{(item.unitPrice * item.quantity).toLocaleString()}</span>
+            <span className="font-black text-blue-600">₦{(item.unitPrice * item.quantity).toLocaleString()}</span>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4 bg-white shadow-sm border rounded-2xl p-1">
@@ -508,7 +444,7 @@ const cartUIContent = (
        </div>
        <div className="flex justify-between items-center mb-8 border-t border-white/5 pt-6">
           <span className="text-slate-400 font-bold text-sm uppercase">Total Balance</span>
-          <span className="text-3xl font-black">N{cart.reduce((s, i) => s + (i.unitPrice * i.quantity), 0).toLocaleString()}</span>
+          <span className="text-3xl font-black">₦{cart.reduce((s, i) => s + (i.unitPrice * i.quantity), 0).toLocaleString()}</span>
        </div>
        <button onClick={handleFinalize} disabled={cart.length === 0} className="w-full py-6 bg-blue-600 rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 active:scale-95">
          <Download size={24} /> CHECKOUT
