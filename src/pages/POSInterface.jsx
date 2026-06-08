@@ -227,7 +227,7 @@ const downloadReceipt = (saleData) => {
           item.name.toUpperCase(), 
           item.quantity, 
           // Use stored subtotal or calculate it
-          `NGN ${(item.subtotal || item.unitPrice * item.quantity).toLocaleString()}`
+          `N ${(item.subtotal || item.unitPrice * item.quantity).toLocaleString()}`
         ]),
         theme: 'plain',
         styles: { fontSize: 7, cellPadding: 2, font: 'helvetica', textColor: [40, 40, 40] },
