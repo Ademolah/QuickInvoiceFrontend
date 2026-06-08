@@ -227,7 +227,7 @@ const downloadReceipt = (saleData) => {
           item.name.toUpperCase(), 
           item.quantity, 
           // Use stored subtotal or calculate it
-          `₦ ${(item.subtotal || item.unitPrice * item.quantity).toLocaleString()}`
+          `NGN ${(item.subtotal || item.unitPrice * item.quantity).toLocaleString()}`
         ]),
         theme: 'plain',
         styles: { fontSize: 7, cellPadding: 2, font: 'helvetica', textColor: [40, 40, 40] },
@@ -246,7 +246,7 @@ const downloadReceipt = (saleData) => {
       doc.setTextColor(0, 0, 0);
       
       doc.text("GRAND TOTAL", 5, finalY + 10);
-      doc.text(`₦ ${totalToPrint.toLocaleString()}`, 75, finalY + 10, { align: "right" });
+      doc.text(`NGN ${totalToPrint.toLocaleString()}`, 75, finalY + 10, { align: "right" });
 
       // --- 4. FOOTER ---
       doc.setFontSize(7);
@@ -531,7 +531,7 @@ const cartUIContent = (
             Today's Revenue
             </span>
             <span className="text-xs md:text-sm font-black text-emerald-700">
-            N{terminalStats.total.toLocaleString()}
+            ₦{terminalStats.total.toLocaleString()}
             </span>
         </div>
 
@@ -639,7 +639,7 @@ const cartUIContent = (
 
           {/* RIGHT SECTION: TOTAL */}
           <div className="text-right">
-            <p className="font-black text-slate-800">N{sale.totalAmount.toLocaleString()}</p>
+            <p className="font-black text-slate-800">₦{sale.totalAmount.toLocaleString()}</p>
             <p className="text-[10px] text-emerald-500 font-black uppercase tracking-widest">Completed</p>
           </div>
 
