@@ -504,7 +504,7 @@ const cartUIContent = (
     <div className="flex flex-col min-w-0">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <h1 className="text-lg md:text-xl font-[900] text-slate-900 tracking-tight whitespace-nowrap">
-          Quick <span className="text-blue-600">Terminal</span>
+          <span className="text-blue-600">Terminal</span>
         </h1>
         
         {/* Status Badge: Integrated as a sleek tag */}
