@@ -72,7 +72,7 @@ const NewInvoice = () => {
       const token = localStorage.getItem('token');
       const response = await axios.post(
         `${API}/api/invoices`,
-        { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes, outstandingBalance },
+        { clientName, clientEmail, clientPhone, items, tax, discount, dueDate, notes, outstandingBalance, currency: code },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Invoice created successfully!");
