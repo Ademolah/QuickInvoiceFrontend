@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   X, FileText, Users, BarChart2, Settings, 
   LayoutDashboard, LogOut, Receipt, CreditCard, ShoppingCart,FileCheck2,
-  Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock,
+  Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock, ChevronRight, ChevronLeft,
   Plus, ChevronDown, Check, Building,
   Calculator,
   Palette
@@ -18,7 +18,7 @@ import axios from "axios";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
-const Sidebar = ({ closeMenu }) => {
+const Sidebar = ({ closeMenu, isCollapsed, setIsCollapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -156,15 +156,41 @@ const Sidebar = ({ closeMenu }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-slate-100 w-full overflow-y-auto no-scrollbar">
+    <div className={`flex flex-col h-full bg-white border-r border-slate-100 transition-all duration-300 no-scrollbar overflow-y-auto ${
+      isCollapsed ? 'w-[80px]' : 'w-full'
+    }`}>
+      
       {/* Brand Header */}
-      <div className="p-8 pb-4 flex items-center justify-between">
+      <div className={`p-6 pb-4 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 bg-[#0028AE] rounded-xl flex items-center justify-center shadow-lg shadow-blue-700/20">
+          <div className="h-9 w-9 bg-[#0028AE] rounded-xl flex items-center justify-center shadow-lg shadow-blue-700/20 flex-shrink-0">
             <span className="text-white font-black italic text-lg">Q</span>
           </div>
-          <span className="text-[#001325] font-black tracking-tighter text-xl">QuickInvoice</span>
+          {!isCollapsed && (
+            <motion.span 
+              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+              className="text-[#001325] font-black tracking-tighter text-xl whitespace-nowrap"
+            >
+              QuickInvoice
+            </motion.span>
+          )}
         </div>
+        
+        {/* Toggle Expand/Collapse Trigger Button for Desktop Layout */}
+        {!closeMenu && (
+          <button 
+          onClick={() => setIsCollapsed(!isCollapsed)} 
+          className="hidden lg:flex p-2 rounded-xl bg-[#0028AE] text-white hover:bg-[#001e82] shadow-lg shadow-blue-700/20 transition-all duration-200 transform active:scale-95 ml-2 flex-shrink-0"
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {isCollapsed ? (
+            <ChevronRight size={14} strokeWidth={3} />
+          ) : (
+            <ChevronLeft size={14} strokeWidth={3} />
+          )}
+        </button>
+        )}
+
         {closeMenu && (
           <button onClick={closeMenu} className="lg:hidden p-2 text-slate-400 hover:text-red-500 transition-colors">
             <X size={20} />
@@ -173,131 +199,140 @@ const Sidebar = ({ closeMenu }) => {
       </div>
 
       {/* --- ENTERPRISE BUSINESS SWITCHER --- */}
-<div className="px-6 mb-4 relative">
-  <button 
-    onClick={() => setShowBusinessDropdown(!showBusinessDropdown)}
-    className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all group border ${
-      showBusinessDropdown ? 'bg-white border-[#0028AE] shadow-lg' : 'bg-slate-50 border-slate-100 hover:border-[#0028AE]/30'
-    }`}
-  >
-    <div className="flex items-center gap-3">
-      <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
-        user?.activeBusinessId ? 'bg-purple-600 text-white' : 'bg-white border border-slate-200 text-[#0028AE]'
-      }`}>
-        {user?.activeBusinessId ? <Building2 size={16} /> : <Building size={16} />}
-      </div>
-      <div className="text-left">
-        <p className="text-[10px] font-black uppercase text-slate-400 leading-none mb-1 tracking-widest">
-          {user?.activeBusinessId ? "Enterprise Entity" : "Primary Account"}
-        </p>
-        <p className="text-xs font-black text-[#001325] truncate max-w-[100px]">
-          {/* Determine which name to show */}
-          {user?.activeBusinessId 
-            ? user.enterpriseBusinesses.find(b => b._id === user.activeBusinessId)?.businessName 
-            : user?.businessName}
-        </p>
-      </div>
-    </div>
-    <ChevronDown size={14} className={`text-slate-400 transition-transform ${showBusinessDropdown ? 'rotate-180' : ''}`} />
-  </button>
-
-  
-  {/* Dropdown Menu */}
-<AnimatePresence>
-  {showBusinessDropdown && (
-    <motion.div 
-      initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
-      className="absolute left-6 right-6 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden z-[100]"
-    >
-      <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto no-scrollbar">
-        
-        {/* 1. The Main Account Option - ALWAYS ACTIVE */}
+      <div className={`mb-4 relative ${isCollapsed ? 'px-4 flex justify-center' : 'px-6'}`}>
         <button 
-          onClick={() => handleSwitchBusiness(null)}
-          className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-            !user?.activeBusinessId ? 'bg-blue-50/50 text-[#0028AE]' : 'hover:bg-slate-50 text-slate-600'
+          onClick={() => setShowBusinessDropdown(!showBusinessDropdown)}
+          className={`flex items-center transition-all group border ${
+            isCollapsed 
+              ? 'h-11 w-11 justify-center rounded-xl bg-slate-50 border-slate-100 hover:border-[#0028AE]/30' 
+              : `w-full justify-between p-3 rounded-2xl ${
+                  showBusinessDropdown ? 'bg-white border-[#0028AE] shadow-lg' : 'bg-slate-50 border-slate-100 hover:border-[#0028AE]/30'
+                }`
           }`}
+          title={isCollapsed ? "Switch Business Entity" : undefined}
         >
-          <div className="flex items-center gap-2">
-            <Building size={14} />
-            <span className="text-xs font-black">{user?.businessName}</span>
+          <div className="flex items-center gap-3">
+            <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
+              user?.activeBusinessId ? 'bg-purple-600 text-white' : 'bg-white border border-slate-200 text-[#0028AE]'
+            }`}>
+              {user?.activeBusinessId ? <Building2 size={16} /> : <Building size={16} />}
+            </div>
+            
+            {!isCollapsed && (
+              <div className="text-left max-w-[120px]">
+                <p className="text-[10px] font-black uppercase text-slate-400 leading-none mb-1 tracking-widest truncate">
+                  {user?.activeBusinessId ? "Enterprise Entity" : "Primary Account"}
+                </p>
+                <p className="text-xs font-black text-[#001325] truncate">
+                  {user?.activeBusinessId 
+                    ? user.enterpriseBusinesses.find(b => b._id === user.activeBusinessId)?.businessName 
+                    : user?.businessName}
+                </p>
+              </div>
+            )}
           </div>
-          {!user?.activeBusinessId && <Check size={14} />}
+          {!isCollapsed && <ChevronDown size={14} className={`text-slate-400 transition-transform ${showBusinessDropdown ? 'rotate-180' : ''}`} />}
         </button>
 
-        <div className="h-px bg-slate-50 mx-2 my-1" />
-
-        {/* 2. List of Enterprise Sub-Businesses - TIER LOCKED */}
-        {user?.enterpriseBusinesses?.map((biz) => {
-          const isLocked = user?.plan !== 'enterprise';
-          const isActive = user?.activeBusinessId === biz._id;
-
-          return (
-            <button 
-              key={biz._id}
-              onClick={() => !isLocked && handleSwitchBusiness(biz._id)}
-              disabled={isLocked}
-              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
-                isActive 
-                  ? 'bg-purple-50 text-purple-600' 
-                  : isLocked 
-                    ? 'opacity-60 cursor-not-allowed bg-slate-50/50 grayscale-[0.5]' 
-                    : 'hover:bg-slate-50 text-slate-600'
+        {/* Floating Dropdown Logic for both Normal and Compressed frames */}
+        <AnimatePresence>
+          {showBusinessDropdown && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, x: isCollapsed ? 12 : 0 }} 
+              animate={{ opacity: 1, scale: 1, x: 0 }} 
+              exit={{ opacity: 0, scale: 0.95, x: isCollapsed ? 12 : 0 }}
+              className={`absolute bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden z-[100] ${
+                isCollapsed ? 'left-full top-0 ml-3 w-64' : 'left-6 right-6 mt-2'
               }`}
             >
-              <div className="flex items-center gap-2">
-                <div className={`w-4 h-4 rounded overflow-hidden ${isLocked ? 'bg-slate-300' : 'bg-slate-200'}`}>
-                   {biz.logo?.url ? <img src={biz.logo.url} alt="" className="w-full h-full object-cover" /> : <Building2 size={10} />}
-                </div>
-                <span className={`text-xs ${isLocked ? 'font-medium' : 'font-bold'}`}>
-                  {biz.businessName}
-                </span>
-              </div>
-              
-              {isLocked ? (
-                <Lock size={12} className="text-slate-400" />
-              ) : (
-                isActive && <Check size={14} />
-              )}
-            </button>
-          );
-        })}
+              <div className="p-2 space-y-1 max-h-[300px] overflow-y-auto no-scrollbar">
+                
+                {/* 1. Main Account Option */}
+                <button 
+                  onClick={() => handleSwitchBusiness(null)}
+                  className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                    !user?.activeBusinessId ? 'bg-blue-50/50 text-[#0028AE]' : 'hover:bg-slate-50 text-slate-600'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Building size={14} />
+                    <span className="text-xs font-black">{user?.businessName}</span>
+                  </div>
+                  {!user?.activeBusinessId && <Check size={14} />}
+                </button>
 
-        {/* 3. Add New Business Button - TIER LOCKED */}
-        <button 
-          onClick={() => {
-            if (user?.plan === 'enterprise') {
-              handleAddAccount();
-            } else {
-              toast.error("Enterprise Plan Required to add multiple businesses", {
-                icon: '🔒',
-                style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '10px' }
-              });
-            }
-          }}
-          className={`w-full flex items-center gap-2 p-3 mt-1 rounded-xl transition-all group border border-dashed border-spacing-4 ${
-            user?.plan === 'enterprise'
-              ? 'hover:bg-slate-50 text-slate-400 hover:text-[#0028AE] border-slate-200'
-              : 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
-          }`}
-        >
-          <Plus size={14} />
-          <span className="text-xs font-black uppercase tracking-tighter">Add New Business</span>
-          {user?.plan !== 'enterprise' && <Lock size={10} className="ml-auto text-slate-400" />}
-        </button>
+                <div className="h-px bg-slate-50 mx-2 my-1" />
+
+                {/* 2. Sub-Businesses */}
+                {user?.enterpriseBusinesses?.map((biz) => {
+                  const isLocked = user?.plan !== 'enterprise';
+                  const isActive = user?.activeBusinessId === biz._id;
+
+                  return (
+                    <button 
+                      key={biz._id}
+                      onClick={() => !isLocked && handleSwitchBusiness(biz._id)}
+                      disabled={isLocked}
+                      className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                        isActive 
+                          ? 'bg-purple-50 text-purple-600' 
+                          : isLocked 
+                            ? 'opacity-60 cursor-not-allowed bg-slate-50/50 grayscale-[0.5]' 
+                            : 'hover:bg-slate-50 text-slate-600'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded overflow-hidden flex-shrink-0 ${isLocked ? 'bg-slate-300' : 'bg-slate-200'}`}>
+                           {biz.logo?.url ? <img src={biz.logo.url} alt="" className="w-full h-full object-cover" /> : <Building2 size={10} />}
+                        </div>
+                        <span className={`text-xs truncate ${isLocked ? 'font-medium' : 'font-bold'}`}>
+                          {biz.businessName}
+                        </span>
+                      </div>
+                      {isLocked ? <Lock size={12} className="text-slate-400" /> : isActive && <Check size={14} />}
+                    </button>
+                  );
+                })}
+
+                {/* 3. Add New Business */}
+                <button 
+                  onClick={() => {
+                    if (user?.plan === 'enterprise') {
+                      handleAddAccount();
+                    } else {
+                      toast.error("Enterprise Plan Required to add multiple businesses", {
+                        icon: '🔒',
+                        style: { borderRadius: '12px', background: '#001325', color: '#fff', fontSize: '10px' }
+                      });
+                    }
+                  }}
+                  className={`w-full flex items-center gap-2 p-3 mt-1 rounded-xl transition-all group border border-dashed border-spacing-4 ${
+                    user?.plan === 'enterprise'
+                      ? 'hover:bg-slate-50 text-slate-400 hover:text-[#0028AE] border-slate-200'
+                      : 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                  }`}
+                >
+                  <Plus size={14} />
+                  <span className="text-xs font-black uppercase tracking-tighter">Add New Business</span>
+                  {user?.plan !== 'enterprise' && <Lock size={10} className="ml-auto text-slate-400" />}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-</div>
 
       {/* Navigation Groups */}
-      <nav className="flex-1 px-4 space-y-8">
+      <nav className={`flex-1 space-y-6 ${isCollapsed ? 'px-2' : 'px-4'}`}>
         {menuGroups.map((group, idx) => (
           <div key={idx} className="space-y-1">
-            <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">
-              {group.group}
-            </h3>
+            {isCollapsed ? (
+              <div className="h-px bg-slate-100 mx-2 my-4" />
+            ) : (
+              <h3 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 whitespace-nowrap">
+                {group.group}
+              </h3>
+            )}
             <div className="space-y-1">
               {group.items.map((item) => (
                 <Link
@@ -305,27 +340,29 @@ const Sidebar = ({ closeMenu }) => {
                   to={item.isPro && user?.plan === 'free' ? "#" : item.path}
                   onClick={(e) => handleItemClick(e, item)}
                   className={`
-                    group flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300
+                    group flex items-center rounded-2xl transition-all duration-300
+                    ${isCollapsed ? 'justify-center p-3' : 'justify-between px-4 py-3'}
                     ${isActive(item.path) 
                       ? "bg-[#0028AE]/5 text-[#0028AE] shadow-[0_4px_12px_-4px_rgba(0,40,174,0.1)]" 
                       : "text-slate-500 hover:bg-slate-50 hover:text-[#001325]"}
                   `}
+                  title={isCollapsed ? item.name : undefined}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={`${isActive(item.path) ? "text-[#0028AE]" : "text-slate-400 group-hover:text-[#001325]"} transition-colors`}>
+                    <span className={`${isActive(item.path) ? "text-[#0028AE]" : "text-slate-400 group-hover:text-[#001325]"} transition-colors flex-shrink-0`}>
                       {item.icon}
                     </span>
-                    <span className="text-sm font-bold tracking-tight">{item.name}</span>
+                    {!isCollapsed && <span className="text-sm font-bold tracking-tight whitespace-nowrap">{item.name}</span>}
                   </div>
 
-                  {item.isPro && user?.plan === 'free' && (
+                  {!isCollapsed && item.isPro && user?.plan === 'free' && (
                     <div className="flex items-center gap-1.5 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
                       <Lock size={10} className="text-amber-600" />
                       <span className="text-[8px] font-black uppercase text-amber-600 tracking-tighter">Pro</span>
                     </div>
                   )}
 
-                  {isActive(item.path) && (
+                  {!isCollapsed && isActive(item.path) && (
                     <motion.div layoutId="activeInd" className="h-1.5 w-1.5 rounded-full bg-[#0028AE]" />
                   )}
                 </Link>
@@ -335,29 +372,46 @@ const Sidebar = ({ closeMenu }) => {
         ))}
       </nav>
 
-      {/* Footer / Plan Status */}
-      <div className="p-4 mt-auto">
-        <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100">
-          <div className="flex justify-between items-center mb-2 px-1">
-            <p className="text-[10px] font-black uppercase text-slate-400">
-              Plan: <span className={user?.plan === 'enterprise' ? 'text-purple-600' : user?.plan === 'pro' ? 'text-emerald-600' : 'text-blue-600'}>
-                {user?.plan}
-              </span>
-            </p>
+      {/* Footer Status Indicators */}
+      <div className={`mt-auto ${isCollapsed ? 'p-2' : 'p-4'}`}>
+        {!isCollapsed ? (
+          <div className="bg-slate-50 rounded-3xl p-4 mb-4 border border-slate-100">
+            <div className="flex justify-between items-center mb-2 px-1">
+              <p className="text-[10px] font-black uppercase text-slate-400">
+                Plan: <span className={user?.plan === 'enterprise' ? 'text-purple-600' : user?.plan === 'pro' ? 'text-emerald-600' : 'text-blue-600'}>
+                  {user?.plan}
+                </span>
+              </p>
+            </div>
+            <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-1000 ease-out rounded-full ${
+                  user?.plan === 'enterprise' ? 'w-full bg-purple-500' : user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
+                }`}
+                style={{ width: user?.plan !== 'free' ? '100%' : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 15) * 100, 100)}%` }} 
+              />
+            </div>
           </div>
-          {/* Progress bar logic remains same */}
-          <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+        ) : (
+          <div className="flex justify-center mb-4">
             <div 
-              className={`h-full transition-all duration-1000 ease-out rounded-full ${
-                user?.plan === 'enterprise' ? 'w-full bg-purple-500' : user?.plan === 'pro' ? 'w-full bg-emerald-500' : 'bg-[#0028AE]'
-              }`}
-              style={{ width: user?.plan !== 'free' ? '100%' : `${Math.min((((user?.usage?.invoicesThisMonth || 0) + (user?.usage?.receiptsThisMonth || 0)) / 10) * 100, 100)}%` }} 
+              className={`h-2 w-2 rounded-full ${
+                user?.plan === 'enterprise' ? 'bg-purple-500' : user?.plan === 'pro' ? 'bg-emerald-500' : 'bg-[#0028AE]'
+              }`} 
+              title={`Plan: ${user?.plan}`} 
             />
           </div>
-        </div>
+        )}
         
-        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 font-bold text-sm hover:bg-red-50 hover:text-red-600 transition-all duration-300">
-          <LogOut size={18} /> Logout
+        <button 
+          onClick={handleLogout} 
+          className={`flex items-center rounded-2xl text-slate-500 font-bold text-sm hover:bg-red-50 hover:text-red-600 transition-all duration-300 ${
+            isCollapsed ? 'justify-center w-11 h-11 p-0 mx-auto' : 'w-full gap-3 px-4 py-3'
+          }`}
+          title="Logout"
+        >
+          <LogOut size={18} /> 
+          {!isCollapsed && <span>Logout</span>}
         </button>
       </div>
     </div>
