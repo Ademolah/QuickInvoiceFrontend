@@ -343,7 +343,7 @@ const handleExport = async () => {
                         </span>
                       </td>
                       <td className={`p-4 text-right font-black ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                        {tx.type === 'INCOME' ? '+' : '-'} ₦{tx.amount.toLocaleString()}
+                        {tx.type === 'INCOME' ? '+' : '-'} {formatCurrency(tx.amount).toLocaleString()}
                       </td>
                     </tr>
                   ))
@@ -464,7 +464,7 @@ const handleExport = async () => {
       <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Inflow</p>
         <p className="text-2xl font-black text-[#001325]">
-          ₦{transactions.filter(tx => tx.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0).toLocaleString()}
+          {formatCurrency(transactions.filter(tx => tx.type === 'INCOME').reduce((acc, curr) => acc + curr.amount, 0)).toLocaleString()}
         </p>
       </div>
       <div className="p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
@@ -519,7 +519,7 @@ const handleExport = async () => {
       </td>
       
       <td className={`p-4 text-right font-black text-sm align-top ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
-        {tx.type === 'INCOME' ? '+' : '-'} ₦{tx.amount.toLocaleString()}
+        {tx.type === 'INCOME' ? '+' : '-'} {formatCurrency(tx.amount).toLocaleString()}
       </td>
     </tr>
   ))}
@@ -547,6 +547,7 @@ const handleExport = async () => {
 
 
 function StatCard({ title, amount, icon, color, isMain }) {
+  const { formatCurrency } = useCurrency();
   return (
     <div className={`p-8 rounded-[2rem] border border-slate-100 shadow-sm ${isMain ? 'bg-[#0028AE] text-white shadow-blue-900/20' : 'bg-white text-slate-900'}`}>
       <div className="flex justify-between items-start mb-4">
@@ -559,7 +560,7 @@ function StatCard({ title, amount, icon, color, isMain }) {
       </p>
       {/* ₦ Symbol added with proper number formatting */}
       <h2 className="text-3xl font-black">
-        ₦{Number(amount || 0).toLocaleString('en-NG', { minimumFractionDigits: 0 })}
+        {formatCurrency(Number(amount || 0)).toLocaleString('en-NG', { minimumFractionDigits: 0 })}
       </h2>
     </div>
   );
