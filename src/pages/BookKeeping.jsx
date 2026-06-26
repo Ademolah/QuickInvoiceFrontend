@@ -124,7 +124,6 @@ export default function Bookkeeping() {
 // };
 
 const handleExport = async () => {
-
   const element = bookkeepingPrintRef.current; // Target the hidden div
   if (!element) return;
 
@@ -132,20 +131,32 @@ const handleExport = async () => {
   const loadingToast = toast.loading("Structuring your Executive Statement...");
 
   try {
+    // 1. SCALE ADJUSTMENT: Dropped to 2. This is the enterprise standard for 
+    // crystal-clear print quality without astronomical memory usage.
     const canvas = await html2canvas(element, { 
-      scale: 3, 
+      scale: 2, 
       useCORS: true,
       logging: false,
       width: 800,
       windowWidth: 800 
     });
 
-    const imgData = canvas.toDataURL("image/png");
+    // 2. THE MAJOR FIX: Switch from PNG to JPEG with a 75% quality compression rating. 
+    // This strips out all the invisible bloat.
+    const imgData = canvas.toDataURL("image/jpeg", 0.75); 
     const pdfWidth = 210;
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    const pdf = new jsPDF("p", "mm", [pdfWidth, pdfHeight]);
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    // 3. PDF COMPRESSION: Enable jsPDF's native document compression engine
+    const pdf = new jsPDF({
+      orientation: "p",
+      unit: "mm",
+      format: [pdfWidth, pdfHeight],
+      compress: true 
+    });
+    
+    // 4. Inject the lightweight JPEG
+    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
     
     pdf.save(`Executive_Statement_${user?.businessName || 'Business'}.pdf`);
     
