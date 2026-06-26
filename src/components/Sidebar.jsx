@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
 
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";

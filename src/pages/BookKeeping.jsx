@@ -33,6 +33,14 @@ export default function Bookkeeping() {
   const [isExporting, setIsExporting] = useState(false);
   const { showAlert } = useAlert();
 
+
+  const [filterType, setFilterType] = useState('this-month'); // Default to current cash flow
+  const [customMonth, setCustomMonth] = useState(() => {
+    // Defaults to current "YYYY-MM" for the custom picker
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
+
   const [user, setUser] = useState(null); // Added for Pro check
   const { formatCurrency } = useCurrency();
   const bookkeepingPrintRef = useRef(null);
@@ -153,24 +161,32 @@ const handleExport = async () => {
 
 
 
-  const fetchData = async () => {
+ const fetchData = async () => {
+    setLoading(true); // Premium UX: Trigger loading state during filter switches
     try {
-      const { data } = await axios.get(`${API}/api/bookkeeping`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const { data } = await axios.get(
+        `${API}/api/bookkeeping?filterType=${filterType}&customMonth=${customMonth}`, 
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }
+      );
       if (data.success) {
         setTransactions(data.data);
         setStats(data.stats);
       }
     } catch (e) {
       toast.error("Failed to sync financial ledger");
-
+      console.log("Error: ", e)
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  // ✨ INJECTION 3: The Dependency Array
+  // The ledger will now instantly auto-refresh the millisecond these states change
+  useEffect(() => { 
+    fetchData(); 
+  }, [filterType, customMonth]);
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -216,76 +232,126 @@ const handleExport = async () => {
         </div>
       </div>
 
-      {/* STATS CARDS */}
+      {/* ✨ PREMIUM UI: The Tactile Filter Control Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-8 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm w-fit overflow-x-auto max-w-full">
+        <div className="flex items-center gap-1">
+          {['this-week', 'this-month', 'all'].map((type) => (
+            <button
+              key={type}
+              onClick={() => setFilterType(type)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap ${
+                filterType === type
+                  ? 'bg-[#0028AE] text-white shadow-md shadow-blue-900/20 scale-100'
+                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800 scale-95 hover:scale-100'
+              }`}
+            >
+              {type === 'this-week' ? 'This Week' : type === 'this-month' ? 'This Month' : 'All Time'}
+            </button>
+          ))}
+        </div>
 
-    <div ref={reportRef} className={`p-8 rounded-3xl ${isExporting ? 'bg-[#F8FAFC]' : ''}`}>
-  
-  {/* PREMIUM REPORT HEADER - Only visible during export */}
-  {isExporting && (
-    <div className="mb-10 flex justify-between items-end border-b-2 border-[#0028AE] pb-6">
-      <div>
-        <h2 className="text-2xl font-black text-[#0028AE] tracking-tighter">
-          QuickInvoice Intelligence
-        </h2>
-        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
-          Official Financial Statement
-        </p>
+        <div className="h-4 w-px bg-slate-200 mx-2 hidden sm:block"></div>
+
+        <div className="flex items-center gap-3 px-2 py-1 sm:py-0">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Custom:</span>
+          <input
+            type="month"
+            value={customMonth}
+            onChange={(e) => {
+              setFilterType('custom');
+              setCustomMonth(e.target.value);
+            }}
+            className={`text-xs font-bold border-none rounded-lg px-3 py-1.5 focus:ring-0 outline-none transition-all cursor-pointer ${
+              filterType === 'custom' 
+                ? 'bg-blue-50 text-[#0028AE]' 
+                : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+            }`}
+          />
+        </div>
       </div>
-      <div className="text-right">
-        <p className="text-[10px] font-black text-slate-400 uppercase">Report Period</p>
-        <p className="text-xs font-bold text-slate-800">{new Date().toLocaleDateString('en-NG', { month: 'long', year: 'numeric' })}</p>
-      </div>
-    </div>
-  )}
 
-  {/* STATS CARDS */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    <StatCard title="Total Revenue" amount={stats.totalIncome} icon={<ArrowUpRight className="text-emerald-600" />} color="bg-emerald-50" />
-    <StatCard title="Total Expenses" amount={stats.totalExpense} icon={<ArrowDownLeft className="text-rose-600" />} color="bg-rose-50" />
-    <StatCard title="Net Profit" amount={stats.netProfit} icon={<TrendingUp className="text-blue-600" />} color="bg-blue-50" isMain={true} />
-  </div>
-
-  {/* TABLE */}
-  <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-          <h3 className="font-black text-slate-800 uppercase text-xs tracking-widest">Recent Transactions</h3>
-          <div className="relative">
-             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-             <input type="text" placeholder="Search ledger..." className="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-blue-500 w-64" />
+      {/* WRAPPER FOR PDF EXPORT & DATA */}
+      <div ref={bookkeepingPrintRef} className={`rounded-3xl transition-opacity duration-300 ${isExporting ? 'bg-[#F8FAFC] p-8' : ''} ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+        
+        {/* PREMIUM REPORT HEADER - Only visible during export */}
+        {isExporting && (
+          <div className="mb-10 flex justify-between items-end border-b-2 border-[#0028AE] pb-6">
+            <div>
+              <h2 className="text-2xl font-black text-[#0028AE] tracking-tighter">
+                QuickInvoice Intelligence
+              </h2>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
+                Official Financial Statement
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-black text-slate-400 uppercase">Report Period</p>
+              {/* ✨ DYNAMIC PDF DATE: Reflects the exact filter the user selected */}
+              <p className="text-xs font-bold text-slate-800">
+                {filterType === 'all' ? 'Lifetime Ledger'
+                  : filterType === 'this-week' ? 'Current Week'
+                  : filterType === 'this-month' ? new Date().toLocaleDateString('en-NG', { month: 'long', year: 'numeric' })
+                  : new Date(customMonth).toLocaleDateString('en-NG', { month: 'long', year: 'numeric' })}
+              </p>
+            </div>
           </div>
+        )}
+
+        {/* STATS CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <StatCard title="Total Revenue" amount={stats.totalIncome} icon={<ArrowUpRight className="text-emerald-600" />} color="bg-emerald-50" />
+          <StatCard title="Total Expenses" amount={stats.totalExpense} icon={<ArrowDownLeft className="text-rose-600" />} color="bg-rose-50" />
+          <StatCard title="Net Profit" amount={stats.netProfit} icon={<TrendingUp className="text-blue-600" />} color="bg-blue-50" isMain={true} />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Date</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Description</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Category</th>
-                <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx._id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                  <td className="p-4 text-xs font-bold text-slate-500">{new Date(tx.date).toLocaleDateString()}</td>
-                  <td className="p-4">
-                    <p className="text-sm font-black text-slate-800">{tx.description}</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Ref: {tx.referenceId || 'Manual Entry'}</p>
-                  </td>
-                  <td className="p-4">
-                    <span className="text-[10px] font-black px-3 py-1 bg-slate-100 rounded-full text-slate-600 uppercase">
-                      {tx.category}
-                    </span>
-                  </td>
-                  <td className={`p-4 text-right font-black ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                    {tx.type === 'INCOME' ? '+' : '-'} ₦{tx.amount.toLocaleString()}
-                  </td>
+        {/* TABLE */}
+        <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+          <div className="p-6 border-b border-slate-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h3 className="font-black text-slate-800 uppercase text-xs tracking-widest">Recent Transactions</h3>
+            <div className="relative w-full sm:w-auto">
+               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+               <input type="text" placeholder="Search ledger..." className="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0028AE] w-full sm:w-64 outline-none transition-all" />
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50">
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Date</th>
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Description</th>
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter">Category</th>
+                  <th className="p-4 text-[10px] font-black text-slate-400 uppercase tracking-tighter text-right">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {transactions.length === 0 && !loading ? (
+                  <tr>
+                    <td colSpan="4" className="p-8 text-center text-slate-400 text-sm font-bold">No transactions found for this period.</td>
+                  </tr>
+                ) : (
+                  transactions.map((tx) => (
+                    <tr key={tx._id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                      <td className="p-4 text-xs font-bold text-slate-500">{new Date(tx.date).toLocaleDateString()}</td>
+                      <td className="p-4">
+                        <p className="text-sm font-black text-slate-800">{tx.description}</p>
+                        <p className="text-[10px] text-slate-400 font-medium">Ref: {tx.referenceId || 'Manual Entry'}</p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-[10px] font-black px-3 py-1 bg-slate-100 rounded-full text-slate-600 uppercase">
+                          {tx.category}
+                        </span>
+                      </td>
+                      <td className={`p-4 text-right font-black ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
+                        {tx.type === 'INCOME' ? '+' : '-'} ₦{tx.amount.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        
 
   {/* PREMIUM FOOTER - Only visible during export */}
   {isExporting && (
