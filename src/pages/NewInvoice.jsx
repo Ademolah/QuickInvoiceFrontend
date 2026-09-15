@@ -26,7 +26,7 @@ const NewInvoice = () => {
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientPhone, setClientPhone] = useState('');
-  const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
+  const [items, setItems] = useState([{ description: '', serialNumber: '', quantity: 1, unitPrice: 0 }]);
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [notes, setNotes] = useState('');
@@ -43,13 +43,20 @@ const NewInvoice = () => {
     }
   }, [selectedClient]);
 
+  // const handleItemChange = (index, field, value) => {
+  //   const updated = [...items];
+  //   updated[index][field] = field === 'description' ? value : value === '' ? '' : Number(value);
+  //   setItems(updated);
+  // };
   const handleItemChange = (index, field, value) => {
     const updated = [...items];
-    updated[index][field] = field === 'description' ? value : value === '' ? '' : Number(value);
+    const isStringField = field === 'description' || field === 'serialNumber';
+    
+    updated[index][field] = isStringField ? value : value === '' ? '' : Number(value);
     setItems(updated);
   };
 
-  const addItem = () => setItems([...items, { description: '', quantity: 1, unitPrice: 0 }]);
+  const addItem = () => setItems([...items, { description: '', serialNumber: '', quantity: 1, unitPrice: 0 }]);
   const removeItem = (index) => setItems(items.filter((_, i) => i !== index));
 
   const subtotal = items.reduce((sum, it) => sum + (Number(it.quantity) * Number(it.unitPrice)), 0);
@@ -167,69 +174,83 @@ const NewInvoice = () => {
     </div>
 
     <AnimatePresence initial={false}>
-      {items.map((item, index) => (
-        <motion.div 
-          key={index}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center bg-slate-50/50 p-6 md:p-4 rounded-[2rem] md:rounded-3xl border border-transparent hover:border-slate-100 transition-all relative group"
-        >
-          {/* DESCRIPTION */}
-          <div className="w-full md:col-span-6">
-            <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1">Description</label>
-            <input
-              type="text"
-              placeholder="Service or product name"
-              value={item.description}
-              onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-              className="w-full bg-transparent text-sm font-bold text-[#001325] placeholder:text-slate-300 outline-none"
-            />
-          </div>
+  {items.map((item, index) => (
+    <motion.div 
+      key={index}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center bg-slate-50/50 p-6 md:p-4 rounded-[2rem] md:rounded-3xl border border-transparent hover:border-slate-100 transition-all relative group"
+    >
+      {/* DESCRIPTION & SERIAL/IMEI NUMBER */}
+      <div className="w-full md:col-span-6 flex flex-col gap-2">
+        <div>
+          <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1">Description</label>
+          <input
+            type="text"
+            placeholder="Service or product name (e.g. iPhone 15 Pro Max)"
+            value={item.description}
+            onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+            className="w-full bg-transparent text-sm font-bold text-[#001325] placeholder:text-slate-300 outline-none"
+          />
+        </div>
 
-          {/* QUANTITY & UNIT PRICE (Grouped on mobile for better flow) */}
-          <div className="grid grid-cols-2 md:contents gap-4 w-full">
-            <div className="md:col-span-2">
-              <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1 text-left">Qty</label>
-              <input
-                type="number"
-                value={item.quantity}
-                onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                className="w-full bg-white border border-slate-100 rounded-xl py-2 px-2 text-left md:text-center text-sm font-bold outline-none"
-              />
-            </div>
+        {/* ✨ SURGICAL ADDITION: Gadget Serial / IMEI Input Badge */}
+        <div className="flex items-center gap-2 bg-slate-100/80 focus-within:bg-white focus-within:ring-1 focus-within:ring-blue-500/20 px-3 py-1 rounded-xl transition-all w-full md:w-fit">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider select-none shrink-0">S/N:</span>
+          <input
+            type="text"
+            placeholder="IMEI / Serial No. (Optional)"
+            value={item.serialNumber || ''}
+            onChange={(e) => handleItemChange(index, 'serialNumber', e.target.value)}
+            className="w-full bg-transparent text-xs font-semibold text-slate-700 placeholder:text-slate-300 outline-none"
+          />
+        </div>
+      </div>
 
-            <div className="md:col-span-2">
-              <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1 text-left">Unit Price</label>
-              <input
-                type="number"
-                value={item.unitPrice}
-                onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
-                className="w-full bg-white border border-slate-100 rounded-xl py-2 px-2 text-left md:text-right text-sm font-bold outline-none"
-              />
-            </div>
-          </div>
+      {/* QUANTITY & UNIT PRICE (Grouped on mobile for better flow) */}
+      <div className="grid grid-cols-2 md:contents gap-4 w-full">
+        <div className="md:col-span-2">
+          <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1 text-left">Qty</label>
+          <input
+            type="number"
+            value={item.quantity}
+            onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+            className="w-full bg-white border border-slate-100 rounded-xl py-2 px-2 text-left md:text-center text-sm font-bold outline-none focus:border-blue-500/30 transition-all"
+          />
+        </div>
 
-          {/* TOTAL & REMOVE BUTTON */}
-          <div className="w-full md:col-span-2 flex items-center justify-between md:justify-end gap-3 pt-4 md:pt-0 border-t border-slate-100 md:border-none">
-            <div className="md:hidden text-[10px] font-black uppercase text-slate-400">Total</div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-black text-[#001325]">
-                {code} {(item.quantity * item.unitPrice).toLocaleString()}
-              </span>
-              {items.length > 1 && (
-                <button 
-                  onClick={() => removeItem(index)} 
-                  className="p-2 bg-red-50 text-red-500 rounded-lg md:bg-transparent md:text-slate-300 md:hover:text-red-500 transition-colors"
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </AnimatePresence>
+        <div className="md:col-span-2">
+          <label className="md:hidden text-[10px] font-black uppercase text-slate-400 block mb-1 text-left">Unit Price</label>
+          <input
+            type="number"
+            value={item.unitPrice}
+            onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
+            className="w-full bg-white border border-slate-100 rounded-xl py-2 px-2 text-left md:text-right text-sm font-bold outline-none focus:border-blue-500/30 transition-all"
+          />
+        </div>
+      </div>
+
+      {/* TOTAL & REMOVE BUTTON */}
+      <div className="w-full md:col-span-2 flex items-center justify-between md:justify-end gap-3 pt-4 md:pt-0 border-t border-slate-100 md:border-none">
+        <div className="md:hidden text-[10px] font-black uppercase text-slate-400">Total</div>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-black text-[#001325]">
+            {code} {(item.quantity * item.unitPrice).toLocaleString()}
+          </span>
+          {items.length > 1 && (
+            <button 
+              onClick={() => removeItem(index)} 
+              className="p-2 bg-red-50 text-red-500 rounded-lg md:bg-transparent md:text-slate-300 md:hover:text-red-500 transition-colors"
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</AnimatePresence>
 
     <button
       onClick={addItem}

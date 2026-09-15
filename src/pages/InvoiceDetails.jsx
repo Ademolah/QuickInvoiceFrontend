@@ -389,29 +389,42 @@ const {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="mb-10 rounded-2xl border border-slate-100 overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-slate-50 border-b border-slate-100">
-              <th className="text-left p-5 text-[10px] font-black uppercase text-slate-400">Description</th>
-              <th className="text-center p-5 text-[10px] font-black uppercase text-slate-400">Qty</th>
-              <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Price</th>
-              <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Total</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {items.map((it, idx) => (
-              <tr key={idx}>
-                <td className="p-5 text-sm font-bold text-slate-800">{it.description}</td>
-                <td className="p-5 text-center text-sm font-bold text-slate-600">{it.quantity}</td>
-                <td className="p-5 text-right text-sm font-bold text-slate-600">{formatCurrency(it.unitPrice)}</td>
-                <td className="p-5 text-right text-sm font-black text-slate-900">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Table - Wrapped in a subtle shadow for Premium feel */}
+<div className="mb-12 rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+  <table className="w-full">
+    <thead>
+      <tr className="bg-slate-50/50 border-b border-slate-100">
+        <th className="text-left p-5 text-[10px] font-black uppercase text-slate-400">Description</th>
+        <th className="text-center p-5 text-[10px] font-black uppercase text-slate-400">Qty</th>
+        <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Price</th>
+        <th className="text-right p-5 text-[10px] font-black uppercase text-slate-400">Total</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-slate-50">
+      {items.map((it, idx) => (
+        <tr key={idx} className="group hover:bg-slate-50/30 transition-colors">
+        
+          {/* DESCRIPTION & CONDITIONALLY RENDERED S/N BADGE */}
+          <td className="p-5">
+            <p className="text-sm font-bold text-slate-800">{it.description}</p>
+            {it.serialNumber && (
+              <div className="mt-1">
+                <span className="inline-block bg-slate-100 border border-slate-200/60 rounded-md px-2 py-1 text-[11px] font-mono font-semibold text-slate-700 leading-none relative z-10">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider mr-1">S/N:</span>
+                  <span>{it.serialNumber}</span>
+                </span>
+              </div>
+            )}
+          </td>
+
+          <td className="p-5 text-center text-sm font-bold text-slate-600">{it.quantity}</td>
+          <td className="p-5 text-right text-sm font-bold text-slate-600">{formatCurrency(it.unitPrice)}</td>
+          <td className="p-5 text-right text-sm font-black text-slate-900">{formatCurrency(it.total ?? it.quantity * it.unitPrice)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
       {/* Bottom Section */}
       <div className={`grid ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'grid-cols-1 gap-12' : 'grid-cols-2 gap-10'}`}>

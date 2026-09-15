@@ -42,7 +42,7 @@ export default function Bookkeeping() {
   });
 
   const [user, setUser] = useState(null); // Added for Pro check
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency} = useCurrency();
   const bookkeepingPrintRef = useRef(null);
   const token = localStorage.getItem("token");
 
@@ -66,6 +66,18 @@ export default function Bookkeeping() {
       };
       fetchUser();
     }, []);
+
+  //   useEffect(() => {
+  //   // Note: Adjust "user?.currency" if your backend stores it as "user?.businessCurrency"
+  //   if (user?.currency) {
+  //     setOverrideCurrency(user.currency);
+  //   }
+
+  //   // CLEANUP: Instantly unlock when the user leaves the Bookkeeping route
+  //   return () => {
+  //     setOverrideCurrency(null);
+  //   };
+  // }, [user?.currency, setOverrideCurrency]);
 
 
 
