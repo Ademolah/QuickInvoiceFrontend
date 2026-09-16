@@ -173,8 +173,15 @@ const SpreadSheet = () => {
   const handleAddRow = () => {
     setRows(prev => [
       ...prev,
-      { id: Date.now().toString(), date: '', units: '', collector: '', description: '', sn: '', imei: '', remark: '' }
+      { id: Date.now().toString(), date: '', units: '', collector: '', description: '', sn: '', amount: '', remark: '' }
     ]);
+  };
+
+  const formatAmount = (val) => {
+    if (val === '' || val === null || val === undefined) return '';
+    // Convert to number, removing any non-numeric characters except decimals
+    const num = Number(String(val).replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? val : num.toLocaleString();
   };
 
   const handleRemoveRow = async (id) => {
@@ -365,7 +372,7 @@ const SpreadSheet = () => {
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-64">Description</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 min-w-[200px]">Collector</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-44">S/N</th>
-                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-44">IMEI</th>
+                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-44">Amount</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 min-w-[150px]">Remark</th>
                   {!isExporting && <th className="px-3 pb-3 text-xs font-semibold uppercase text-slate-400 w-12 text-center"></th>}
                 </tr>
@@ -418,9 +425,9 @@ const SpreadSheet = () => {
                     </td>
                     <td className="p-2 align-top">
                       <PrintableCell
-                        placeholder="IMEI Number"
-                        value={row.imei}
-                        onChange={(e) => handleChange(row.id, 'imei', e.target.value)}
+                        placeholder="Amount"
+                        value={formatAmount(row.amount)}
+                        onChange={(e) => handleChange(row.id, 'amount', e.target.value)}
                         isExporting={isExporting}
                         className="font-mono text-xs"
                       />
