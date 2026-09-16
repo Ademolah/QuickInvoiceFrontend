@@ -55,7 +55,7 @@ const Sidebar = ({ closeMenu, isCollapsed, setIsCollapsed }) => {
       items: [
         { name: "Create Invoice", icon: <FileText size={18} />, path: "/invoices" },
         { name: "Generate Receipts", icon: <Receipt size={18} />, path: "/receipts" },
-        { name: "SpreadSheet", icon: <SheetIcon size={18} />, path: "/sheet" },
+        { name: "SpreadSheet", icon: <SheetIcon size={18} />, path: "/sheet", isPro: true },
         { name: "Create Work Summary", icon: <FileCheck2 size={18} />, path: "/invoice-selector" },
         { name: "Customize Invoice", icon: <Palette size={18} />, path: "/customize-invoice", isPro: true },
         { name: "Inventory", icon: <Building2 size={18} />, path: "/inventory" },
