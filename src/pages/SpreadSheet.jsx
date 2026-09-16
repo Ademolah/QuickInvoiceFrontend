@@ -173,7 +173,7 @@ const SpreadSheet = () => {
   const handleAddRow = () => {
     setRows(prev => [
       ...prev,
-      { id: Date.now().toString(), date: '', units: '', productName: '', description: '', sn: '', imei: '', remark: '' }
+      { id: Date.now().toString(), date: '', units: '', collector: '', description: '', sn: '', imei: '', remark: '' }
     ]);
   };
 
@@ -362,8 +362,8 @@ const SpreadSheet = () => {
                 <tr className="border-b-2 border-slate-100">
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-48">Date</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-24">Units</th>
-                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-64">Item Name</th>
-                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 min-w-[200px]">Description</th>
+                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-64">Description</th>
+                  <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 min-w-[200px]">Collector</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-44">S/N</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 w-44">IMEI</th>
                   <th className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 min-w-[150px]">Remark</th>
@@ -393,17 +393,17 @@ const SpreadSheet = () => {
                     <td className="p-2 align-top">
                       <PrintableCell
                         placeholder="e.g. MacBook Pro M3"
-                        value={row.productName}
-                        onChange={(e) => handleChange(row.id, 'productName', e.target.value)}
+                        value={row.description}
+                        onChange={(e) => handleChange(row.id, 'description', e.target.value)}
                         isExporting={isExporting}
                         className="font-semibold text-slate-900"
                       />
                     </td>
                     <td className="p-2 align-top">
                       <PrintableCell
-                        placeholder="Item details..."
-                        value={row.description}
-                        onChange={(e) => handleChange(row.id, 'description', e.target.value)}
+                        placeholder="Collector Name"
+                        value={row.collector}
+                        onChange={(e) => handleChange(row.id, 'collector', e.target.value)}
                         isExporting={isExporting}
                       />
                     </td>
