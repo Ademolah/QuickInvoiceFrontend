@@ -10,7 +10,7 @@ import {
   Building2, Wallet, GraduationCap, LifeBuoy, BarChart3, Lock, ChevronRight, ChevronLeft,
   Plus, ChevronDown, Check, Building,
   Calculator,
-  Palette
+  Palette, SheetIcon
 } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -55,6 +55,7 @@ const Sidebar = ({ closeMenu, isCollapsed, setIsCollapsed }) => {
       items: [
         { name: "Create Invoice", icon: <FileText size={18} />, path: "/invoices" },
         { name: "Generate Receipts", icon: <Receipt size={18} />, path: "/receipts" },
+        { name: "SpreadSheet", icon: <SheetIcon size={18} />, path: "/sheet" },
         { name: "Create Work Summary", icon: <FileCheck2 size={18} />, path: "/invoice-selector" },
         { name: "Customize Invoice", icon: <Palette size={18} />, path: "/customize-invoice", isPro: true },
         { name: "Inventory", icon: <Building2 size={18} />, path: "/inventory" },

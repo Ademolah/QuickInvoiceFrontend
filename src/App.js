@@ -26,6 +26,7 @@ import BlogDetail from "./pages/BlogDetails";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import HowToInstall from "./pages/HowToInstall";
 import Expenses from "./pages/Expenses";
+import SpreadSheet from "./pages/SpreadSheet"
 
 //QuickPay
 import QuickPay from "./pages/QuickPay";
@@ -84,6 +85,7 @@ export default function App() {
       <Route path="/expenses" element={<Expenses />} />
       <Route path="/invoice-selector" element={<InvoiceSelector />} />
       <Route path="/customize-invoice" element={<BrandingStudio />} />
+      <Route path="/sheet" element={<SpreadSheet />} />
       <Route path="/create-summary/:id" element={<WorkSummaryStudio />} />
       <Route path="/bookkeeping" element={<Bookkeeping />} />
       <Route path="/settings/accounts/new" element={<AddBusiness />} />
