@@ -426,16 +426,31 @@ const {
   </table>
 </div>
 
-      {/* Bottom Section */}
+      {/* Totals & Payment Section */}
       <div className={`grid ${userData?.brandSettings?.selectedTemplate === 'zenith' ? 'grid-cols-1 gap-12' : 'grid-cols-2 gap-10'}`}>
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Payment Details</h4>
-            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2">
-              <p className="text-[11px] font-black text-slate-900 flex items-center gap-2"><Building2 size={12}/> {bankName || "-"}</p>
-              <p style={{ color: headerColor }} className="text-[11px] font-black flex items-center gap-2"><CreditCard size={12}/> {accountNumber || "-"}</p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{accountName || "-"}</p>
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Payment Details</h4>
+            
+            {/* SURGICAL FIX: Eye-catching bold background using the brand's headerColor */}
+            <div 
+              style={{ backgroundColor: headerColor }} 
+              className="relative p-6 rounded-3xl text-white shadow-xl space-y-3 overflow-hidden"
+            >
+              <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                <CreditCard size={120} />
+              </div>
+              <p className="text-xs md:text-sm font-bold flex items-center gap-3 opacity-90">
+                <Building2 size={16} /> {bankName || "-"}
+              </p>
+              <p className="text-2xl md:text-3xl font-black flex items-center gap-3 tracking-widest">
+                {accountNumber || "-"}
+              </p>
+              <p className="text-[10px] md:text-xs font-black uppercase tracking-widest bg-black/20 inline-block px-3 py-1.5 rounded-lg border border-white/10">
+                {accountName || "-"}
+              </p>
             </div>
+            
           </div>
           {notes && (
             <div style={{ borderColor: headerColor }} className="p-5 bg-blue-50/30 border-l-4 rounded-r-xl">
