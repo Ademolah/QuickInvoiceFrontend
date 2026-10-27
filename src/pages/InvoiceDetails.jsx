@@ -372,6 +372,7 @@ const {
           <div className="space-y-1">
             <p className="font-black text-slate-900">{user?.businessName}</p>
             <p className="text-xs font-bold text-slate-500">{user?.email}</p>
+            <p className="text-xs font-bold text-slate-500">{user?.residential_address}</p>
             <p className="text-xs font-bold text-slate-500">{user?.phone}</p>
           </div>
         </div>
