@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { 
   Download, 
   X, 
   Smartphone, 
   Share, 
   PlusSquare, 
-  CheckCircle2, 
-  ShieldCheck, 
-  Zap, 
-  ArrowRight,
   Monitor,
   Apple
 } from 'lucide-react';
