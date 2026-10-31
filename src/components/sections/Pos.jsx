@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const POSBespokeShowcase = () => {
   // Animation Variants
@@ -33,7 +33,6 @@ const POSBespokeShowcase = () => {
         >
           <motion.div variants={fadeUp} className="flex justify-center mb-6">
             <span className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em]">
-              <Sparkles size={14} className="text-amber-400" />
               Next-Gen Terminal
             </span>
           </motion.div>
