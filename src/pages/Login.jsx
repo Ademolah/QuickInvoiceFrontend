@@ -93,8 +93,10 @@ export default function Login() {
           
           {/* Mobile Header */}
           <div className="md:hidden flex items-center gap-2 mb-10">
+            <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-[#09090B] rounded-md flex items-center justify-center text-white font-bold text-lg">Q</div>
             <span className="text-[#09090B] font-bold tracking-tight">QuickInvoice</span>
+            </Link>
           </div>
 
           <div className="mb-8">
