@@ -9,6 +9,7 @@ import Testimonials from '../components/sections/Testimonials'
 import POSBespokeShowcase from '../components/sections/Pos'
 import InventoryFeatureShowcase from '../components/sections/Inventory'
 import PWAInstallBanner from '../components/PWAInstallBanner'
+import WhatsAppButton from '../components/WhatsappButton'
 
 export default function Landing(){
   return (
@@ -23,6 +24,7 @@ export default function Landing(){
       <Footer />
       {/* Floating PWA Install Banner */}
       <PWAInstallBanner />
+      <WhatsAppButton/>
     </div>
   )
 }
