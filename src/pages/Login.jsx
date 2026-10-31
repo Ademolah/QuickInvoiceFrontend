@@ -1,10 +1,8 @@
-
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { Eye, EyeOff, ArrowRight, ShieldCheck, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, ShieldCheck, Mail, Lock } from "lucide-react";
 
 const API = "https://quickinvoice-backend-1.onrender.com";
 
@@ -19,170 +17,146 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError("");
-
-  //   try {
-  //     const res = await axios.post(`${API}/api/auth/login`, formData);
-  //     if (res.data.token) {
-  //       localStorage.setItem("token", res.data.token);
-  //       setTimeout(() => navigate("/dashboard"), 300);
-  //     } else {
-  //       setError("Authentication failed. Please try again.");
-  //     }
-  //   } catch (err) {
-  //     setError(err.response?.data?.message || "Invalid credentials.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-  try {
-    const res = await axios.post(`${API}/api/auth/login`, formData);
-    
-    if (res.data.token) {
-      // 1. Secure the Token and Role
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role); // 👈 Store for global access
+    try {
+      const res = await axios.post(`${API}/api/auth/login`, formData);
+      
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role); 
 
-      // 2. Role-Based Navigation Logic
-      const userRole = res.data.role;
+        const userRole = res.data.role;
 
-      setTimeout(() => {
-        if (userRole === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
-      }, 300);
-
-    } else {
-      setError("Authentication failed. Please try again.");
+        setTimeout(() => {
+          if (userRole === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/dashboard");
+          }
+        }, 300);
+      } else {
+        setError("Authentication failed. Please try again.");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid credentials.");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    setError(err.response?.data?.message || "Invalid credentials.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Architectural Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] opacity-30 pointer-events-none" />
-      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#0028AE]/5 blur-[120px] rounded-full pointer-events-none" />
-
+    <div className="min-h-[100dvh] bg-[#FAFAFA] md:p-6 lg:p-8 flex items-center justify-center font-sans">
+      
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-100"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-[1000px] bg-white min-h-[100dvh] md:min-h-0 md:rounded-2xl md:shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:border border-slate-200 overflow-hidden flex flex-col md:flex-row"
       >
         
-        {/* Left Side: Brand Experience (Visible on Desktop) */}
-        <div className="hidden lg:flex flex-col justify-between p-16 bg-[#001325] text-white relative overflow-hidden">
+        {/* Left Side: Brand Panel (Hidden on Mobile) */}
+        <div className="hidden md:flex w-2/5 bg-[#09090B] p-10 lg:p-12 flex-col justify-between relative overflow-hidden">
+          {/* Subtle Architectural Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-20 pointer-events-none" />
+          
           <div className="relative z-10">
-            <Link to="/">
-              <img src="/quicknav.svg" alt="QuickInvoice" className="h-8 w-auto brightness-200" />
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center text-[#09090B] font-bold text-lg">Q</div>
+              <span className="text-white font-bold tracking-tight">QuickInvoice</span>
             </Link>
-            <div className="mt-24 space-y-6">
-              <h2 className="text-5xl font-black tracking-tighter leading-[1.1]">
+            
+            <div className="mt-20 space-y-4">
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
                 Secure your <br />
-                <span className="text-[#00A6FA]">financial empire.</span>
+                <span className="text-slate-400">financial empire.</span>
               </h2>
-              <p className="text-slate-400 text-lg font-medium max-w-xs leading-relaxed">
+              <p className="text-slate-400 text-sm leading-relaxed max-w-[250px]">
                 Enter the most advanced invoicing ecosystem in Africa.
               </p>
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center gap-4 py-6 px-8 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
-            <ShieldCheck className="text-[#00A6FA]" size={24} />
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">
-              Bank-grade AES-256 Encryption Active
+          <div className="relative z-10 flex items-center gap-3 py-4 px-5 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm">
+            <ShieldCheck className="text-emerald-400 shrink-0" size={20} />
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
+              AES-256 Encryption Active
             </p>
           </div>
-
-          {/* Decorative Glow */}
-          <div className="absolute bottom-[-20%] right-[-20%] w-80 h-80 bg-[#0028AE]/40 blur-[100px] rounded-full" />
         </div>
 
-        {/* Right Side: Login Form */}
-        <div className="p-8 md:p-16 flex flex-col justify-center">
-          <div className="lg:hidden flex justify-center mb-10">
-            <img src="/quickauth.svg" alt="QuickInvoice" className="h-10 w-auto" />
+        {/* Right Side: Form */}
+        <div className="w-full md:w-3/5 p-6 sm:p-10 lg:p-16 flex flex-col justify-center bg-white flex-1">
+          
+          {/* Mobile Header */}
+          <div className="md:hidden flex items-center gap-2 mb-10">
+            <div className="w-8 h-8 bg-[#09090B] rounded-md flex items-center justify-center text-white font-bold text-lg">Q</div>
+            <span className="text-[#09090B] font-bold tracking-tight">QuickInvoice</span>
           </div>
 
-          <div className="mb-10">
-            <h1 className="text-3xl font-black text-[#001325] tracking-tight mb-2">Welcome Back</h1>
-            <p className="text-slate-500 font-medium">Continue to your workspace</p>
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#09090B] tracking-tight mb-2">Welcome back</h1>
+            <p className="text-sm text-slate-500 font-medium">Log in to your QuickInvoice workspace.</p>
           </div>
 
           <AnimatePresence>
             {error && (
               <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-2xl mb-6 text-xs font-bold flex items-center gap-2"
+                initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                animate={{ opacity: 1, height: "auto", marginBottom: 24 }}
+                exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-2 overflow-hidden"
               >
-                <div className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+                <div className="h-1.5 w-1.5 rounded-full bg-red-600 shrink-0" />
                 {error}
               </motion.div>
             )}
           </AnimatePresence>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
-                Corporate Email
-              </label>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 ml-1">Corporate Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0028AE] transition-colors" size={18} />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#09090B] transition-colors" size={18} />
                 <input
                   type="email"
                   name="email"
                   placeholder="name@company.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#0028AE]/20 focus:bg-white transition-all font-medium text-[#001325]"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all text-sm text-[#09090B] placeholder:text-slate-400 shadow-sm"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex justify-between items-center px-1">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                  Password
-                </label>
-                <Link to="/contact" className="text-[10px] font-black uppercase tracking-[0.1em] text-[#0028AE] hover:text-[#001325]">
-                  Reset?
+                <label className="text-xs font-bold text-slate-700">Password</label>
+                <Link to="/contact" className="text-[11px] font-bold text-slate-500 hover:text-[#09090B] transition-colors">
+                  Forgot password?
                 </Link>
               </div>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#0028AE] transition-colors" size={18} />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#09090B] transition-colors" size={18} />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#0028AE]/20 focus:bg-white transition-all font-medium text-[#001325]"
+                  className="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all text-sm text-[#09090B] placeholder:text-slate-400 shadow-sm"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#001325] transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#09090B] transition-colors"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
@@ -190,17 +164,17 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-5 bg-[#001325] text-white rounded-2xl font-black text-sm hover:bg-[#0028AE] transition-all duration-300 shadow-xl shadow-blue-900/10 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+              className="w-full py-3.5 mt-2 bg-[#09090B] text-white rounded-xl font-semibold text-sm hover:bg-slate-800 transition-all duration-200 shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
             >
-              {loading ? "Authorizing..." : "Sign In to QuickInvoice"}
-              {!loading && <ArrowRight size={18} />}
+              {loading ? "Authenticating..." : "Sign in"}
+              {!loading && <ArrowRight size={16} />}
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-400 mt-10 font-bold">
-            New to the ecosystem?{" "}
-            <Link to="/register" className="text-[#0028AE] hover:underline">
-              Create a free account
+          <p className="text-center text-xs text-slate-500 mt-8 font-medium">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-[#09090B] font-bold hover:underline">
+              Create workspace
             </Link>
           </p>
         </div>
